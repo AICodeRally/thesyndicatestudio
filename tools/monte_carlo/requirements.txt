@@ -1,0 +1,41 @@
+# SPM Monte Carlo Simulation Tool - Dependencies
+
+# Core numerical and scientific computing
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+
+# Excel file handling
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+xlrd>=2.0.1
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Optional: Interactive visualizations
+# plotly>=5.14.0
+# dash>=2.9.0
+
+# Optional: Parallel processing
+# dask[complete]>=2023.4.0
+
+# Optional: Progress bars
+tqdm>=4.65.0
+
+# Configuration handling
+pyyaml>=6.0
+
+# Testing (development)
+pytest>=7.3.0
+pytest-cov>=4.0.0
+
+# Code quality (development)
+black>=23.3.0
+flake8>=6.0.0
+mypy>=1.2.0
+
+# Documentation (development)
+sphinx>=6.2.0
+sphinx-rtd-theme>=1.2.0
