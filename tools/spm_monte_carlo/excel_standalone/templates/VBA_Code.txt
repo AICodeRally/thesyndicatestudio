@@ -1,0 +1,218 @@
+'==============================================================================
+' SPM MONTE CARLO TOOL - VBA CODE
+' Copy this code into your Excel VBA Editor (Alt+F11)
+'==============================================================================
+
+' MODULE: ModMain
+'==============================================================================
+
+Option Explicit
+
+Sub RunSimulation()
+    '
+    ' Run Monte Carlo Simulation
+    ' Called when user clicks "Run Simulation" button
+    '
+
+    Dim exePath As String
+    Dim excelPath As String
+    Dim fullExcelPath As String
+    Dim cmd As String
+    Dim shell As Object
+
+    ' Disable screen updating for better UX
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+
+    ' Update status
+    Sheets("Dashboard").Range("B8").Value = "Preparing simulation..."
+    Sheets("Dashboard").Range("B8").Font.Color = RGB(255, 165, 0) ' Orange
+
+    DoEvents
+
+    ' Get paths
+    excelPath = ThisWorkbook.Path
+    fullExcelPath = ThisWorkbook.FullName
+    exePath = excelPath & "\spm_mc.exe"
+
+    ' Check if executable exists
+    If Dir(exePath) = "" Then
+        MsgBox "Error: spm_mc.exe not found!" & vbCrLf & vbCrLf & _
+               "Please ensure spm_mc.exe is in the same folder as this Excel file." & vbCrLf & _
+               "Current folder: " & excelPath, _
+               vbCritical, "Missing File"
+
+        Sheets("Dashboard").Range("B8").Value = "Error: spm_mc.exe not found"
+        Sheets("Dashboard").Range("B8").Font.Color = RGB(255, 0, 0) ' Red
+
+        Application.ScreenUpdating = True
+        Application.Calculation = xlCalculationAutomatic
+        Exit Sub
+    End If
+
+    ' Validate data
+    If Not ValidateData() Then
+        Application.ScreenUpdating = True
+        Application.Calculation = xlCalculationAutomatic
+        Exit Sub
+    End If
+
+    ' Save workbook before running
+    ThisWorkbook.Save
+
+    ' Build command
+    cmd = """" & exePath & """ """ & fullExcelPath & """"
+
+    ' Show message
+    MsgBox "Simulation starting..." & vbCrLf & vbCrLf & _
+           "A command window will open to show progress." & vbCrLf & _
+           "Results will appear in Excel when complete." & vbCrLf & vbCrLf & _
+           "Do not close Excel while simulation is running.", _
+           vbInformation, "SPM Monte Carlo"
+
+    ' Run the executable
+    Set shell = CreateObject("WScript.Shell")
+    shell.Run cmd, 1, True  ' 1 = Show window, True = Wait for completion
+
+    ' Reload the workbook to get updated results
+    Application.CalculateBeforeSave = False
+    ThisWorkbook.Close SaveChanges:=False
+
+    ' Reopen (this happens automatically)
+    Application.Workbooks.Open fullExcelPath
+
+    Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+
+    ' Show results sheet
+    Sheets("Results").Select
+
+    MsgBox "Simulation complete! Results are displayed in the Results sheet.", _
+           vbInformation, "Success"
+
+End Sub
+
+Function ValidateData() As Boolean
+    '
+    ' Validate input data before running simulation
+    '
+
+    Dim histSheet As Worksheet
+    Dim planSheet As Worksheet
+    Dim configSheet As Worksheet
+    Dim lastRow As Long
+
+    On Error GoTo ValidationError
+
+    Set histSheet = Sheets("Historical_Data")
+    Set planSheet = Sheets("Plan_Config")
+    Set configSheet = Sheets("Config")
+
+    ' Check Historical Data
+    lastRow = histSheet.Cells(histSheet.Rows.Count, "A").End(xlUp).Row
+
+    If lastRow < 2 Then
+        MsgBox "Error: No historical data found!" & vbCrLf & vbCrLf & _
+               "Please add data to the 'Historical_Data' sheet.", _
+               vbCritical, "Validation Error"
+        ValidateData = False
+        Exit Function
+    End If
+
+    ' Check required columns
+    If histSheet.Range("A1").Value <> "rep_id" Or _
+       histSheet.Range("B1").Value <> "period" Or _
+       histSheet.Range("C1").Value <> "quota" Or _
+       histSheet.Range("D1").Value <> "actual_sales" Then
+        MsgBox "Error: Historical data has incorrect column headers!" & vbCrLf & vbCrLf & _
+               "Expected columns: rep_id, period, quota, actual_sales", _
+               vbCritical, "Validation Error"
+        ValidateData = False
+        Exit Function
+    End If
+
+    ' Check Plan Config
+    lastRow = planSheet.Cells(planSheet.Rows.Count, "A").End(xlUp).Row
+
+    If lastRow < 8 Then ' Need at least one tier
+        MsgBox "Error: No commission tiers defined!" & vbCrLf & vbCrLf & _
+               "Please add at least one tier in the 'Plan_Config' sheet.", _
+               vbCritical, "Validation Error"
+        ValidateData = False
+        Exit Function
+    End If
+
+    ' Check iterations
+    Dim iterations As Variant
+    iterations = configSheet.Range("B2").Value
+
+    If Not IsNumeric(iterations) Or iterations < 100 Or iterations > 100000 Then
+        MsgBox "Error: Iterations must be between 100 and 100,000", _
+               vbCritical, "Validation Error"
+        ValidateData = False
+        Exit Function
+    End If
+
+    ValidateData = True
+    Exit Function
+
+ValidationError:
+    MsgBox "Validation error: " & Err.Description, vbCritical, "Error"
+    ValidateData = False
+End Function
+
+Sub ClearResults()
+    '
+    ' Clear results sheet
+    '
+
+    If MsgBox("Clear all results?", vbYesNo + vbQuestion, "Confirm") = vbYes Then
+        Sheets("Results").Cells.Clear
+        Sheets("Dashboard").Range("B8").Value = "Ready"
+        Sheets("Dashboard").Range("B8").Font.Color = RGB(0, 0, 0) ' Black
+
+        MsgBox "Results cleared.", vbInformation
+    End If
+
+End Sub
+
+Sub ShowInstructions()
+    '
+    ' Display usage instructions
+    '
+
+    Dim msg As String
+
+    msg = "SPM MONTE CARLO SIMULATION TOOL" & vbCrLf & vbCrLf & _
+          "INSTRUCTIONS:" & vbCrLf & vbCrLf & _
+          "1. Add historical performance data to 'Historical_Data' sheet" & vbCrLf & _
+          "2. Configure compensation plan in 'Plan_Config' sheet" & vbCrLf & _
+          "3. Adjust settings in 'Config' sheet (optional)" & vbCrLf & _
+          "4. Click 'Run Simulation' button" & vbCrLf & _
+          "5. View results in 'Results' sheet" & vbCrLf & vbCrLf & _
+          "For detailed help, see the README.txt file."
+
+    MsgBox msg, vbInformation, "Instructions"
+
+End Sub
+
+' Add to ThisWorkbook module:
+'==============================================================================
+' ThisWorkbook MODULE
+'==============================================================================
+
+Private Sub Workbook_Open()
+    '
+    ' Initialize workbook when opened
+    '
+
+    ' Make sure Dashboard is the active sheet
+    On Error Resume Next
+    Sheets("Dashboard").Select
+    On Error GoTo 0
+
+    ' Set status
+    Sheets("Dashboard").Range("B8").Value = "Ready"
+    Sheets("Dashboard").Range("B8").Font.Color = RGB(0, 128, 0) ' Green
+
+End Sub
