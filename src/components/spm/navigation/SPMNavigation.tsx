@@ -165,12 +165,13 @@ export function SPMNavigation() {
           {/* Utility Nav */}
           <div className="hidden lg:flex items-center space-x-4">
             {/* Search */}
-            <button
+            <Link
+              href="/search"
               className="p-2 text-gray-300 hover:text-white transition-colors"
               aria-label="Search"
             >
               <SearchIcon />
-            </button>
+            </Link>
 
             {/* Subscribe */}
             <Link
