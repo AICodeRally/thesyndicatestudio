@@ -1,9 +1,10 @@
 "use client"
 
+import { Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
-export default function AuthErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get("error")
 
@@ -19,12 +20,12 @@ export default function AuthErrorPage() {
     : errorMessages.Default
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-spm-black px-4">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/20 border border-red-800 mb-4">
             <svg
-              className="w-8 h-8 text-red-600 dark:text-red-400"
+              className="w-8 h-8 text-red-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -38,16 +39,16 @@ export default function AuthErrorPage() {
             </svg>
           </div>
 
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">
+          <h1 className="text-headline-lg text-white mb-4">
             Authentication Error
           </h1>
 
-          <p className="text-zinc-600 dark:text-zinc-400 mb-2">
+          <p className="text-gray-300 mb-2">
             {errorMessage}
           </p>
 
           {error && (
-            <p className="text-sm text-zinc-500 dark:text-zinc-500 font-mono">
+            <p className="text-sm text-gray-500 font-mono">
               Error code: {error}
             </p>
           )}
@@ -56,19 +57,27 @@ export default function AuthErrorPage() {
         <div className="space-y-4">
           <Link
             href="/auth/signin"
-            className="block w-full px-4 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-lg font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+            className="block w-full px-6 py-3 bg-spm-purple hover:bg-spm-purple-light text-white rounded-lg font-semibold transition-all"
           >
             Try signing in again
           </Link>
 
           <Link
-            href="/start"
-            className="block text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+            href="/"
+            className="block text-sm text-gray-400 hover:text-white transition-colors"
           >
             ← Back to home
           </Link>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-spm-black" />}>
+      <ErrorContent />
+    </Suspense>
   )
 }
