@@ -1,0 +1,459 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================================================
+// AUTHENTICATION MODELS (NextAuth v5)
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  name          String?
+  image         String?
+  tier          UserTier  @default(FREE)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  accounts      Account[]
+  sessions      Session[]
+  collections   VaultCollection[]
+  counselSaves  CounselSave[]
+  chatMessages  ChatMessage[]
+  subscriptions Subscription[]
+  modelRuns     ModelRun[]
+
+  @@map("users")
+}
+
+enum UserTier {
+  FREE
+  SPARCC
+  ENTERPRISE
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================================
+// COUNSEL SYSTEM
+// ============================================================================
+
+model Counsel {
+  id               String            @id @default(cuid())
+  slug             String            @unique
+  title            String
+  oneLiner         String            @map("one_liner")
+  type             CounselType
+  channelPrimary   CounselChannel    @map("channel_primary")
+  tags             Json
+  difficulty       CounselDifficulty
+  timeToApplyMin   Int               @map("time_to_apply_min")
+  problemStatement String            @map("problem_statement")
+  mechanism        String
+  bodyMd           String            @map("body_md")
+  recommendedActions Json            @map("recommended_actions")
+  pitfalls         Json?
+  assumptions      Json?
+  videoRefs        Json?             @map("video_refs")
+  version          Int               @default(1)
+  status           String            @default("PUBLISHED")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  saves            CounselSave[]
+  vaultItems       VaultCollectionItem[]
+
+  @@index([status])
+  @@index([channelPrimary])
+  @@index([difficulty])
+  @@map("counsel")
+}
+
+enum CounselType {
+  NOTE
+  CHECKLIST
+  TEMPLATE
+  MODEL
+  PROTOCOL
+  DIAGNOSTIC
+}
+
+enum CounselChannel {
+  PLAN_DESIGN
+  MEASURES
+  PAYOUT_CURVES
+  QUOTA
+  SPIFFS_DRAWS
+  GOVERNANCE
+  DISPUTES
+  ICM_OPS
+  AI_SPM
+}
+
+enum CounselDifficulty {
+  INTRO
+  OPERATOR
+  ARCHITECT
+}
+
+model CounselSave {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  counselId String   @map("counsel_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  counsel Counsel @relation(fields: [counselId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, counselId])
+  @@index([userId])
+  @@index([counselId])
+  @@map("counsel_saves")
+}
+
+// ============================================================================
+// FAMILY VAULT
+// ============================================================================
+
+model VaultCollection {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  title       String
+  description String?
+  visibility  String   @default("PRIVATE")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user     User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sections VaultCollectionSection[]
+
+  @@index([userId])
+  @@map("vault_collections")
+}
+
+model VaultCollectionSection {
+  id           String   @id @default(cuid())
+  collectionId String   @map("collection_id")
+  title        String
+  order        Int
+
+  collection VaultCollection       @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  items      VaultCollectionItem[]
+
+  @@index([collectionId])
+  @@map("vault_collection_sections")
+}
+
+model VaultCollectionItem {
+  id        String   @id @default(cuid())
+  sectionId String   @map("section_id")
+  counselId String?  @map("counsel_id")
+  episodeId String?  @map("episode_id")
+  order     Int
+  notes     String?
+
+  section VaultCollectionSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  counsel Counsel?               @relation(fields: [counselId], references: [id])
+  episode Episode?               @relation(fields: [episodeId], references: [id])
+
+  @@index([sectionId])
+  @@index([counselId])
+  @@index([episodeId])
+  @@map("vault_collection_items")
+}
+
+// ============================================================================
+// VIDEO PIPELINE
+// ============================================================================
+
+model Episode {
+  id                String        @id @default(cuid())
+  series            String
+  title             String
+  premise           String
+  status            EpisodeStatus @default(DRAFT)
+  publishDateTarget DateTime?     @map("publish_date_target")
+  canonicalScriptId String?       @unique @map("canonical_script_id")
+  youtubeVideoId    String?       @unique @map("youtube_video_id")
+  counselRefs       Json?         @map("counsel_refs")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  canonicalScript Script?               @relation("CanonicalScript", fields: [canonicalScriptId], references: [id])
+  cuts            Cut[]
+  scripts         Script[]              @relation("EpisodeScripts")
+  assets          Asset[]
+  vaultItems      VaultCollectionItem[]
+  manifest        EpisodeManifest?
+
+  @@index([status])
+  @@index([youtubeVideoId])
+  @@map("episodes")
+}
+
+enum EpisodeStatus {
+  DRAFT
+  GENERATING
+  PENDING_REVIEW
+  PUBLISHED
+}
+
+model Script {
+  id          String   @id @default(cuid())
+  episodeId   String   @map("episode_id")
+  content     String
+  isCanonical Boolean  @default(false) @map("is_canonical")
+  version     Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  episode      Episode  @relation("EpisodeScripts", fields: [episodeId], references: [id], onDelete: Cascade)
+  canonicalFor Episode? @relation("CanonicalScript")
+  cuts         Cut[]
+
+  @@index([episodeId])
+  @@map("scripts")
+}
+
+model Cut {
+  id             String    @id @default(cuid())
+  episodeId      String    @map("episode_id")
+  scriptId       String    @map("script_id")
+  format         CutFormat
+  durationTarget Int       @map("duration_target")
+  status         String    @default("DRAFT")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  episode Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  script  Script  @relation(fields: [scriptId], references: [id])
+  assets  Asset[]
+
+  @@index([episodeId])
+  @@index([format])
+  @@map("cuts")
+}
+
+enum CutFormat {
+  YT_LONG
+  YT_SHORT
+  TIKTOK
+  X
+  LINKEDIN
+}
+
+model Asset {
+  id        String    @id @default(cuid())
+  episodeId String    @map("episode_id")
+  cutId     String?   @map("cut_id")
+  type      AssetType
+  prompt    String?
+  url       String?
+  status    String    @default("PENDING")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  episode Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  cut     Cut?    @relation(fields: [cutId], references: [id])
+
+  @@index([episodeId])
+  @@index([type])
+  @@map("assets")
+}
+
+enum AssetType {
+  BROLL
+  MUSIC
+  SFX
+  THUMBNAIL
+  CAPTIONS
+}
+
+// ============================================================================
+// VIDEO PRODUCTION (Toddfather Studio)
+// ============================================================================
+
+model EpisodeManifest {
+  id           String   @id @default(cuid())
+  episodeId    String   @unique @map("episode_id")
+  version      String
+  manifestJson Json     @map("manifest_json")
+  status       String   @default("DRAFT")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  episode    Episode     @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  workerJobs WorkerJob[]
+  qcChecks   QCCheck[]
+
+  @@index([status])
+  @@map("episode_manifests")
+}
+
+model WorkerJob {
+  id          String    @id @default(cuid())
+  manifestId  String    @map("manifest_id")
+  workerType  String    @map("worker_type")
+  provider    String
+  inputsJson  Json      @map("inputs_json")
+  outputUrl   String?   @map("output_url")
+  status      String    @default("QUEUED")
+  error       String?
+  retries     Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  completedAt DateTime? @map("completed_at")
+
+  manifest EpisodeManifest @relation(fields: [manifestId], references: [id], onDelete: Cascade)
+
+  @@index([manifestId])
+  @@index([status])
+  @@map("worker_jobs")
+}
+
+model QCCheck {
+  id         String   @id @default(cuid())
+  manifestId String   @map("manifest_id")
+  checkType  String   @map("check_type")
+  passed     Boolean
+  score      Float?
+  details    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  manifest EpisodeManifest @relation(fields: [manifestId], references: [id], onDelete: Cascade)
+
+  @@index([manifestId])
+  @@map("qc_checks")
+}
+
+model ToddStudioAsset {
+  id           String   @id @default(cuid())
+  type         String
+  slug         String   @unique
+  version      String
+  metadataJson Json     @map("metadata_json")
+  url          String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([type])
+  @@map("todd_studio_assets")
+}
+
+// ============================================================================
+// CHAT SYSTEM (Ask The Toddfather)
+// ============================================================================
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  role      String
+  content   String
+  context   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("chat_messages")
+}
+
+// ============================================================================
+// SUBSCRIPTIONS (Stripe)
+// ============================================================================
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  userId               String   @map("user_id")
+  stripeCustomerId     String   @unique @map("stripe_customer_id")
+  stripeSubscriptionId String   @unique @map("stripe_subscription_id")
+  stripePriceId        String   @map("stripe_price_id")
+  status               String
+  currentPeriodEnd     DateTime @map("current_period_end")
+  cancelAtPeriodEnd    Boolean  @default(false) @map("cancel_at_period_end")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+// ============================================================================
+// WORKING MODELS
+// ============================================================================
+
+model WorkingModel {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  category    String
+  inputSchema Json     @map("input_schema")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  runs ModelRun[]
+
+  @@map("working_models")
+}
+
+model ModelRun {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  modelId   String   @map("model_id")
+  inputs    Json
+  outputs   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  model WorkingModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([modelId])
+  @@map("model_runs")
+}

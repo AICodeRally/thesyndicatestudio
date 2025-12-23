@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Transpile @rally/auth package (local file dependency)
+  transpilePackages: ["@rally/auth"],
 };
 
 export default nextConfig;
