@@ -133,7 +133,7 @@ ${context?.collectionTitle ? `\n\nCurrent Context:\nThe user is viewing Collecti
       messages,
       system: enhancedSystemPrompt,
       temperature: 0.7,
-      maxTokens: 1500,
+      maxSteps: 5,
       onFinish: async ({ text }) => {
         // Save assistant message to database
         await prisma.chatMessage.create({
