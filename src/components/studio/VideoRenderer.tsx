@@ -34,12 +34,9 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
   }, [videoId, status])
 
   const loadAssets = async () => {
+    // Load avatars
     try {
-      const [avatarsRes, voicesRes] = await Promise.all([
-        fetch('/api/studio/avatars'),
-        fetch('/api/studio/voices'),
-      ])
-
+      const avatarsRes = await fetch('/api/studio/avatars')
       if (avatarsRes.ok) {
         const data = await avatarsRes.json()
         setAvatars(data.avatars || [])
@@ -51,13 +48,22 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
           setSelectedAvatar('default')
         }
       }
+    } catch (error) {
+      console.error('Failed to load avatars:', error)
+      // Set default even on error so button works
+      setSelectedAvatar('default')
+    }
 
+    // Load voices (don't block on failure)
+    try {
+      const voicesRes = await fetch('/api/studio/voices')
       if (voicesRes.ok) {
         const data = await voicesRes.json()
         setVoices(data.voices || [])
       }
     } catch (error) {
-      console.error('Failed to load assets:', error)
+      console.error('Failed to load voices:', error)
+      // Voice failure is non-critical - hardcoded voices will work
     }
   }
 
