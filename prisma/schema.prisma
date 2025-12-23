@@ -486,3 +486,77 @@ model ModelRun {
   @@map("model_runs")
   @@schema("thetoddfather")
 }
+
+// ============================================================================
+// SPM CONTENT MODELS (Admin CRUD)
+// ============================================================================
+
+model GlossaryTerm {
+  id           String   @id @default(cuid())
+  term         String   @unique
+  definition   String   @db.Text
+  category     String
+  aliases      String[]
+  relatedTerms String[] @map("related_terms")
+  examples     String?  @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@map("glossary_terms")
+  @@schema("thetoddfather")
+}
+
+model VendorScorecard {
+  id                    String   @id @default(cuid())
+  vendorName            String   @unique @map("vendor_name")
+  slug                  String   @unique
+  overallRating         Float    @map("overall_rating")
+  bestFor               String[]  @map("best_for")
+  worstFor              String[]  @map("worst_for")
+  implementationReality String   @db.Text @map("implementation_reality")
+  gotchas               String[]
+  scores                Json
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@map("vendor_scorecards")
+  @@schema("thetoddfather")
+}
+
+model Benchmark {
+  id          String   @id @default(cuid())
+  type        String
+  title       String
+  description String   @db.Text
+  data        Json
+  insights    String[]
+  category    String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@index([category])
+  @@map("benchmarks")
+  @@schema("thetoddfather")
+}
+
+model ComponentCard {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  slug         String   @unique
+  category     String
+  description  String   @db.Text
+  bestFor      String[] @map("best_for")
+  gotchas      String[]
+  examples     String[]
+  relatedCards String[] @map("related_cards")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@index([slug])
+  @@map("component_cards")
+  @@schema("thetoddfather")
+}
