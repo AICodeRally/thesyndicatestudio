@@ -38,7 +38,7 @@ const counselItems = [
   {
     slug: 'where-ai-helps-hurts-spm',
     title: 'Where AI Helps (and Hurts) SPM',
-    description: 'The truth about AI in sales compensation. What works, what's hype, what breaks.',
+    description: 'The truth about AI in sales compensation. What works, what is hype, what breaks.',
     category: 'AI & Analytics',
     difficulty: 'Foundation',
   },
