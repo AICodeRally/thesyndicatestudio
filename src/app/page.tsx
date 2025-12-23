@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   NoirCard,
   NoirCardContent,
@@ -21,13 +22,26 @@ export default function Homepage() {
   return (
     <div className="w-full">
       {/* Hero Section - Category Ownership */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden vignette">
-        {/* Background: Noir aesthetic with crosshatch */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background: Toddfather Noir Image */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-spm-black via-spm-purple-dark/20 to-spm-black" />
-          <div className="absolute inset-0 crosshatch opacity-40" />
-          <div className="absolute inset-0 halftone opacity-10" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-spm-black/30 to-spm-black" />
+          {/* The Toddfather Noir Panel */}
+          <Image
+            src="/images/noir/toddfather_noir_panel_2_middle.png"
+            alt="The Toddfather"
+            fill
+            className="object-cover opacity-30"
+            priority
+            quality={90}
+          />
+
+          {/* Noir overlays for depth */}
+          <div className="absolute inset-0 bg-gradient-to-br from-spm-black/70 via-spm-purple-dark/40 to-spm-black/70" />
+          <div className="absolute inset-0 crosshatch opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-spm-black/50 via-transparent to-spm-black" />
+
+          {/* Vignette for edges */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(10,10,10,0.8)_100%)]" />
         </div>
 
         {/* Hero Content */}

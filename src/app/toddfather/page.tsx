@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   NoirCard,
   NoirCardContent,
@@ -15,10 +16,22 @@ export default function ToddFatherPage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="relative py-32 overflow-hidden vignette">
+      <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-spm-black via-spm-purple-dark/30 to-spm-black" />
-          <div className="absolute inset-0 crosshatch opacity-30" />
+          {/* The Toddfather Noir Panel - Pointing */}
+          <Image
+            src="/images/noir/toddfather_noir_panel_3_right.png"
+            alt="The Toddfather"
+            fill
+            className="object-cover opacity-25"
+            priority
+            quality={90}
+          />
+
+          {/* Noir overlays */}
+          <div className="absolute inset-0 bg-gradient-to-br from-spm-black/80 via-spm-purple-dark/40 to-spm-black/80" />
+          <div className="absolute inset-0 crosshatch opacity-25" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(10,10,10,0.7)_100%)]" />
         </div>
 
         <div className="relative z-10 container mx-auto px-6">
