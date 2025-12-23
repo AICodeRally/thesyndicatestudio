@@ -1,11 +1,22 @@
-import { NoirCard, NoirCardContent, NoirCardTitle, NoirCardDescription } from '@/components/spm/cards/NoirCard';
+import { NoirCard, NoirCardContent } from '@/components/spm/cards/NoirCard';
+import { prisma } from '@/lib/db';
 
 export const metadata = {
   title: 'SPM Glossary | Learn',
   description: 'The definitive dictionary of SPM terminology. No jargon, no vendor speak - just clear definitions.',
 };
 
-const glossaryTerms = [
+async function getGlossaryTerms() {
+  const terms = await prisma.glossaryTerm.findMany({
+    orderBy: { term: 'asc' },
+  });
+  return terms;
+}
+
+export default async function GlossaryPage() {
+  const glossaryTerms = await getGlossaryTerms();
+
+  const fallbackTerms = glossaryTerms.length === 0 ? [
   {
     term: 'Accelerator',
     definition: 'A payout multiplier that increases when performance exceeds a threshold. Commonly misunderstood as a revenue driver - actually a timing device that shapes when deals close, not which deals close.',
@@ -70,9 +81,10 @@ const glossaryTerms = [
     relatedTerms: ['Vendor', 'Integration', 'Data Pipeline'],
     example: 'Vendors: Xactly, CaptivateIQ, Spiff, Varicent, SAP, Anaplan.',
   },
-];
+] : [];
 
-export default function GlossaryPage() {
+  const displayTerms = glossaryTerms.length > 0 ? glossaryTerms : fallbackTerms;
+
   return (
     <div className="w-full">
       <section className="relative py-32 overflow-hidden">
@@ -109,7 +121,7 @@ export default function GlossaryPage() {
       {/* Glossary Terms */}
       <section className="py-20 container mx-auto px-6">
         <div className="max-w-4xl mx-auto space-y-6">
-          {glossaryTerms.map((item) => (
+          {displayTerms.map((item) => (
             <NoirCard key={item.term} variant="elevated" id={item.term[0].toUpperCase()}>
               <NoirCardContent className="p-8">
                 <div className="flex items-start justify-between mb-4">
