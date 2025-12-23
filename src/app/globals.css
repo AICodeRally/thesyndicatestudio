@@ -96,6 +96,21 @@ body {
     text-transform: uppercase;
   }
 
+  /* Responsive typography */
+  @media (max-width: 768px) {
+    .text-display {
+      font-size: 3rem;
+    }
+
+    .text-headline-lg {
+      font-size: 2rem;
+    }
+
+    .text-headline {
+      font-size: 1.5rem;
+    }
+  }
+
   .text-headline-lg {
     font-family: var(--font-headline);
     font-size: var(--font-size-headline-lg);
