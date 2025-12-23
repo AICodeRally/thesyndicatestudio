@@ -3,6 +3,8 @@ import { Playfair_Display, Cinzel, Lora, Geist_Mono } from "next/font/google"
 import { Toaster } from "sonner"
 import { SessionProvider } from "next-auth/react"
 import { SPMNavigation } from "@/components/spm/navigation/SPMNavigation"
+import { Analytics } from "@/components/Analytics"
+import { Suspense } from "react"
 import "./globals.css"
 
 const playfairDisplay = Playfair_Display({
@@ -146,6 +148,9 @@ export default function RootLayout({
             </div>
           </footer>
           <Toaster richColors position="bottom-right" />
+          <Suspense fallback={null}>
+            <Analytics />
+          </Suspense>
         </SessionProvider>
       </body>
     </html>
