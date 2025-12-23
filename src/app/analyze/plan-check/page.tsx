@@ -21,20 +21,27 @@ export default function PlanCheckPage() {
 
     setAnalyzing(true);
 
-    // Simulated analysis for now
-    setTimeout(() => {
-      setResults({
-        overallRisk: 'Medium',
-        score: 68,
-        findings: [
-          { type: 'warning', text: 'Accelerator cliff at 100% creates timing manipulation risk' },
-          { type: 'error', text: 'No documented change management process' },
-          { type: 'success', text: 'Clear quota allocation methodology' },
-          { type: 'warning', text: 'Split rules lack edge case handling' },
-        ],
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/analyze/plan-check', {
+        method: 'POST',
+        body: formData,
       });
+
+      if (res.ok) {
+        const analysis = await res.json();
+        setResults(analysis);
+      } else {
+        alert('Analysis failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Analysis error:', error);
+      alert('Analysis failed. Please try again.');
+    } finally {
       setAnalyzing(false);
-    }, 2000);
+    }
   };
 
   return (
