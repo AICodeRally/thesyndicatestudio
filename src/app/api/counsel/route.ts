@@ -13,9 +13,9 @@ export async function GET(request: Request) {
     const counsel = await prisma.counsel.findMany({
       where: {
         status: 'PUBLISHED',
-        ...(channel && { channelPrimary: channel }),
-        ...(difficulty && { difficulty }),
-        ...(type && { type }),
+        ...(channel && { channelPrimary: channel as any }),
+        ...(difficulty && { difficulty: difficulty as any }),
+        ...(type && { type: type as any }),
         ...(search && {
           OR: [
             { title: { contains: search } },
