@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   NoirCard,
   NoirCardContent,
@@ -23,25 +22,28 @@ export default function Homepage() {
     <div className="w-full">
       {/* Hero Section - Category Ownership */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background: Toddfather Noir Image */}
+        {/* Background: Pure Noir Aesthetic */}
         <div className="absolute inset-0 z-0">
-          {/* The Toddfather Noir Panel */}
-          <Image
-            src="/images/noir/toddfather_noir_panel_2_middle.png"
-            alt="The Toddfather"
-            fill
-            className="object-cover opacity-30"
-            priority
-            quality={90}
-          />
+          {/* Deep black base */}
+          <div className="absolute inset-0 bg-spm-black" />
 
-          {/* Noir overlays for depth */}
-          <div className="absolute inset-0 bg-gradient-to-br from-spm-black/70 via-spm-purple-dark/40 to-spm-black/70" />
-          <div className="absolute inset-0 crosshatch opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-spm-black/50 via-transparent to-spm-black" />
+          {/* Purple spotlight from top */}
+          <div className="absolute inset-0 bg-gradient-to-b from-spm-purple-dark/30 via-transparent to-spm-black" />
 
-          {/* Vignette for edges */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(10,10,10,0.8)_100%)]" />
+          {/* Diagonal purple accent */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-spm-purple-dark/10 to-transparent" />
+
+          {/* Crosshatch texture (woodcut effect) */}
+          <div className="absolute inset-0 crosshatch opacity-30" />
+
+          {/* Halftone dots */}
+          <div className="absolute inset-0 halftone opacity-15" />
+
+          {/* Dramatic vignette */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(10,10,10,0.6)_70%,rgba(10,10,10,0.95)_100%)]" />
+
+          {/* Bottom fade to black */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-spm-black" />
         </div>
 
         {/* Hero Content */}
