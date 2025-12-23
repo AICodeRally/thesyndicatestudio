@@ -83,8 +83,8 @@ export async function generateHeyGenVideo(options: HeyGenAvatarOptions) {
       },
     ],
     dimension: {
-      width: options.aspectRatio === '9:16' ? 1080 : options.aspectRatio === '1:1' ? 1080 : 1920,
-      height: options.aspectRatio === '9:16' ? 1920 : options.aspectRatio === '1:1' ? 1080 : 1080,
+      width: options.aspectRatio === '9:16' ? 720 : options.aspectRatio === '1:1' ? 720 : 1280,
+      height: options.aspectRatio === '9:16' ? 1280 : options.aspectRatio === '1:1' ? 720 : 720,
     },
     aspect_ratio: options.aspectRatio || '9:16',
   }
