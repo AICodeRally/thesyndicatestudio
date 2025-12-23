@@ -24,8 +24,8 @@ export async function GET(request: Request) {
         id: a.id,
         name: a.slug,
         imageUrl: a.url,
-        provider: a.metadataJson.provider || 'local',
-        providerId: a.metadataJson.providerId,
+        provider: a.metadataJson?.provider || 'local',
+        providerId: a.metadataJson?.providerId,
         createdAt: a.createdAt,
       })),
     })
