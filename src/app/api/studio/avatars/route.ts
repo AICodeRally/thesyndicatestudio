@@ -20,14 +20,17 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json({
-      avatars: avatars.map(a => ({
-        id: a.id,
-        name: a.slug,
-        imageUrl: a.url,
-        provider: a.metadataJson?.provider || 'local',
-        providerId: a.metadataJson?.providerId,
-        createdAt: a.createdAt,
-      })),
+      avatars: avatars.map(a => {
+        const metadata = a.metadataJson as any
+        return {
+          id: a.id,
+          name: a.slug,
+          imageUrl: a.url,
+          provider: metadata?.provider || 'local',
+          providerId: metadata?.providerId,
+          createdAt: a.createdAt,
+        }
+      }),
     })
   } catch (error) {
     console.error('Error fetching avatars:', error)
