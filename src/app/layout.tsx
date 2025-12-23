@@ -1,13 +1,28 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Playfair_Display, Cinzel, Lora, Geist_Mono } from "next/font/google"
 import { Toaster } from "sonner"
 import { RallySessionProvider } from "@rally/auth"
 import { SPMNavigation } from "@/components/spm/navigation/SPMNavigation"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
+})
+
+const cinzel = Cinzel({
+  variable: "--font-headline",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+})
+
+const lora = Lora({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 })
 
 const geistMono = Geist_Mono({
@@ -60,7 +75,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-spm-black`}
+        className={`${playfairDisplay.variable} ${cinzel.variable} ${lora.variable} ${geistMono.variable} antialiased min-h-screen bg-spm-black`}
       >
         <RallySessionProvider>
           <SPMNavigation />

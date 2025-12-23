@@ -46,12 +46,12 @@
   --color-spm-copper: var(--spm-copper);
   --color-spm-gold: var(--spm-gold);
 
-  /* Typography */
+  /* Typography - Godfather Style */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: "Bebas Neue", Impact, ui-sans-serif, system-ui, sans-serif;
-  --font-headline: Oswald, ui-sans-serif, system-ui, sans-serif;
-  --font-body: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --font-headline: "Cinzel", "Libre Baskerville", Georgia, serif;
+  --font-body: "Lora", Georgia, serif;
 
   /* Font sizes for noir aesthetic */
   --font-size-display: 5rem;
@@ -152,5 +152,69 @@ body {
   .halftone {
     background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     background-size: 4px 4px;
+  }
+
+  /* Woodcut crosshatch shading (like Toddfather images) */
+  .crosshatch {
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(124, 58, 237, 0.03) 2px,
+        rgba(124, 58, 237, 0.03) 4px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 2px,
+        rgba(124, 58, 237, 0.03) 2px,
+        rgba(124, 58, 237, 0.03) 4px
+      );
+  }
+
+  /* Noir vignette effect */
+  .vignette {
+    position: relative;
+  }
+
+  .vignette::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      transparent 30%,
+      rgba(10, 10, 10, 0.4) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Aged paper texture */
+  .aged-paper {
+    background-color: var(--spm-paper);
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  /* Ink splatter accent */
+  .ink-splatter {
+    position: relative;
+  }
+
+  .ink-splatter::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(
+      circle,
+      rgba(124, 58, 237, 0.1) 0%,
+      transparent 70%
+    );
+    filter: blur(20px);
+    pointer-events: none;
   }
 }

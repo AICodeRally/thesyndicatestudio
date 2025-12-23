@@ -5,17 +5,29 @@ import {
   NoirCardTitle,
   NoirCardDescription,
 } from '@/components/spm/cards/NoirCard';
+import {
+  LearnIcon,
+  AnalyzeIcon,
+  BenchmarksIcon,
+  VendorsIcon,
+  CommunityIcon,
+  ServicesIcon,
+  UploadIcon,
+  LibraryIcon,
+  ScorecardIcon,
+} from '@/components/spm/icons/NoirIcons';
 
 export default function Homepage() {
   return (
     <div className="w-full">
       {/* Hero Section - Category Ownership */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background: Noir aesthetic */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden vignette">
+        {/* Background: Noir aesthetic with crosshatch */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-spm-black via-spm-purple-dark/20 to-spm-black" />
-          <div className="absolute inset-0 halftone opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-spm-black/50 to-spm-black" />
+          <div className="absolute inset-0 crosshatch opacity-40" />
+          <div className="absolute inset-0 halftone opacity-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-spm-black/30 to-spm-black" />
         </div>
 
         {/* Hero Content */}
@@ -82,10 +94,8 @@ export default function Homepage() {
           {/* Tile 1 */}
           <NoirCard variant="interactive" hover>
             <NoirCardContent className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-spm-purple/20 rounded-full">
-                <svg className="w-8 h-8 text-spm-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
+              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                <UploadIcon className="w-16 h-16 text-spm-purple" />
               </div>
               <NoirCardTitle>Upload & Diagnose</NoirCardTitle>
               <NoirCardDescription>
@@ -100,10 +110,8 @@ export default function Homepage() {
           {/* Tile 2 */}
           <NoirCard variant="interactive" hover>
             <NoirCardContent className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-spm-purple/20 rounded-full">
-                <svg className="w-8 h-8 text-spm-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                <LibraryIcon className="w-16 h-16 text-spm-purple" />
               </div>
               <NoirCardTitle>SPM Component Cards</NoirCardTitle>
               <NoirCardDescription>
@@ -118,10 +126,8 @@ export default function Homepage() {
           {/* Tile 3 */}
           <NoirCard variant="interactive" hover>
             <NoirCardContent className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-spm-purple/20 rounded-full">
-                <svg className="w-8 h-8 text-spm-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                </svg>
+              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                <ScorecardIcon className="w-16 h-16 text-spm-purple" />
               </div>
               <NoirCardTitle>Vendor Scorecards</NoirCardTitle>
               <NoirCardDescription>
@@ -146,24 +152,77 @@ export default function Homepage() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { title: 'Learn', desc: 'Glossary, guides, component cards', icon: '📚', href: '/learn' },
-              { title: 'Analyze', desc: 'Plan QA, risk scoring, simulators', icon: '🔍', href: '/analyze' },
-              { title: 'Benchmarks', desc: 'Curves, quota patterns, governance', icon: '📊', href: '/benchmarks' },
-              { title: 'Vendors', desc: 'Scorecards, implementation reality', icon: '⚙️', href: '/vendors' },
-              { title: 'Community', desc: 'Syndicate, office hours, newsletter', icon: '🤝', href: '/syndicate' },
-              { title: 'Services', desc: 'Assessment → redesign → governance', icon: '🎯', href: '/services' },
-            ].map((item) => (
-              <Link key={item.title} href={item.href}>
-                <NoirCard variant="interactive" hover className="h-full">
-                  <NoirCardContent className="p-8 text-center">
-                    <div className="text-6xl mb-6">{item.icon}</div>
-                    <NoirCardTitle>{item.title}</NoirCardTitle>
-                    <NoirCardDescription>{item.desc}</NoirCardDescription>
-                  </NoirCardContent>
-                </NoirCard>
-              </Link>
-            ))}
+            <Link href="/learn">
+              <NoirCard variant="interactive" hover className="h-full">
+                <NoirCardContent className="p-8 text-center">
+                  <div className="mb-6 flex items-center justify-center">
+                    <LearnIcon className="w-20 h-20 text-spm-purple" />
+                  </div>
+                  <NoirCardTitle>Learn</NoirCardTitle>
+                  <NoirCardDescription>Glossary, guides, component cards</NoirCardDescription>
+                </NoirCardContent>
+              </NoirCard>
+            </Link>
+
+            <Link href="/analyze">
+              <NoirCard variant="interactive" hover className="h-full">
+                <NoirCardContent className="p-8 text-center">
+                  <div className="mb-6 flex items-center justify-center">
+                    <AnalyzeIcon className="w-20 h-20 text-spm-purple" />
+                  </div>
+                  <NoirCardTitle>Analyze</NoirCardTitle>
+                  <NoirCardDescription>Plan QA, risk scoring, simulators</NoirCardDescription>
+                </NoirCardContent>
+              </NoirCard>
+            </Link>
+
+            <Link href="/benchmarks">
+              <NoirCard variant="interactive" hover className="h-full">
+                <NoirCardContent className="p-8 text-center">
+                  <div className="mb-6 flex items-center justify-center">
+                    <BenchmarksIcon className="w-20 h-20 text-spm-purple" />
+                  </div>
+                  <NoirCardTitle>Benchmarks</NoirCardTitle>
+                  <NoirCardDescription>Curves, quota patterns, governance</NoirCardDescription>
+                </NoirCardContent>
+              </NoirCard>
+            </Link>
+
+            <Link href="/vendors">
+              <NoirCard variant="interactive" hover className="h-full">
+                <NoirCardContent className="p-8 text-center">
+                  <div className="mb-6 flex items-center justify-center">
+                    <VendorsIcon className="w-20 h-20 text-spm-purple" />
+                  </div>
+                  <NoirCardTitle>Vendors</NoirCardTitle>
+                  <NoirCardDescription>Scorecards, implementation reality</NoirCardDescription>
+                </NoirCardContent>
+              </NoirCard>
+            </Link>
+
+            <Link href="/syndicate">
+              <NoirCard variant="interactive" hover className="h-full">
+                <NoirCardContent className="p-8 text-center">
+                  <div className="mb-6 flex items-center justify-center">
+                    <CommunityIcon className="w-20 h-20 text-spm-purple" />
+                  </div>
+                  <NoirCardTitle>Community</NoirCardTitle>
+                  <NoirCardDescription>Syndicate, office hours, newsletter</NoirCardDescription>
+                </NoirCardContent>
+              </NoirCard>
+            </Link>
+
+            <Link href="/services">
+              <NoirCard variant="interactive" hover className="h-full">
+                <NoirCardContent className="p-8 text-center">
+                  <div className="mb-6 flex items-center justify-center">
+                    <ServicesIcon className="w-20 h-20 text-spm-purple" />
+                  </div>
+                  <NoirCardTitle>Services</NoirCardTitle>
+                  <NoirCardDescription>Assessment → redesign → governance</NoirCardDescription>
+                </NoirCardContent>
+              </NoirCard>
+            </Link>
           </div>
         </div>
       </section>
