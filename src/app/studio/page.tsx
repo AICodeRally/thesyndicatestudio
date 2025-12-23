@@ -44,6 +44,12 @@ export default async function StudioPage() {
             </h1>
             <div className="flex items-center gap-3">
               <Link
+                href="/studio/content"
+                className="px-4 py-2 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg text-sm font-semibold hover:bg-purple-600 hover:text-white transition-colors"
+              >
+                Content
+              </Link>
+              <Link
                 href="/studio/library"
                 className="px-4 py-2 border-2 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg text-sm font-semibold hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
               >
