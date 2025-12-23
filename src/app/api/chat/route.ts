@@ -98,7 +98,7 @@ ${context?.collectionTitle ? `\n\nCurrent Context:\nThe user is viewing Collecti
 
       try {
         // Use local LLM for response
-        const fullPrompt = `${enhancedSystemPrompt}\n\n${messages.map(m => `${m.role}: ${m.content}`).join('\n\n')}`
+        const fullPrompt = `${enhancedSystemPrompt}\n\n${messages.map((m: any) => `${m.role}: ${m.content}`).join('\n\n')}`
 
         const localResponse = await callLocalLLM(fullPrompt, {
           temperature: 0.7,
