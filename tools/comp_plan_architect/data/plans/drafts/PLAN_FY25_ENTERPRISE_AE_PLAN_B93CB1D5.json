@@ -1,0 +1,95 @@
+{
+  "plan_id": "PLAN_FY25_ENTERPRISE_AE_PLAN_B93CB1D5",
+  "metadata": {
+    "name": "FY25 Enterprise AE Plan",
+    "effective_date": "2025-01-01",
+    "end_date": "2025-12-31",
+    "status": "draft",
+    "version": "1.0",
+    "author": "todd@bluehorizons.com",
+    "reviewers": [],
+    "approval_date": null,
+    "created_date": "2025-11-20T12:13:25.329756",
+    "last_modified": "2025-11-20T12:13:25.329761",
+    "description": "Standard compensation plan for Enterprise Account Executives",
+    "tags": []
+  },
+  "sections": [
+    {
+      "section_num": "1",
+      "title": "Overview",
+      "component_ids": [
+        "OVERVIEW_STD_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "2",
+      "title": "Eligibility",
+      "component_ids": [
+        "ELIG_AE_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "3",
+      "title": "Measures",
+      "component_ids": [
+        "QUOTA_ANNUAL_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "4",
+      "title": "Rates",
+      "component_ids": [
+        "ACCEL_100_001",
+        "RATE_TIER_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "5",
+      "title": "Crediting",
+      "component_ids": [
+        "CREDIT_FULL_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "6",
+      "title": "Payment Terms",
+      "component_ids": [
+        "PAY_MONTHLY_001",
+        "CLAWBACK_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "7",
+      "title": "Governance",
+      "component_ids": [
+        "GOV_DISPUTES_001",
+        "GOV_CHANGES_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    },
+    {
+      "section_num": "8",
+      "title": "Definitions",
+      "component_ids": [
+        "DEF_BOOKINGS_001",
+        "DEF_TERRITORY_001"
+      ],
+      "custom_text": null,
+      "subsections": []
+    }
+  ]
+}

@@ -1,0 +1,1284 @@
+{
+  "OVERVIEW_STD_001": {
+    "component_id": "OVERVIEW_STD_001",
+    "category": "Overview",
+    "name": "Standard Plan Overview",
+    "version": "1.0",
+    "policy_text": {
+      "short": "This document outlines the compensation structure for [ROLE].",
+      "detailed": "This compensation plan document outlines the structure, eligibility, measures,\nand payment terms for [ROLE] positions. This plan is effective [START_DATE] through [END_DATE]\nand supersedes all prior compensation arrangements.",
+      "legal": "This plan may be modified or terminated at any time at the company's sole discretion."
+    },
+    "subcategory": "Standard",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373452",
+    "last_modified": "2025-11-20T11:53:38.373458",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech",
+        "Services"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise",
+        "SMB"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "overview",
+        "intro",
+        "standard"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 0,
+      "complexity": 1,
+      "compliance_risk": 0,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "ELIG_SDR_001": {
+    "component_id": "ELIG_SDR_001",
+    "category": "Eligibility",
+    "name": "SDR Eligibility - Standard",
+    "version": "2.1",
+    "policy_text": {
+      "short": "Must be in active SDR role for 90+ days",
+      "detailed": "Employee must hold an active Sales Development Representative (SDR) position\nand have completed at least 90 days of employment. Part-time employees and contractors are not eligible.\nEmployees on performance improvement plans are not eligible for incentive compensation.",
+      "legal": "Eligibility is contingent upon good standing employment status per company policy."
+    },
+    "subcategory": "Role-Based",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373468",
+    "last_modified": "2025-11-20T11:53:38.373469",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "New Hire",
+        "Standard"
+      ],
+      "compliance_flags": [
+        "FLSA_exempt"
+      ],
+      "typical_pairings": [
+        "MEASURE_MEETINGS_001",
+        "MEASURE_OPPS_001"
+      ],
+      "tags": [
+        "eligibility",
+        "SDR",
+        "tenure"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "territory_assignment"
+      ],
+      "conflicts_with": [
+        "contractor_terms"
+      ],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 1,
+      "complexity": 2,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "ELIG_AE_001": {
+    "component_id": "ELIG_AE_001",
+    "category": "Eligibility",
+    "name": "Account Executive Eligibility",
+    "version": "2.0",
+    "policy_text": {
+      "short": "Active AE with assigned quota and territory",
+      "detailed": "Employee must hold an Account Executive position with an assigned annual quota\nand defined territory. Must be in good standing with no active performance improvement plans.\nEligibility begins on the first day of the month following assignment of quota.",
+      "legal": "Plan participation requires signed offer letter or plan acceptance form."
+    },
+    "subcategory": "Role-Based",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373474",
+    "last_modified": "2025-11-20T11:53:38.373475",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech",
+        "Enterprise"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise"
+      ],
+      "compliance_flags": [
+        "FLSA_exempt",
+        "SOX_compliant"
+      ],
+      "typical_pairings": [
+        "QUOTA_ANNUAL_001",
+        "RATE_TIER_001"
+      ],
+      "tags": [
+        "eligibility",
+        "AE",
+        "quota"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "quota_assignment",
+        "territory_assignment"
+      ],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": [
+        "RAMP_PERIOD_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 2,
+      "complexity": 3,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "MEASURE_MEETINGS_001": {
+    "component_id": "MEASURE_MEETINGS_001",
+    "category": "Measures",
+    "name": "Qualified Meetings Booked",
+    "version": "1.5",
+    "policy_text": {
+      "short": "Credit for qualified meetings booked with target accounts",
+      "detailed": "Credit is earned for each qualified meeting booked that meets the following criteria:\n- Meeting scheduled with decision-maker or influencer\n- Prospect meets ICP (Ideal Customer Profile) criteria\n- Meeting confirmed by prospect via calendar acceptance\n- AE attendance required for credit to be earned",
+      "legal": null
+    },
+    "subcategory": "Activity-Based",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373479",
+    "last_modified": "2025-11-20T11:53:38.373479",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "SDR",
+        "BDR"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "activity",
+        "meetings",
+        "SDR"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "ELIG_SDR_001"
+      ],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": [
+        "RATE_PER_MEETING_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 3,
+      "complexity": 4,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "MEASURE_OPPS_001": {
+    "component_id": "MEASURE_OPPS_001",
+    "category": "Measures",
+    "name": "Qualified Opportunities Created",
+    "version": "1.3",
+    "policy_text": {
+      "short": "Credit for qualified opportunities created in CRM",
+      "detailed": "Credit is earned when a qualified opportunity is created and progresses to Stage 2\n(Qualification) or beyond. Opportunity must meet minimum qualification criteria:\n- Budget confirmed ($X+ annual contract value)\n- Authority identified\n- Need documented\n- Timeline within 90 days",
+      "legal": null
+    },
+    "subcategory": "Pipeline",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373483",
+    "last_modified": "2025-11-20T11:53:38.373483",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "SDR",
+        "BDR",
+        "AE"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "pipeline",
+        "opportunities",
+        "BANT"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "CRM_integration"
+      ],
+      "conflicts_with": [
+        "MEASURE_MEETINGS_001"
+      ],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 4,
+      "complexity": 5,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "QUOTA_ANNUAL_001": {
+    "component_id": "QUOTA_ANNUAL_001",
+    "category": "Measures",
+    "name": "Annual Bookings Quota",
+    "version": "3.0",
+    "policy_text": {
+      "short": "Annual quota measured as new bookings (ACV)",
+      "detailed": "Quota is set annually and measured as Annual Contract Value (ACV) of new bookings.\nQuota is assigned individually based on territory, market segment, and historical performance.\nQuota is prorated for partial periods based on hire date or role changes.",
+      "legal": "Quota may be adjusted at company discretion with 30 days notice."
+    },
+    "subcategory": "Quota",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373487",
+    "last_modified": "2025-11-20T11:53:38.373487",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech",
+        "Enterprise"
+      ],
+      "plan_types": [
+        "AE",
+        "Enterprise"
+      ],
+      "compliance_flags": [
+        "SOX_compliant"
+      ],
+      "typical_pairings": [
+        "ELIG_AE_001",
+        "RATE_TIER_001"
+      ],
+      "tags": [
+        "quota",
+        "bookings",
+        "ACV"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "ELIG_AE_001"
+      ],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": [
+        "ACCEL_100_001",
+        "RAMP_PERIOD_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 8,
+      "complexity": 6,
+      "compliance_risk": 3,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "QUOTA_RETENTION_001": {
+    "component_id": "QUOTA_RETENTION_001",
+    "category": "Measures",
+    "name": "Net Revenue Retention Quota",
+    "version": "2.0",
+    "policy_text": {
+      "short": "Quota measured as Net Revenue Retention (NRR) percentage",
+      "detailed": "Quota is measured as Net Revenue Retention across assigned book of business.\nNRR includes expansion, contraction, and churn. Target NRR is typically 105-115% annually.\nMeasured on a rolling 12-month basis.",
+      "legal": null
+    },
+    "subcategory": "Quota",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373647",
+    "last_modified": "2025-11-20T11:53:38.373648",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS"
+      ],
+      "plan_types": [
+        "CSM",
+        "AM",
+        "Renewal"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "retention",
+        "NRR",
+        "renewals"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [
+        "QUOTA_ANNUAL_001"
+      ],
+      "warnings": [],
+      "recommended_with": [
+        "RATE_THRESHOLD_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 7,
+      "complexity": 7,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "RATE_FLAT_001": {
+    "component_id": "RATE_FLAT_001",
+    "category": "Rates",
+    "name": "Flat Rate per Unit",
+    "version": "1.0",
+    "policy_text": {
+      "short": "Fixed dollar amount per qualified unit",
+      "detailed": "Commission is paid as a fixed dollar amount for each qualified unit (meeting, opportunity, etc.).\nRate: $[AMOUNT] per unit. No tiers or accelerators apply.",
+      "legal": null
+    },
+    "subcategory": "Fixed",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373651",
+    "last_modified": "2025-11-20T11:53:38.373652",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "SDR",
+        "BDR"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "rate",
+        "flat",
+        "fixed",
+        "simple"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [
+        "RATE_TIER_001",
+        "RATE_PERCENT_001"
+      ],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 2,
+      "complexity": 1,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "RATE_TIER_001": {
+    "component_id": "RATE_TIER_001",
+    "category": "Rates",
+    "name": "Tiered Commission Rates",
+    "version": "2.5",
+    "policy_text": {
+      "short": "Commission rate increases with quota attainment tiers",
+      "detailed": "Commission rate varies based on quota attainment percentage:\n- 0-75%: 1.0% of bookings\n- 75-100%: 2.0% of bookings\n- 100-125%: 3.0% of bookings (accelerator)\n- 125%+: 4.0% of bookings (super accelerator)\n\nTiers are retroactive for the full period.",
+      "legal": null
+    },
+    "subcategory": "Tiered",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373655",
+    "last_modified": "2025-11-20T11:53:38.373655",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech",
+        "Enterprise"
+      ],
+      "plan_types": [
+        "AE",
+        "Enterprise"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [
+        "QUOTA_ANNUAL_001",
+        "ACCEL_100_001"
+      ],
+      "tags": [
+        "rate",
+        "tiered",
+        "accelerator"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "QUOTA_ANNUAL_001"
+      ],
+      "conflicts_with": [
+        "RATE_FLAT_001"
+      ],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 6,
+      "complexity": 5,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "ACCEL_100_001": {
+    "component_id": "ACCEL_100_001",
+    "category": "Rates",
+    "name": "100% Accelerator (1.5x rate)",
+    "version": "1.8",
+    "policy_text": {
+      "short": "Accelerated rate of 1.5x base commission above 100% quota attainment",
+      "detailed": "For quota attainment above 100%, commission rate accelerates to 1.5x the base rate.\nExample: If base rate is 2%, accelerated rate is 3% on all dollars above quota.\nAcceleration applies only to incremental attainment, not retroactively.",
+      "legal": "Accelerator subject to quarterly business review and may be capped."
+    },
+    "subcategory": "Accelerators",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373659",
+    "last_modified": "2025-11-20T11:53:38.373659",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "AE",
+        "Enterprise"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [
+        "QUOTA_ANNUAL_001",
+        "RATE_TIER_001"
+      ],
+      "tags": [
+        "accelerator",
+        "multiplier",
+        "quota"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "QUOTA_ANNUAL_001"
+      ],
+      "conflicts_with": [],
+      "warnings": [
+        "Consider setting cap at 150-200% to control financial exposure"
+      ],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 8,
+      "complexity": 4,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "CREDIT_FULL_001": {
+    "component_id": "CREDIT_FULL_001",
+    "category": "Crediting",
+    "name": "Full Credit to Primary Rep",
+    "version": "1.0",
+    "policy_text": {
+      "short": "100% credit assigned to primary rep on opportunity",
+      "detailed": "Full credit (100%) is assigned to the primary sales representative on the opportunity\nat time of booking. No split crediting. Primary rep is determined by opportunity owner in CRM.",
+      "legal": null
+    },
+    "subcategory": "Single",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373662",
+    "last_modified": "2025-11-20T11:53:38.373663",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "Standard",
+        "SMB"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "credit",
+        "single",
+        "simple"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [
+        "CREDIT_SPLIT_001"
+      ],
+      "warnings": [],
+      "recommended_with": [
+        "TERRITORY_ASSIGN_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 3,
+      "complexity": 1,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "CREDIT_SPLIT_001": {
+    "component_id": "CREDIT_SPLIT_001",
+    "category": "Crediting",
+    "name": "Split Credit Rules",
+    "version": "2.2",
+    "policy_text": {
+      "short": "Credit split between multiple reps based on defined rules",
+      "detailed": "Credit may be split between multiple representatives based on the following rules:\n- SDR: 10% credit for qualified opportunity creation\n- Primary AE: 70% credit for closing\n- Overlay/Specialist: 20% credit for technical win\nTotal must equal 100%. Splits defined at opportunity creation and cannot be changed without manager approval.",
+      "legal": null
+    },
+    "subcategory": "Split",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373666",
+    "last_modified": "2025-11-20T11:53:38.373667",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech",
+        "Enterprise"
+      ],
+      "plan_types": [
+        "Enterprise",
+        "Complex"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [
+        "TERRITORY_OVERLAY_001"
+      ],
+      "tags": [
+        "credit",
+        "split",
+        "overlay"
+      ]
+    },
+    "validation_rules": {
+      "requires": [
+        "TERRITORY_ASSIGN_001"
+      ],
+      "conflicts_with": [],
+      "warnings": [
+        "Split crediting increases operational complexity and should be used sparingly"
+      ],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 5,
+      "complexity": 8,
+      "compliance_risk": 3,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "PAY_MONTHLY_001": {
+    "component_id": "PAY_MONTHLY_001",
+    "category": "Payment Terms",
+    "name": "Monthly Payment Schedule",
+    "version": "1.5",
+    "policy_text": {
+      "short": "Commission paid monthly, 45 days after period end",
+      "detailed": "Commission is calculated and paid monthly. Payment is made approximately 45 days\nafter the end of each month to allow for deal validation, collections, and payroll processing.\nCommissions under $100 may be carried forward to the next payment period.",
+      "legal": "Payment subject to active employment status at time of payment."
+    },
+    "subcategory": "Frequency",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373670",
+    "last_modified": "2025-11-20T11:53:38.373670",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "payment",
+        "monthly",
+        "schedule"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [
+        "PAY_QUARTERLY_001"
+      ],
+      "warnings": [],
+      "recommended_with": [
+        "CLAWBACK_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 2,
+      "complexity": 2,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "PAY_QUARTERLY_001": {
+    "component_id": "PAY_QUARTERLY_001",
+    "category": "Payment Terms",
+    "name": "Quarterly Payment Schedule",
+    "version": "1.3",
+    "policy_text": {
+      "short": "Commission paid quarterly, 60 days after quarter end",
+      "detailed": "Commission is calculated quarterly and paid approximately 60 days after quarter end.\nThis allows for full quarter reconciliation, churn analysis, and collections validation.\nQuarterly payments may include true-up adjustments from prior periods.",
+      "legal": null
+    },
+    "subcategory": "Frequency",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373673",
+    "last_modified": "2025-11-20T11:53:38.373674",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Enterprise"
+      ],
+      "plan_types": [
+        "Enterprise",
+        "Executive"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "payment",
+        "quarterly",
+        "schedule"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [
+        "PAY_MONTHLY_001"
+      ],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 3,
+      "complexity": 3,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "CLAWBACK_001": {
+    "component_id": "CLAWBACK_001",
+    "category": "Payment Terms",
+    "name": "Standard Clawback Terms",
+    "version": "2.0",
+    "policy_text": {
+      "short": "Commission subject to clawback for cancellations within 90 days",
+      "detailed": "Commission is subject to clawback if the customer:\n- Cancels within 90 days of booking\n- Fails to make first payment\n- Contract is otherwise invalidated\n\nClawback amount is deducted from future commission payments. If employee terminates before\nclawback can be recovered, company may pursue recovery per employment agreement.",
+      "legal": "Clawback terms are enforceable per state employment law and signed plan agreement."
+    },
+    "subcategory": "Clawbacks",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373677",
+    "last_modified": "2025-11-20T11:53:38.373677",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise"
+      ],
+      "compliance_flags": [
+        "employment_law"
+      ],
+      "typical_pairings": [],
+      "tags": [
+        "clawback",
+        "cancellation",
+        "recovery"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [
+        "Ensure clawback terms comply with state employment laws"
+      ],
+      "recommended_with": [
+        "PAY_MONTHLY_001"
+      ]
+    },
+    "governance_impact": {
+      "financial_risk": 5,
+      "complexity": 6,
+      "compliance_risk": 7,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "GOV_DISPUTES_001": {
+    "component_id": "GOV_DISPUTES_001",
+    "category": "Governance",
+    "name": "Dispute Resolution Process",
+    "version": "1.0",
+    "policy_text": {
+      "short": "Disputes must be raised within 30 days via formal process",
+      "detailed": "Any disputes regarding commission calculations must be raised within 30 days of\npayment date. Submit disputes via the Compensation Portal with supporting documentation.\nDisputes will be reviewed by Compensation team and resolved within 15 business days.\nFinal determination rests with VP of Sales Operations.",
+      "legal": null
+    },
+    "subcategory": "Disputes",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373680",
+    "last_modified": "2025-11-20T11:53:38.373681",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "All"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "governance",
+        "disputes",
+        "process"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 2,
+      "complexity": 3,
+      "compliance_risk": 4,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "GOV_CHANGES_001": {
+    "component_id": "GOV_CHANGES_001",
+    "category": "Governance",
+    "name": "Plan Modification Terms",
+    "version": "1.5",
+    "policy_text": {
+      "short": "Plan may be modified with 30 days notice",
+      "detailed": "Company reserves the right to modify this compensation plan at any time.\nMaterial changes will be communicated with at least 30 days advance notice.\nChanges include quota adjustments, rate changes, measure modifications, etc.\nContinued employment constitutes acceptance of plan changes.",
+      "legal": "This plan does not constitute an employment contract and may be modified at company discretion."
+    },
+    "subcategory": "Plan Changes",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373684",
+    "last_modified": "2025-11-20T11:53:38.373684",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "All"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise"
+      ],
+      "compliance_flags": [
+        "employment_law"
+      ],
+      "typical_pairings": [],
+      "tags": [
+        "governance",
+        "changes",
+        "modifications"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 3,
+      "complexity": 2,
+      "compliance_risk": 8,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "RAMP_PERIOD_001": {
+    "component_id": "RAMP_PERIOD_001",
+    "category": "Governance",
+    "name": "New Hire Ramp Period (90 days)",
+    "version": "1.2",
+    "policy_text": {
+      "short": "Reduced quota for first 90 days, full quota thereafter",
+      "detailed": "New hires receive ramped quota for first 90 days:\n- Month 1: 25% of full quota\n- Month 2: 50% of full quota\n- Month 3: 75% of full quota\n- Month 4+: 100% of full quota\n\nCommission rates remain standard throughout ramp. Quota proration does not extend beyond 90 days.",
+      "legal": null
+    },
+    "subcategory": "Ramps",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373687",
+    "last_modified": "2025-11-20T11:53:38.373688",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "New Hire",
+        "Standard"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [
+        "ELIG_AE_001",
+        "QUOTA_ANNUAL_001"
+      ],
+      "tags": [
+        "ramp",
+        "onboarding",
+        "new hire"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 4,
+      "complexity": 4,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "CAP_150_001": {
+    "component_id": "CAP_150_001",
+    "category": "Rates",
+    "name": "Commission Cap at 150% Quota",
+    "version": "1.1",
+    "policy_text": {
+      "short": "Maximum commission earned at 150% of quota attainment",
+      "detailed": "Commission is capped at 150% of quota attainment. No additional commission\nis earned beyond this threshold. This cap protects company from windfall deals and ensures\nbalanced territory management.",
+      "legal": null
+    },
+    "subcategory": "Caps",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373691",
+    "last_modified": "2025-11-20T11:53:38.373691",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "Standard",
+        "Capped"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "cap",
+        "ceiling",
+        "maximum"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [
+        "ACCEL_UNCAPPED_001"
+      ],
+      "warnings": [
+        "Caps may reduce motivation for top performers"
+      ],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": -5,
+      "complexity": 3,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "SPIF_Q4_001": {
+    "component_id": "SPIF_Q4_001",
+    "category": "Rates",
+    "name": "Q4 Accelerator SPIF",
+    "version": "1.0",
+    "policy_text": {
+      "short": "Additional 0.5% commission on all Q4 bookings",
+      "detailed": "Special Performance Incentive (SPIF) for Q4: Additional 0.5% commission\non all new bookings closed in Q4 (October 1 - December 31). This SPIF stacks on top of\nstandard commission rates and accelerators. Paid with January commission payment.",
+      "legal": "SPIF subject to cancellation at any time."
+    },
+    "subcategory": "SPIFs",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373694",
+    "last_modified": "2025-11-20T11:53:38.373695",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "Standard",
+        "Enterprise"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "SPIF",
+        "accelerator",
+        "Q4",
+        "temporary"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 6,
+      "complexity": 3,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "DEF_BOOKINGS_001": {
+    "component_id": "DEF_BOOKINGS_001",
+    "category": "Definitions",
+    "name": "Definition: Bookings",
+    "version": "1.0",
+    "policy_text": {
+      "short": "Bookings = Annual Contract Value (ACV) of signed deals",
+      "detailed": "Bookings are defined as the Annual Contract Value (ACV) of new contracts signed\nduring the measurement period. ACV includes:\n- Subscription fees (normalized to 12 months)\n- Committed professional services\n- EXCLUDES: One-time fees, usage overage, renewals\n\nBookings are recognized on the contract signature date, not implementation or go-live date.",
+      "legal": null
+    },
+    "subcategory": "Financial",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373697",
+    "last_modified": "2025-11-20T11:53:38.373698",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "SaaS",
+        "Tech"
+      ],
+      "plan_types": [
+        "All"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "definition",
+        "bookings",
+        "ACV"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 0,
+      "complexity": 2,
+      "compliance_risk": 1,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  },
+  "DEF_TERRITORY_001": {
+    "component_id": "DEF_TERRITORY_001",
+    "category": "Definitions",
+    "name": "Definition: Territory",
+    "version": "1.0",
+    "policy_text": {
+      "short": "Territory = Assigned accounts, geography, or market segment",
+      "detailed": "Territory is defined as the specific set of accounts, geographic region,\nor market segment assigned to a sales representative. Territory assignments are managed\nin Salesforce and may include:\n- Named accounts (Enterprise)\n- Geographic regions (SMB)\n- Industry verticals\n- Company size segments\n\nTerritory changes require VP Sales approval.",
+      "legal": null
+    },
+    "subcategory": "Operational",
+    "status": "active",
+    "created_date": "2025-11-20T11:53:38.373701",
+    "last_modified": "2025-11-20T11:53:38.373701",
+    "author": "system",
+    "metadata": {
+      "industry": [
+        "All"
+      ],
+      "plan_types": [
+        "All"
+      ],
+      "compliance_flags": [],
+      "typical_pairings": [],
+      "tags": [
+        "definition",
+        "territory",
+        "assignment"
+      ]
+    },
+    "validation_rules": {
+      "requires": [],
+      "conflicts_with": [],
+      "warnings": [],
+      "recommended_with": []
+    },
+    "governance_impact": {
+      "financial_risk": 0,
+      "complexity": 3,
+      "compliance_risk": 2,
+      "operational_risk": 0
+    },
+    "usage_stats": {
+      "times_used": 0,
+      "success_rate": 1.0,
+      "avg_admin_rating": 0.0,
+      "last_used": null
+    },
+    "calculations": null,
+    "examples": null,
+    "notes": null
+  }
+}
