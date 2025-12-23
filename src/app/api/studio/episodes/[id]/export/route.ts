@@ -79,8 +79,8 @@ export async function GET(
         other: episode.assets.filter(a => !['BROLL', 'THUMBNAIL'].includes(a.type)),
       },
       counsel: {
-        refs: episode.counselRefs || [],
-        count: episode.counselRefs?.length || 0,
+        refs: (episode.counselRefs as any) || [],
+        count: ((episode.counselRefs as any)?.length) || 0,
       },
       production: {
         readyForProduction: !!episode.canonicalScript && episode.cuts.length > 0,
