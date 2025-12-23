@@ -41,7 +41,7 @@ export async function GET(request: Request) {
       expires: expiresAt,
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV !== 'development',
       sameSite: 'lax',
     })
 
