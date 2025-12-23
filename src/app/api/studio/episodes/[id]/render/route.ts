@@ -26,10 +26,10 @@ export async function POST(
       where: { id },
       include: {
         canonicalScript: true,
-        cuts: cutId ? {
-          where: { id: cutId },
+        cuts: {
+          where: cutId ? { id: cutId } : undefined,
           include: { script: true },
-        } : undefined,
+        },
       },
     })
 
