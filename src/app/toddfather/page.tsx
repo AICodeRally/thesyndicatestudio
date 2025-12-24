@@ -87,7 +87,57 @@ export default function ToddFatherPage() {
             What The Toddfather Delivers
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <NoirCard variant="interactive" hover>
+              <NoirCardContent className="p-8">
+                <NoirCardTitle>Todd Takes</NoirCardTitle>
+                <NoirCardDescription className="mb-6">
+                  Weekly short-form video insights. Avatar + your voice. Surgical SPM takes:
+                  why accelerators break forecasting, what governance actually prevents, how AI
+                  exposes bad comp design.
+                </NoirCardDescription>
+                <Link
+                  href="/toddfather/todd-takes"
+                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
+                >
+                  Watch Todd Takes →
+                </Link>
+              </NoirCardContent>
+            </NoirCard>
+
+            <NoirCard variant="interactive" hover>
+              <NoirCardContent className="p-8">
+                <NoirCardTitle>Ask Todd Live</NoirCardTitle>
+                <NoirCardDescription className="mb-6">
+                  Monthly live Q&A with The Toddfather. Ask about comp design, governance,
+                  AI applications, or how to fix a broken plan. Unfiltered. Real answers.
+                  45–60 minutes.
+                </NoirCardDescription>
+                <Link
+                  href="/toddfather/ask-todd-live"
+                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
+                >
+                  Register for Ask Todd →
+                </Link>
+              </NoirCardContent>
+            </NoirCard>
+
+            <NoirCard variant="interactive" hover>
+              <NoirCardContent className="p-8">
+                <NoirCardTitle>Shorts</NoirCardTitle>
+                <NoirCardDescription className="mb-6">
+                  30–45 second clips from Todd Takes and Ask Todd Live. Punchline first.
+                  One sharp idea. Built for social, built for learning.
+                </NoirCardDescription>
+                <Link
+                  href="/toddfather/shorts"
+                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
+                >
+                  Browse Shorts →
+                </Link>
+              </NoirCardContent>
+            </NoirCard>
+
             <NoirCard variant="interactive" hover>
               <NoirCardContent className="p-8">
                 <NoirCardTitle>The Podcast</NoirCardTitle>
