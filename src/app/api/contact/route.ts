@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
+// Force dynamic to prevent build-time evaluation (AUTH_RESEND_KEY not available at build)
+export const dynamic = 'force-dynamic'
+
 const resend = new Resend(process.env.AUTH_RESEND_KEY)
 
 export async function POST(request: Request) {
