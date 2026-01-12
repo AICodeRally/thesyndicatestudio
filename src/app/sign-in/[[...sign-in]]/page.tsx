@@ -13,6 +13,8 @@ export default function SignInPage() {
           </p>
         </div>
         <SignIn
+          fallbackRedirectUrl="/studio"
+          signUpUrl="/sign-up"
           appearance={{
             elements: {
               rootBox: 'mx-auto',
