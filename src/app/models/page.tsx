@@ -1,11 +1,11 @@
 import { prisma } from '@/lib/db'
-import { auth } from '../../../auth'
+import { auth, getUserTier } from '@/lib/auth'
 import Link from 'next/link'
 import { UpgradePrompt } from '@/components/UpgradePrompt'
 import { PublicHeader } from '@/components/PublicHeader'
 
 export default async function ModelsPage() {
-  const session = await auth()
+  const { userId } = await auth()
 
   const models = await prisma.workingModel.findMany({
     orderBy: { createdAt: 'asc' },
@@ -13,15 +13,11 @@ export default async function ModelsPage() {
 
   // Get user tier if logged in
   let userTier = 'FREE'
-  if (session?.user?.id) {
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { tier: true },
-    })
-    userTier = user?.tier || 'FREE'
+  if (userId) {
+    userTier = await getUserTier(userId)
   }
 
-  const canUseModels = userTier === 'SPARCC' || userTier === 'ENTERPRISE'
+  const canUseModels = userTier === 'PRO' || userTier === 'ENTERPRISE'
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">

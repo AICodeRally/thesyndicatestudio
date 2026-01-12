@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 // GET all glossary terms
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const terms = await prisma.glossaryTerm.findMany({
       orderBy: { term: 'asc' },
@@ -22,9 +22,9 @@ export async function GET(request: Request) {
 // POST create new term
 export async function POST(request: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

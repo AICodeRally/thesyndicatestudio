@@ -1,17 +1,17 @@
-import { auth } from '@/auth'
+import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
 import { isAdminUser } from '@/lib/authz'
 
 export default async function AdminConsolePage() {
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session?.user?.id) {
-    redirect('/auth/signin')
+  if (!userId) {
+    redirect('/sign-in')
   }
 
-  const isAdmin = await isAdminUser(session.user.id)
+  const isAdmin = await isAdminUser(userId)
 
   if (!isAdmin) {
     redirect('/studio')

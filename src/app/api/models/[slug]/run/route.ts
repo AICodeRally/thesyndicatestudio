@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { auth, getUserTier } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 // Calculator functions for each model
@@ -115,9 +115,9 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -125,12 +125,9 @@ export async function POST(
     }
 
     // Check user tier
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { tier: true },
-    })
+    const userTier = await getUserTier(userId)
 
-    if (user?.tier !== 'SPARCC' && user?.tier !== 'ENTERPRISE') {
+    if (userTier !== 'PRO' && userTier !== 'ENTERPRISE') {
       return NextResponse.json(
         { error: 'Working Models require SPARCC subscription' },
         { status: 403 }
@@ -173,7 +170,7 @@ export async function POST(
     // Save run to history
     const modelRun = await prisma.modelRun.create({
       data: {
-        userId: session.user.id,
+        userId,
         modelId: model.id,
         inputs,
         outputs,

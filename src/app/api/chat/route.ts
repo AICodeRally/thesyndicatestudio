@@ -1,32 +1,29 @@
 import { streamText } from 'ai'
 import { gateway, getProviderOptions } from '@/lib/ai/gateway'
-import { auth } from '../../../../auth'
+import { auth, getUserTier } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { isLocalLLMAvailable, callLocalLLM } from '@/lib/ai/local'
 import { getChatContext } from '@/lib/rag/service'
 
 export async function POST(req: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return new Response('Unauthorized', { status: 401 })
     }
 
     const { messages, context } = await req.json()
 
     // Get user tier and message count
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { tier: true },
-    })
+    const userTier = await getUserTier(userId)
 
     const messageCount = await prisma.chatMessage.count({
-      where: { userId: session.user.id },
+      where: { userId },
     })
 
     // Enforce free tier limits (3 messages total)
-    if (user?.tier === 'FREE' && messageCount >= 3) {
+    if (userTier === 'FREE' && messageCount >= 3) {
       return new Response(
         JSON.stringify({
           error: 'MESSAGE_LIMIT_REACHED',
@@ -71,7 +68,7 @@ ${context?.collectionTitle ? `\n\nCurrent Context:\nThe user is viewing Collecti
     // Save user message to database
     await prisma.chatMessage.create({
       data: {
-        userId: session.user.id,
+        userId,
         role: 'user',
         content: messages[messages.length - 1].content,
         context: context || null,
@@ -107,7 +104,7 @@ ${context?.collectionTitle ? `\n\nCurrent Context:\nThe user is viewing Collecti
         // Save assistant message
         await prisma.chatMessage.create({
           data: {
-            userId: session.user.id,
+            userId,
             role: 'assistant',
             content: localResponse,
             context: context || null,
@@ -137,7 +134,7 @@ ${context?.collectionTitle ? `\n\nCurrent Context:\nThe user is viewing Collecti
         // Save assistant message to database
         await prisma.chatMessage.create({
           data: {
-            userId: session.user.id,
+            userId,
             role: 'assistant',
             content: text,
             context: context || null,

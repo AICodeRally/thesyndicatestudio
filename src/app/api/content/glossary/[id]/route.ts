@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { isAdminUser } from '@/lib/authz'
 
@@ -38,15 +38,15 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
-    if (!(await isAdminUser(session.user.id))) {
+    if (!(await isAdminUser(userId))) {
       return NextResponse.json(
         { error: 'Admin only' },
         { status: 403 }
@@ -85,15 +85,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
-    if (!(await isAdminUser(session.user.id))) {
+    if (!(await isAdminUser(userId))) {
       return NextResponse.json(
         { error: 'Admin only' },
         { status: 403 }

@@ -1,13 +1,13 @@
-import { auth } from '../../../auth'
+import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 
 export default async function StudioPage() {
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session?.user) {
-    redirect('/auth/signin')
+  if (!userId) {
+    redirect('/sign-in')
   }
 
   const episodes = await prisma.episode.findMany({

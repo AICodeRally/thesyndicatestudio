@@ -1,19 +1,21 @@
-import { auth } from "../../../auth"
+import { auth, getCurrentUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import Link from "next/link"
 import { AppNav } from "@/components/navigation/AppNav"
 
 export default async function VaultPage() {
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session?.user) {
-    redirect("/auth/signin")
+  if (!userId) {
+    redirect("/sign-in")
   }
+
+  const user = await getCurrentUser()
 
   // Fetch user's collections
   const collections = await prisma.vaultCollection.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
     orderBy: { updatedAt: 'desc' },
     include: {
       sections: {
@@ -35,7 +37,7 @@ export default async function VaultPage() {
 
   // Fetch user's saved Counsel
   const savedCounsel = await prisma.counselSave.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
     include: {
       counsel: {
         select: {
@@ -59,7 +61,7 @@ export default async function VaultPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <AppNav currentPath="/vault" userEmail={session.user.email || ""} />
+      <AppNav currentPath="/vault" userEmail={user?.email || ""} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

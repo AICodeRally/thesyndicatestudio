@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../auth'
+import { getCurrentUser } from '@/lib/auth'
 import Stripe from 'stripe'
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
 
-    if (!session?.user?.id) {
+    if (!user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -22,17 +22,19 @@ export async function POST(request: Request) {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
+    const baseUrl = process.env.NEXT_PUBLIC_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3005'
+
     const checkoutSession = await stripe.checkout.sessions.create({
-      customer_email: session.user.email!,
+      customer_email: user.email!,
       line_items: [{
         price: process.env.STRIPE_PRICE_ID_SPARCC,
         quantity: 1,
       }],
       mode: 'subscription',
-      success_url: `${process.env.NEXTAUTH_URL}/settings/billing?success=true`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/settings/billing?canceled=true`,
+      success_url: `${baseUrl}/settings/billing?success=true`,
+      cancel_url: `${baseUrl}/settings/billing?canceled=true`,
       metadata: {
-        userId: session.user.id,
+        userId: user.id,
       },
     })
 

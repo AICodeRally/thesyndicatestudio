@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { useUser } from '@clerk/nextjs'
 
 export default function VendorsAdminPage() {
   const [vendors, setVendors] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const { data: session } = useSession()
-  const isAdmin = session?.user?.tier === 'ENTERPRISE'
+  const { user } = useUser()
+  const isAdmin = user?.publicMetadata?.tier === 'ENTERPRISE'
 
   useEffect(() => {
     fetch('/api/content/vendors')

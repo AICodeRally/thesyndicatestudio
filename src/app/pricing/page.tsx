@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { auth } from '../../../auth'
+import { auth } from '@/lib/auth'
 
 export const metadata = {
   title: 'Pricing | Intelligent SPM',
@@ -19,8 +19,8 @@ const XIcon = () => (
 )
 
 export default async function PricingPage() {
-  const session = await auth()
-  const isLoggedIn = !!session?.user
+  const { userId } = await auth()
+  const isLoggedIn = !!userId
 
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
@@ -57,7 +57,7 @@ export default async function PricingPage() {
               </div>
 
               <Link
-                href={isLoggedIn ? '/vault' : '/auth/signin'}
+                href={isLoggedIn ? '/vault' : '/sign-in'}
                 className="block w-full px-6 py-3 border-2 border-purple-500/50 text-purple-400 rounded-lg font-semibold text-center hover:bg-purple-500/10 transition-colors mb-8"
               >
                 {isLoggedIn ? 'Go to Vault' : 'Get Started Free'}
@@ -141,7 +141,7 @@ export default async function PricingPage() {
               </div>
 
               <Link
-                href={isLoggedIn ? '/settings/billing' : '/auth/signin'}
+                href={isLoggedIn ? '/settings/billing' : '/sign-in'}
                 className="block w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg font-semibold text-center transition-colors mb-8"
               >
                 {isLoggedIn ? 'Upgrade Now' : 'Start Free, Upgrade Later'}
@@ -263,7 +263,7 @@ export default async function PricingPage() {
               Whether you're debugging a broken plan or building from scratch, the tools and knowledge are here.
             </p>
             <Link
-              href={isLoggedIn ? '/counsel' : '/auth/signin'}
+              href={isLoggedIn ? '/counsel' : '/sign-in'}
               className="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg font-semibold transition-colors"
             >
               {isLoggedIn ? 'Explore Counsel Library' : 'Get Started Free'}

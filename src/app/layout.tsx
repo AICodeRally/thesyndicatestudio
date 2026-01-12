@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Libre_Baskerville, DM_Sans, JetBrains_Mono } from "next/font/google"
 import { Toaster } from "sonner"
-import { SessionProvider } from "next-auth/react"
+import { ClerkProvider } from "@clerk/nextjs"
 import { SPMNavigation } from "@/components/spm/navigation/SPMNavigation"
 import { Analytics } from "@/components/Analytics"
 import { Suspense } from "react"
@@ -103,7 +103,7 @@ export default function RootLayout({
       <body
         className={`${libreBaskerville.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen bg-[#0A0A0F]`}
       >
-        <SessionProvider>
+        <ClerkProvider>
           <SPMNavigation />
           <main className="relative pt-16">
             <div className="relative z-10">{children}</div>
@@ -166,7 +166,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <Analytics />
           </Suspense>
-        </SessionProvider>
+        </ClerkProvider>
       </body>
     </html>
   )

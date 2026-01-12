@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { auth } from '../../../../auth'
+import { auth, getUserTier } from '@/lib/auth'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
@@ -13,7 +13,7 @@ export default async function CounselDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const session = await auth()
+  const { userId } = await auth()
 
   const counsel = await prisma.counsel.findUnique({
     where: { slug },
@@ -26,23 +26,17 @@ export default async function CounselDetailPage({
   // Check if user has saved this counsel and get tier
   let isSaved = false
   let userTier = 'FREE'
-  if (session?.user?.id) {
-    const [saved, user] = await Promise.all([
-      prisma.counselSave.findUnique({
-        where: {
-          userId_counselId: {
-            userId: session.user.id,
-            counselId: counsel.id,
-          },
+  if (userId) {
+    const saved = await prisma.counselSave.findUnique({
+      where: {
+        userId_counselId: {
+          userId,
+          counselId: counsel.id,
         },
-      }),
-      prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: { tier: true },
-      }),
-    ])
+      },
+    })
     isSaved = !!saved
-    userTier = user?.tier || 'FREE'
+    userTier = await getUserTier(userId)
   }
 
   return (
@@ -107,7 +101,7 @@ export default async function CounselDetailPage({
       </div>
 
       {/* Ask Toddfather Chat */}
-      {session?.user && (
+      {userId && (
         <CounselWithChat
           counselTitle={counsel.title}
           counselOneLiner={counsel.oneLiner}

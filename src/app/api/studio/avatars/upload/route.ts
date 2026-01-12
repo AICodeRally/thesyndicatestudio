@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../../auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { uploadAvatarToHeyGen } from '@/lib/video/heygen'
 import { writeFile } from 'fs/promises'
@@ -7,9 +7,9 @@ import { join } from 'path'
 
 export async function POST(request: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

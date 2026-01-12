@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../../../auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { generateText } from 'ai'
 import { gateway, getProviderOptions } from '@/lib/ai/gateway'
@@ -18,15 +18,15 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
-    if (!(await isAdminUser(session.user.id))) {
+    if (!(await isAdminUser(userId))) {
       return NextResponse.json(
         { error: 'Admin only' },
         { status: 403 }

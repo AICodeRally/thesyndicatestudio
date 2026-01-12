@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../../../auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { checkHeyGenVideoStatus } from '@/lib/video/heygen'
 import { put } from '@vercel/blob'
@@ -9,9 +9,9 @@ export async function GET(
   { params }: { params: Promise<{ videoId: string }> }
 ) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

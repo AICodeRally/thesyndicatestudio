@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 export async function POST(request: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const existing = await prisma.counselSave.findUnique({
       where: {
         userId_counselId: {
-          userId: session.user.id,
+          userId,
           counselId,
         },
       },
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     // Create save
     const counselSave = await prisma.counselSave.create({
       data: {
-        userId: session.user.id,
+        userId,
         counselId,
       },
     })
@@ -56,9 +56,9 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -70,7 +70,7 @@ export async function DELETE(request: Request) {
     await prisma.counselSave.delete({
       where: {
         userId_counselId: {
-          userId: session.user.id,
+          userId,
           counselId,
         },
       },

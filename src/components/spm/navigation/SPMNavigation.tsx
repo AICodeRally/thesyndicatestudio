@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -42,8 +42,15 @@ export function SPMNavigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [theme, setTheme] = useState<'luxury-noir' | 'industrial-ops'>('luxury-noir');
-  const { data: session } = useSession();
-  const isAdmin = session?.user?.tier === 'ENTERPRISE';
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { user } = useUser();
+
+  // Check admin status from user metadata
+  useEffect(() => {
+    if (user?.publicMetadata?.tier === 'ENTERPRISE') {
+      setIsAdmin(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

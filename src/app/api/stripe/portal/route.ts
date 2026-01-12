@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import Stripe from 'stripe'
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     // Get user's Stripe customer ID
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       include: {
         subscriptions: {
           take: 1,
@@ -43,9 +43,11 @@ export async function POST(request: Request) {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
+    const baseUrl = process.env.NEXT_PUBLIC_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3005'
+
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: subscription.stripeCustomerId,
-      return_url: `${process.env.NEXTAUTH_URL}/settings/billing`,
+      return_url: `${baseUrl}/settings/billing`,
     })
 
     return NextResponse.redirect(portalSession.url)

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { auth } from '../../../../../auth'
+import { auth } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 
@@ -9,16 +9,16 @@ export default async function CollectionDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session?.user?.id) {
-    redirect('/auth/signin')
+  if (!userId) {
+    redirect('/sign-in')
   }
 
   const collection = await prisma.vaultCollection.findUnique({
     where: {
       id,
-      userId: session.user.id,
+      userId,
     },
     include: {
       sections: {

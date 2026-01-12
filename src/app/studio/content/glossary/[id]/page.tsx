@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { useUser } from '@clerk/nextjs'
 
 export default function EditGlossaryTermPage() {
   const router = useRouter()
   const params = useParams()
-  const { data: session, status } = useSession()
-  const isAdmin = session?.user?.tier === 'ENTERPRISE'
+  const { user, isLoaded } = useUser()
+  const isAdmin = user?.publicMetadata?.tier === 'ENTERPRISE'
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -79,7 +79,7 @@ export default function EditGlossaryTermPage() {
     }
   }
 
-  if (status === 'loading' || loading) {
+  if (!isLoaded || loading) {
     return (
       <div className="studio-shell min-h-screen flex items-center justify-center">
         <div className="text-[color:var(--studio-text-muted)]">Loading...</div>
@@ -87,7 +87,7 @@ export default function EditGlossaryTermPage() {
     )
   }
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <div className="studio-shell min-h-screen flex items-center justify-center">
         <div className="studio-card p-6 text-center">

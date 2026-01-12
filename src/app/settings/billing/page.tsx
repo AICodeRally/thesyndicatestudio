@@ -1,17 +1,19 @@
-import { auth } from '../../../../auth'
+import { auth, getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
+import { SignOutButton } from '@clerk/nextjs'
 
 export default async function BillingPage() {
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session?.user?.id) {
-    redirect('/auth/signin')
+  if (!userId) {
+    redirect('/sign-in')
   }
 
+  const currentUser = await getCurrentUser()
   const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: userId },
     include: {
       subscriptions: {
         orderBy: { createdAt: 'desc' },
@@ -50,14 +52,13 @@ export default async function BillingPage() {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                {session.user.email}
+                {currentUser?.email}
               </span>
-              <Link
-                href="/api/auth/signout"
-                className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
-              >
-                Sign Out
-              </Link>
+              <SignOutButton>
+                <button className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">
+                  Sign Out
+                </button>
+              </SignOutButton>
             </div>
           </div>
         </div>

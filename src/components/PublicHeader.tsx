@@ -1,13 +1,15 @@
 import Link from 'next/link'
-import { auth } from '../../auth'
+import { auth, getCurrentUser } from '@/lib/auth'
+import { SignOutButton } from '@clerk/nextjs'
 
 interface PublicHeaderProps {
   currentPage?: 'counsel' | 'episodes' | 'models'
 }
 
 export async function PublicHeader({ currentPage }: PublicHeaderProps) {
-  const session = await auth()
-  const isLoggedIn = !!session?.user
+  const { userId } = await auth()
+  const isLoggedIn = !!userId
+  const user = isLoggedIn ? await getCurrentUser() : null
 
   return (
     <header className="border-b border-[#2A2A3A] bg-[#0A0A0F]">
@@ -50,7 +52,7 @@ export async function PublicHeader({ currentPage }: PublicHeaderProps) {
             {isLoggedIn ? (
               <>
                 <span className="text-sm text-gray-500">
-                  {session.user?.email}
+                  {user?.email}
                 </span>
                 <Link
                   href="/vault"
@@ -58,23 +60,22 @@ export async function PublicHeader({ currentPage }: PublicHeaderProps) {
                 >
                   My Vault
                 </Link>
-                <Link
-                  href="/api/auth/signout"
-                  className="text-sm text-gray-500 hover:text-gray-100"
-                >
-                  Sign Out
-                </Link>
+                <SignOutButton>
+                  <button className="text-sm text-gray-500 hover:text-gray-100">
+                    Sign Out
+                  </button>
+                </SignOutButton>
               </>
             ) : (
               <>
                 <Link
-                  href="/auth/signin"
+                  href="/sign-in"
                   className="text-sm text-gray-500 hover:text-gray-100"
                 >
                   Sign In
                 </Link>
                 <Link
-                  href="/auth/signin"
+                  href="/sign-up"
                   className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg text-sm font-semibold transition-colors"
                 >
                   Get Started

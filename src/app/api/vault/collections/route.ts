@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     }
 
     const collections = await prisma.vaultCollection.findMany({
-      where: { userId: session.user.id },
+      where: { userId },
       orderBy: { updatedAt: 'desc' },
       include: {
         sections: {
@@ -46,9 +46,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 
     const collection = await prisma.vaultCollection.create({
       data: {
-        userId: session.user.id,
+        userId,
         title,
         description: description || null,
       },

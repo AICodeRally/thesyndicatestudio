@@ -40,7 +40,20 @@
       "Bash(pnpm studio:*)",
       "Bash(gh repo rename:*)",
       "Bash(git remote set-url:*)",
-      "Bash(gh repo view:*)"
+      "Bash(gh repo view:*)",
+      "Bash(pnpm run build:raw:*)",
+      "Bash(bash -c 'source scripts/load-openai-keychain.sh && echo \"\"Script sourced successfully, continuing...\"\"')",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)",
+      "WebFetch(domain:ai-sdk.dev)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm build:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:vercel.com)",
+      "Bash(pnpm remove:*)"
     ]
   }
 }

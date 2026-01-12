@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import { auth } from '../../../../../auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 export async function GET(request: Request) {
   try {
-    const session = await auth()
+    const { userId } = await auth()
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -17,13 +17,13 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '50')
 
     const messages = await prisma.chatMessage.findMany({
-      where: { userId: session.user.id },
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       take: limit,
     })
 
     const messageCount = await prisma.chatMessage.count({
-      where: { userId: session.user.id },
+      where: { userId },
     })
 
     return NextResponse.json({
