@@ -1,18 +1,8 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 export async function GET() {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     const episodes = await prisma.episode.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
@@ -35,15 +25,6 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     const { series, title, premise, publishDateTarget } = await request.json()
 
     if (!title || !premise) {

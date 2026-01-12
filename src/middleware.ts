@@ -3,10 +3,8 @@ import type { NextRequest } from 'next/server'
 
 // Routes that require authentication
 const protectedPaths = [
-  '/studio',
   '/vault',
   '/settings',
-  '/api/studio',
   '/api/vault',
   '/api/chat',
   '/api/counsel/save',

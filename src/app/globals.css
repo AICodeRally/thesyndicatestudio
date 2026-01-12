@@ -271,8 +271,21 @@ body {
 
   /* Studio landing utilities */
   .studio-shell {
-    background: var(--studio-bg);
-    color: var(--studio-text);
+    background: var(--studio-bg) !important;
+    color: #EEE9DF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  }
+
+  .studio-shell * {
+    color: inherit;
+  }
+
+  .studio-shell h1, .studio-shell h2, .studio-shell h3, .studio-shell h4 {
+    color: #EEE9DF !important;
+  }
+
+  .studio-shell p, .studio-shell span, .studio-shell a, .studio-shell label {
+    color: #B2A99A;
   }
 
   .studio-hero {

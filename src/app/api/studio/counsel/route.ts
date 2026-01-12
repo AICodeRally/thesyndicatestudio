@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+
 import { prisma } from '@/lib/db'
 import { isAdminUser } from '@/lib/authz'
 
@@ -15,7 +15,7 @@ function generateSlug(title: string): string {
 
 export async function GET() {
   try {
-    const { userId } = await auth()
+    
 
     if (!userId) {
       return NextResponse.json(
@@ -51,7 +51,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth()
+    
 
     if (!userId) {
       return NextResponse.json(

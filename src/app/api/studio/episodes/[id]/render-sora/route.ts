@@ -1,7 +1,18 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { readFile } from 'fs/promises'
+import path from 'path'
+
 import { prisma } from '@/lib/db'
-import { isAdminUser } from '@/lib/authz'
+
+// Load local image as Buffer with mime type
+async function loadImageFile(imagePath: string): Promise<{ buffer: Buffer; mimeType: string; filename: string }> {
+  const fullPath = path.join(process.cwd(), 'public', imagePath)
+  const buffer = await readFile(fullPath)
+  const ext = path.extname(imagePath).toLowerCase().slice(1)
+  const mimeType = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`
+  const filename = path.basename(imagePath)
+  return { buffer, mimeType, filename }
+}
 
 function getSize(aspectRatio: '16:9' | '9:16' | '1:1') {
   switch (aspectRatio) {
@@ -20,22 +31,6 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    if (!(await isAdminUser(userId))) {
-      return NextResponse.json(
-        { error: 'Admin only' },
-        { status: 403 }
-      )
-    }
-
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         { error: 'OPENAI_API_KEY not configured' },
@@ -51,6 +46,7 @@ export async function POST(
       seconds = '8', // Must be "4", "8", or "12"
       model = 'sora-2',
       promptOverride,
+      referenceImages = [], // Array of paths like '/images/noir/toddfather_noir_panel_1_left.png'
     } = body
 
     // Validate seconds is a valid duration
@@ -108,22 +104,65 @@ export async function POST(
       ? promptOverride.trim()
       : `Create a cinematic film noir video inspired by this script.\n\n${scriptText.substring(0, 1200)}\n\nStyle: high-contrast noir lighting, moody urban environments, dramatic shadows, stylish camera moves. Keep it abstract and atmospheric.`
 
-    // OpenAI Video API uses JSON, not FormData
-    const requestBody = {
-      prompt,
-      model,
-      size: getSize(aspectRatio),
-      seconds: durationStr, // Must be string: "4", "8", or "12"
-    }
+    let response: Response
 
-    const response = await fetch('https://api.openai.com/v1/videos', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    })
+    // If reference images provided, use multipart/form-data with input_reference
+    if (referenceImages && referenceImages.length > 0) {
+      try {
+        // Load the first reference image (Sora only supports one input_reference)
+        const { buffer, mimeType, filename } = await loadImageFile(referenceImages[0])
+
+        // Create FormData for multipart upload
+        const formData = new FormData()
+        formData.append('prompt', prompt)
+        formData.append('model', model)
+        formData.append('size', getSize(aspectRatio))
+        formData.append('seconds', durationStr)
+
+        // Add the reference image as input_reference
+        const blob = new Blob([buffer], { type: mimeType })
+        formData.append('input_reference', blob, filename)
+
+        response = await fetch('https://api.openai.com/v1/videos', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          },
+          body: formData,
+        })
+      } catch (imgError: any) {
+        console.warn('Failed to load reference image, falling back to text-only:', imgError.message)
+        // Fall back to JSON request without image
+        response = await fetch('https://api.openai.com/v1/videos', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt,
+            model,
+            size: getSize(aspectRatio),
+            seconds: durationStr,
+          }),
+        })
+      }
+    } else {
+      // No reference images - use JSON request
+      response = await fetch('https://api.openai.com/v1/videos', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          model,
+          size: getSize(aspectRatio),
+          seconds: durationStr,
+        }),
+      })
+    }
 
     if (!response.ok) {
       const errorText = await response.text()

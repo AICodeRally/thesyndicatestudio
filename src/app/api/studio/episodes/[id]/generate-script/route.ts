@@ -1,30 +1,14 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+
 import { prisma } from '@/lib/db'
 import { generateText } from 'ai'
 import { gateway, getProviderOptions } from '@/lib/ai/gateway'
-import { isAdminUser } from '@/lib/authz'
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-    if (!(await isAdminUser(userId))) {
-      return NextResponse.json(
-        { error: 'Admin only' },
-        { status: 403 }
-      )
-    }
-
     const { id } = await params
 
     const episode = await prisma.episode.findUnique({
@@ -45,23 +29,39 @@ export async function POST(
     })
 
     // Generate script with AI
-    const prompt = `Generate a video script for a YouTube video about Sales Performance Management (SPM).
+    const prompt = `Generate a video script for The Toddfather - a noir-styled SPM expert.
 
 Series: ${episode.series}
 Title: ${episode.title}
 Premise: ${episode.premise}
 
-Structure the script with these sections:
-1. **Hook** (15 seconds) - Grab attention immediately
-2. **Intro** (30 seconds) - Set context and preview
-3. **Body** (3-5 main points, 6-8 minutes total)
-4. **Summary** (1 minute) - Recap key takeaways
-5. **CTA** (15 seconds) - What to do next
+THE TODDFATHER CHARACTER:
+- 30 years in Sales Performance Management and AI
+- Direct, authoritative, no-nonsense delivery
+- Film noir aesthetic: desk lamp, rain on window, purple-black palette
+- Speaks like a seasoned operator briefing you late at night
+- Uses clear evidence-based frameworks
 
-Tone: Direct, authoritative, no-nonsense. Like a film noir detective explaining how things really work.
-Voice: "The Toddfather" - experienced SPM practitioner who's seen it all.
+FORMAT (60-75 seconds total, 9:16 vertical):
+Structure as SHOTS with timing, visuals, on-screen text, and voiceover (VO):
 
-Write ONLY the script content. No meta-commentary. Use clear section headers.`
+SHOT 1 (0:00-0:04): Lamp click-on intro
+SHOT 2 (0:04-0:12): Direct-to-camera credentials
+SHOT 3 (0:12-0:22): Desk inserts showing core concepts
+SHOT 4 (0:22-0:34): The problem with status quo
+SHOT 5 (0:34-0:52): The framework/solution reveal
+SHOT 6 (0:52-1:06): AI capabilities demo
+SHOT 7 (1:06-1:12): CTA
+
+For each shot include:
+- Visual: what we see
+- On-screen: text overlays
+- VO: exact voiceover script
+
+Also include a MASTER SORA PROMPT at the end for video generation.
+
+Tone: Premium, confident founder briefing - not gimmicky noir, but stylish authority.
+Write the complete production script with all shots.`
 
     const { text } = await generateText({
       model: gateway('openai/gpt-4o'),

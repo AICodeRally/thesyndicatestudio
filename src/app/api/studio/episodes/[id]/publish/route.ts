@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+
 import { prisma } from '@/lib/db'
 import { isAdminUser } from '@/lib/authz'
 
@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth()
+    
 
     if (!userId) {
       return NextResponse.json(

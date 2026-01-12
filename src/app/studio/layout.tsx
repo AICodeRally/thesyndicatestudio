@@ -6,7 +6,23 @@ export default function StudioLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <div className="studio-override">
+      <style>{`
+        .studio-override,
+        .studio-override * {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+          color: #EEE9DF;
+        }
+        .studio-override .text-\\[color\\:var\\(--studio-text-muted\\)\\] {
+          color: #B2A99A !important;
+        }
+        .studio-override a { color: #C7A36B; }
+        .studio-override button { color: inherit; }
+        .studio-override input, .studio-override textarea, .studio-override select {
+          color: #EEE9DF !important;
+          background: #1B1B24 !important;
+        }
+      `}</style>
       <SPMNavigation />
       <main className="relative pt-16 bg-[#0A0A0F] min-h-screen">
         <div className="relative z-10">{children}</div>
@@ -59,6 +75,6 @@ export default function StudioLayout({
           </div>
         </div>
       </footer>
-    </>
+    </div>
   )
 }

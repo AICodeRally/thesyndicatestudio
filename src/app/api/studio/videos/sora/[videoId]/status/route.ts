@@ -1,22 +1,14 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { writeFile, mkdir } from 'fs/promises'
+import path from 'path'
+
 import { prisma } from '@/lib/db'
-import { put } from '@vercel/blob'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ videoId: string }> }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         { error: 'OPENAI_API_KEY not configured' },
@@ -75,19 +67,20 @@ export async function GET(
 
         const buffer = Buffer.from(await download.arrayBuffer())
 
-        const blob = await put(
-          `videos/${asset.episodeId}/${asset.id}.mp4`,
-          buffer,
-          {
-            access: 'public',
-            contentType: 'video/mp4',
-          }
-        )
+        // Save to local public/videos directory
+        const videoDir = path.join(process.cwd(), 'public', 'videos', asset.episodeId)
+        await mkdir(videoDir, { recursive: true })
+
+        const videoPath = path.join(videoDir, `${asset.id}.mp4`)
+        await writeFile(videoPath, buffer)
+
+        // URL accessible via Next.js public folder
+        const localUrl = `/videos/${asset.episodeId}/${asset.id}.mp4`
 
         await prisma.asset.update({
           where: { id: asset.id },
           data: {
-            url: blob.url,
+            url: localUrl,
             status: 'COMPLETED',
           },
         })
@@ -95,7 +88,7 @@ export async function GET(
         return NextResponse.json({
           status: 'completed',
           assetId: asset.id,
-          finalUrl: blob.url,
+          finalUrl: localUrl,
           telemetry,
         })
       }
