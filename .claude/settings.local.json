@@ -53,7 +53,8 @@
       "Bash(pnpm build:*)",
       "Bash(gh api:*)",
       "WebFetch(domain:vercel.com)",
-      "Bash(pnpm remove:*)"
+      "Bash(pnpm remove:*)",
+      "Bash(dig:*)"
     ]
   }
 }
