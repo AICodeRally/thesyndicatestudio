@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '../../../../../auth'
 import { prisma } from '@/lib/db'
+import Stripe from 'stripe'
 
 export async function POST(request: Request) {
   try {
@@ -33,22 +34,21 @@ export async function POST(request: Request) {
       )
     }
 
-    // TODO: Replace with your Stripe portal code
-    // ============================================
-    // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-    //
-    // const portalSession = await stripe.billingPortal.sessions.create({
-    //   customer: subscription.stripeCustomerId,
-    //   return_url: `${process.env.NEXTAUTH_URL}/settings/billing`,
-    // })
-    //
-    // return NextResponse.redirect(portalSession.url)
-    // ============================================
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe not configured' },
+        { status: 500 }
+      )
+    }
 
-    // STUB: Return fake portal redirect
-    console.log('STUB: Stripe portal requested for customer:', subscription.stripeCustomerId)
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-    return NextResponse.redirect(new URL('/settings/billing?portal=stub', request.url))
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripeCustomerId,
+      return_url: `${process.env.NEXTAUTH_URL}/settings/billing`,
+    })
+
+    return NextResponse.redirect(portalSession.url)
 
   } catch (error) {
     console.error('Stripe portal error:', error)

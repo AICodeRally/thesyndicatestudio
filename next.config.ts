@@ -5,10 +5,7 @@ const nextConfig: NextConfig = {
     // Temporarily ignore build errors for deployment
     ignoreBuildErrors: true,
   },
-  eslint: {
-    // Ignore ESLint errors during build
-    ignoreDuringBuilds: true,
-  },
+  // Note: eslint config moved to eslint.config.mjs in Next.js 16+
 };
 
 export default nextConfig;

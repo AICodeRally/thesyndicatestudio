@@ -23,7 +23,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       ? [
           EmailProvider({
             apiKey: process.env.AUTH_RESEND_KEY,
-            from: "The Toddfather <noreply@thetoddfather.com>",
+            from: process.env.AUTH_EMAIL_FROM || "The Syndicate Studio <onboarding@resend.dev>",
           }),
         ]
       : []),

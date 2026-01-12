@@ -1,12 +1,13 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { NoirCard, NoirCardContent, NoirCardTitle } from '@/components/spm/cards/NoirCard';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function NewGlossaryTermPage() {
-  const router = useRouter();
-  const [saving, setSaving] = useState(false);
+  const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     term: '',
     definition: '',
@@ -14,11 +15,12 @@ export default function NewGlossaryTermPage() {
     aliases: '',
     relatedTerms: '',
     examples: '',
-  });
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
+    e.preventDefault()
+    setSaving(true)
+    setError('')
 
     try {
       const res = await fetch('/api/content/glossary', {
@@ -26,69 +28,72 @@ export default function NewGlossaryTermPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          aliases: formData.aliases.split(',').map(a => a.trim()).filter(Boolean),
-          relatedTerms: formData.relatedTerms.split(',').map(r => r.trim()).filter(Boolean),
+          aliases: formData.aliases.split(',').map((a) => a.trim()).filter(Boolean),
+          relatedTerms: formData.relatedTerms.split(',').map((r) => r.trim()).filter(Boolean),
         }),
-      });
+      })
 
       if (res.ok) {
-        router.push('/studio/content/glossary');
+        router.push('/studio/content/glossary')
       } else {
-        alert('Failed to create term');
+        setError('Failed to create term')
       }
     } catch (error) {
-      console.error('Error creating term:', error);
-      alert('Failed to create term');
+      console.error('Error creating term:', error)
+      setError('Failed to create term')
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  };
+  }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <h1 className="text-4xl font-headline text-white mb-8">
-        Add Glossary Term
-      </h1>
+    <div className="studio-shell min-h-screen">
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        <Link href="/studio/content/glossary" className="studio-tag">
+          Back to Glossary
+        </Link>
 
-      <NoirCard variant="elevated">
-        <NoirCardContent className="p-8">
+        <h1 className="mt-6 text-4xl font-serif">Add Glossary Term</h1>
+        <p className="mt-2 text-[color:var(--studio-text-muted)]">
+          Define the language the syndicate uses.
+        </p>
+
+        {error && (
+          <div className="mt-6 studio-card p-4 text-sm text-[color:var(--studio-accent-3)]">
+            {error}
+          </div>
+        )}
+
+        <div className="mt-8 studio-panel">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">
-                Term *
-              </label>
+              <label className="studio-label">Term</label>
               <input
-                type="text"
+                className="studio-input"
                 required
                 value={formData.term}
                 onChange={(e) => setFormData({ ...formData, term: e.target.value })}
-                className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors"
-                placeholder="e.g., Accelerator"
+                placeholder="Accelerator"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">
-                Definition *
-              </label>
+              <label className="studio-label">Definition</label>
               <textarea
+                className="studio-textarea"
                 required
-                rows={4}
                 value={formData.definition}
                 onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
-                className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors resize-none"
                 placeholder="Clear, concise definition..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">
-                Category *
-              </label>
+              <label className="studio-label">Category</label>
               <select
+                className="studio-select"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white focus:border-spm-purple outline-none transition-colors"
               >
                 <option value="Comp Design">Comp Design</option>
                 <option value="Admin">Admin</option>
@@ -99,63 +104,47 @@ export default function NewGlossaryTermPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">
-                Aliases (comma-separated)
-              </label>
+              <label className="studio-label">Aliases (comma-separated)</label>
               <input
-                type="text"
+                className="studio-input"
                 value={formData.aliases}
                 onChange={(e) => setFormData({ ...formData, aliases: e.target.value })}
-                className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors"
-                placeholder="e.g., Kicker, Multiplier, Uplift"
+                placeholder="Kicker, Multiplier, Uplift"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">
-                Related Terms (comma-separated)
-              </label>
+              <label className="studio-label">Related Terms (comma-separated)</label>
               <input
-                type="text"
+                className="studio-input"
                 value={formData.relatedTerms}
                 onChange={(e) => setFormData({ ...formData, relatedTerms: e.target.value })}
-                className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors"
-                placeholder="e.g., Quota, Payout Curve, Attainment"
+                placeholder="Quota, Payout Curve, Attainment"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">
-                Example (optional)
-              </label>
+              <label className="studio-label">Example</label>
               <textarea
+                className="studio-textarea"
                 rows={3}
                 value={formData.examples}
                 onChange={(e) => setFormData({ ...formData, examples: e.target.value })}
-                className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors resize-none"
                 placeholder="Concrete example of this term in use..."
               />
             </div>
 
-            <div className="flex gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 px-8 py-4 bg-spm-purple hover:bg-spm-purple-light text-white text-lg font-semibold rounded-lg transition-all hover:shadow-purple-glow disabled:opacity-50"
-              >
+            <div className="flex flex-col md:flex-row gap-4">
+              <button type="submit" disabled={saving} className="studio-cta">
                 {saving ? 'Creating...' : 'Create Term'}
               </button>
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="px-8 py-4 border-2 border-spm-purple-dark/30 text-gray-300 hover:text-white hover:border-spm-purple rounded-lg font-semibold transition-colors"
-              >
+              <button type="button" onClick={() => router.back()} className="studio-cta-ghost">
                 Cancel
               </button>
             </div>
           </form>
-        </NoirCardContent>
-      </NoirCard>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

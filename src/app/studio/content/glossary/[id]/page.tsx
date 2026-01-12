@@ -1,14 +1,18 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { NoirCard, NoirCardContent, NoirCardTitle } from '@/components/spm/cards/NoirCard';
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 export default function EditGlossaryTermPage() {
-  const router = useRouter();
-  const params = useParams();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const router = useRouter()
+  const params = useParams()
+  const { data: session, status } = useSession()
+  const isAdmin = session?.user?.tier === 'ENTERPRISE'
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     term: '',
     definition: '',
@@ -16,17 +20,17 @@ export default function EditGlossaryTermPage() {
     aliases: '',
     relatedTerms: '',
     examples: '',
-  });
+  })
 
   useEffect(() => {
-    loadTerm();
-  }, []);
+    loadTerm()
+  }, [])
 
   const loadTerm = async () => {
     try {
-      const res = await fetch(`/api/content/glossary/${params.id}`);
+      const res = await fetch(`/api/content/glossary/${params.id}`)
       if (res.ok) {
-        const { term } = await res.json();
+        const { term } = await res.json()
         setFormData({
           term: term.term,
           definition: term.definition,
@@ -34,16 +38,22 @@ export default function EditGlossaryTermPage() {
           aliases: term.aliases.join(', '),
           relatedTerms: term.relatedTerms.join(', '),
           examples: term.examples || '',
-        });
+        })
+      } else {
+        setError('Term not found')
       }
+    } catch (error) {
+      console.error('Failed to load term:', error)
+      setError('Failed to load term')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
+    e.preventDefault()
+    setSaving(true)
+    setError('')
 
     try {
       const res = await fetch(`/api/content/glossary/${params.id}`, {
@@ -51,47 +61,101 @@ export default function EditGlossaryTermPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          aliases: formData.aliases.split(',').map(a => a.trim()).filter(Boolean),
-          relatedTerms: formData.relatedTerms.split(',').map(r => r.trim()).filter(Boolean),
+          aliases: formData.aliases.split(',').map((a) => a.trim()).filter(Boolean),
+          relatedTerms: formData.relatedTerms.split(',').map((r) => r.trim()).filter(Boolean),
         }),
-      });
+      })
 
       if (res.ok) {
-        router.push('/studio/content/glossary');
+        router.push('/studio/content/glossary')
       } else {
-        alert('Failed to update term');
+        setError('Failed to update term')
       }
     } catch (error) {
-      alert('Failed to update term');
+      console.error('Error updating term:', error)
+      setError('Failed to update term')
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  };
+  }
 
-  if (loading) return <div className="max-w-4xl mx-auto px-6 py-12"><p className="text-gray-400">Loading...</p></div>;
+  if (status === 'loading' || loading) {
+    return (
+      <div className="studio-shell min-h-screen flex items-center justify-center">
+        <div className="text-[color:var(--studio-text-muted)]">Loading...</div>
+      </div>
+    )
+  }
+
+  if (!session?.user) {
+    return (
+      <div className="studio-shell min-h-screen flex items-center justify-center">
+        <div className="studio-card p-6 text-center">
+          <p className="text-[color:var(--studio-text-muted)]">Sign in to edit glossary terms.</p>
+          <Link href="/auth/signin" className="mt-4 inline-flex studio-cta">Sign In</Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="studio-shell min-h-screen flex items-center justify-center">
+        <div className="studio-card p-6 text-center">
+          <p className="text-[color:var(--studio-text-muted)]">Admin access required to edit glossary terms.</p>
+          <Link href="/studio/content/glossary" className="mt-4 inline-flex studio-cta-ghost">Back to Glossary</Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <h1 className="text-4xl font-headline text-white mb-8">
-        Edit Glossary Term
-      </h1>
+    <div className="studio-shell min-h-screen">
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        <Link href="/studio/content/glossary" className="studio-tag">
+          Back to Glossary
+        </Link>
 
-      <NoirCard variant="elevated">
-        <NoirCardContent className="p-8">
+        <h1 className="mt-6 text-4xl font-serif">Edit Glossary Term</h1>
+        <p className="mt-2 text-[color:var(--studio-text-muted)]">
+          Keep the vocabulary clean and consistent.
+        </p>
+
+        {error && (
+          <div className="mt-6 studio-card p-4 text-sm text-[color:var(--studio-accent-3)]">
+            {error}
+          </div>
+        )}
+
+        <div className="mt-8 studio-panel">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">Term *</label>
-              <input type="text" required value={formData.term} onChange={(e) => setFormData({ ...formData, term: e.target.value })} className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors" />
+              <label className="studio-label">Term</label>
+              <input
+                className="studio-input"
+                required
+                value={formData.term}
+                onChange={(e) => setFormData({ ...formData, term: e.target.value })}
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">Definition *</label>
-              <textarea required rows={4} value={formData.definition} onChange={(e) => setFormData({ ...formData, definition: e.target.value })} className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors resize-none" />
+              <label className="studio-label">Definition</label>
+              <textarea
+                className="studio-textarea"
+                required
+                value={formData.definition}
+                onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">Category *</label>
-              <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white focus:border-spm-purple outline-none transition-colors">
+              <label className="studio-label">Category</label>
+              <select
+                className="studio-select"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              >
                 <option value="Comp Design">Comp Design</option>
                 <option value="Admin">Admin</option>
                 <option value="Governance">Governance</option>
@@ -101,31 +165,44 @@ export default function EditGlossaryTermPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">Aliases (comma-separated)</label>
-              <input type="text" value={formData.aliases} onChange={(e) => setFormData({ ...formData, aliases: e.target.value })} className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors" />
+              <label className="studio-label">Aliases (comma-separated)</label>
+              <input
+                className="studio-input"
+                value={formData.aliases}
+                onChange={(e) => setFormData({ ...formData, aliases: e.target.value })}
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">Related Terms (comma-separated)</label>
-              <input type="text" value={formData.relatedTerms} onChange={(e) => setFormData({ ...formData, relatedTerms: e.target.value })} className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors" />
+              <label className="studio-label">Related Terms (comma-separated)</label>
+              <input
+                className="studio-input"
+                value={formData.relatedTerms}
+                onChange={(e) => setFormData({ ...formData, relatedTerms: e.target.value })}
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-headline text-gray-300 mb-2">Example</label>
-              <textarea rows={3} value={formData.examples} onChange={(e) => setFormData({ ...formData, examples: e.target.value })} className="w-full px-4 py-3 bg-spm-black border-2 border-spm-purple-dark/30 rounded-lg text-white placeholder-gray-500 focus:border-spm-purple outline-none transition-colors resize-none" />
+              <label className="studio-label">Example</label>
+              <textarea
+                className="studio-textarea"
+                rows={3}
+                value={formData.examples}
+                onChange={(e) => setFormData({ ...formData, examples: e.target.value })}
+              />
             </div>
 
-            <div className="flex gap-4 pt-4">
-              <button type="submit" disabled={saving} className="flex-1 px-8 py-4 bg-spm-purple hover:bg-spm-purple-light text-white text-lg font-semibold rounded-lg transition-all hover:shadow-purple-glow disabled:opacity-50">
+            <div className="flex flex-col md:flex-row gap-4">
+              <button type="submit" disabled={saving} className="studio-cta">
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>
-              <button type="button" onClick={() => router.back()} className="px-8 py-4 border-2 border-spm-purple-dark/30 text-gray-300 hover:text-white hover:border-spm-purple rounded-lg font-semibold transition-colors">
+              <button type="button" onClick={() => router.back()} className="studio-cta-ghost">
                 Cancel
               </button>
             </div>
           </form>
-        </NoirCardContent>
-      </NoirCard>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

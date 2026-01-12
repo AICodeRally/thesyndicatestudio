@@ -2,7 +2,6 @@ import { auth } from '../../../auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import { AppNav } from '@/components/navigation/AppNav'
 
 export default async function StudioPage() {
   const session = await auth()
@@ -25,66 +24,47 @@ export default async function StudioPage() {
   })
 
   const statusColors = {
-    DRAFT: 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200',
-    GENERATING: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    PENDING_REVIEW: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-    PUBLISHED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+    DRAFT: 'bg-[color:var(--studio-surface-2)] text-[color:var(--studio-text-muted)]',
+    GENERATING: 'bg-[color:var(--studio-accent-soft)] text-[color:var(--studio-accent)]',
+    PENDING_REVIEW: 'bg-[color:var(--studio-accent-soft)] text-[color:var(--studio-accent-2)]',
+    PUBLISHED: 'bg-[color:var(--studio-accent-soft)] text-[color:var(--studio-accent)]',
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <AppNav currentPath="/studio" userEmail={session.user.email || ""} />
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">
-              Toddfather Studio
-            </h1>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/studio/content"
-                className="px-4 py-2 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg text-sm font-semibold hover:bg-purple-600 hover:text-white transition-colors"
-              >
-                Content
-              </Link>
-              <Link
-                href="/studio/library"
-                className="px-4 py-2 border-2 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg text-sm font-semibold hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
-              >
-                Library
-              </Link>
-              <Link
-                href="/studio/episodes/new"
-                className="px-4 py-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-lg text-sm font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
-              >
-                + New Episode
-              </Link>
-            </div>
+    <div className="studio-shell min-h-screen">
+      <main className="max-w-7xl mx-auto px-6 py-16">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-12">
+          <div>
+            <span className="studio-tag">Syndicate control</span>
+            <h1 className="mt-4 text-4xl md:text-5xl font-serif">Studio Dashboard</h1>
+            <p className="mt-3 text-[color:var(--studio-text-muted)]">
+              Keep the production line tight across scripts, cuts, and releases.
+            </p>
           </div>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            AI-powered video production pipeline for Intelligent Sales
-          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/studio/content" className="studio-cta-ghost">
+              Content Control
+            </Link>
+            <Link href="/studio/library" className="studio-cta-ghost">
+              Asset Library
+            </Link>
+            <Link href="/studio/episodes/new" className="studio-cta">
+              Start Episode
+            </Link>
+          </div>
         </div>
 
-        {/* Episode List */}
         {episodes.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
-            <div className="max-w-md mx-auto">
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
-                No episodes yet
-              </h2>
-              <p className="text-zinc-600 dark:text-zinc-400 mb-6">
-                Create your first episode to start the AI-driven video production pipeline.
-              </p>
-              <Link
-                href="/studio/episodes/new"
-                className="inline-block px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-lg font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
-              >
-                Create First Episode
-              </Link>
-            </div>
+          <div className="studio-card p-12 text-center">
+            <h2 className="text-2xl font-semibold text-[color:var(--studio-text)]">
+              No episodes yet
+            </h2>
+            <p className="mt-3 text-[color:var(--studio-text-muted)]">
+              Open the line by creating the first episode draft.
+            </p>
+            <Link href="/studio/episodes/new" className="mt-6 inline-flex studio-cta">
+              Create First Episode
+            </Link>
           </div>
         ) : (
           <div className="space-y-4">
@@ -97,26 +77,28 @@ export default async function StudioPage() {
                 <Link
                   key={episode.id}
                   href={`/studio/episodes/${episode.id}`}
-                  className="block p-6 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+                  className="studio-card p-6 block"
                 >
-                  <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                        <h2 className="text-xl font-semibold text-[color:var(--studio-text)]">
                           {episode.title}
                         </h2>
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[episode.status]}`}>
+                        <span
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusColors[episode.status as keyof typeof statusColors]}`}
+                        >
                           {episode.status.replace('_', ' ')}
                         </span>
                       </div>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+                      <p className="text-sm text-[color:var(--studio-text-muted)] mb-2">
                         {episode.premise}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
-                        <span className="uppercase tracking-wide">{episode.series}</span>
+                      <div className="flex items-center gap-2 text-xs text-[color:var(--studio-text-muted)]">
+                        <span className="uppercase tracking-[0.2em]">{episode.series}</span>
                         {episode.publishDateTarget && (
                           <>
-                            <span>·</span>
+                            <span>•</span>
                             <span>Target: {new Date(episode.publishDateTarget).toLocaleDateString()}</span>
                           </>
                         )}
@@ -124,32 +106,13 @@ export default async function StudioPage() {
                     </div>
                   </div>
 
-                  {/* Pipeline Progress */}
-                  <div className="flex items-center gap-6 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${scriptCount > 0 ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}></div>
-                      <span className="text-zinc-600 dark:text-zinc-400">
-                        Script {scriptCount > 0 ? `(${scriptCount})` : ''}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${cutCount > 0 ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}></div>
-                      <span className="text-zinc-600 dark:text-zinc-400">
-                        Cuts {cutCount > 0 ? `(${cutCount})` : ''}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${assetCount > 0 ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}></div>
-                      <span className="text-zinc-600 dark:text-zinc-400">
-                        Assets {assetCount > 0 ? `(${assetCount})` : ''}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${episode.status === 'PUBLISHED' ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}></div>
-                      <span className="text-zinc-600 dark:text-zinc-400">
-                        Published
-                      </span>
-                    </div>
+                  <div className="flex flex-wrap gap-4 text-sm text-[color:var(--studio-text-muted)]">
+                    <span className="studio-pill">Script {scriptCount || 0}</span>
+                    <span className="studio-pill">Cuts {cutCount || 0}</span>
+                    <span className="studio-pill">Assets {assetCount || 0}</span>
+                    <span className="studio-pill">
+                      {episode.status === 'PUBLISHED' ? 'Published' : 'Not Published'}
+                    </span>
                   </div>
                 </Link>
               )

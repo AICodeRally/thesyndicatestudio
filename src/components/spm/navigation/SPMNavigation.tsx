@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -17,72 +18,49 @@ interface NavItem {
 
 const primaryNav: NavItem[] = [
   {
-    label: 'Learn',
-    href: '/learn',
-    children: [
-      { label: 'SPM 101', href: '/learn/spm-101' },
-      { label: 'Glossary', href: '/learn/glossary' },
-      { label: 'Component Cards', href: '/learn/component-cards' },
-      { label: 'Library', href: '/learn/library' },
-    ],
+    label: 'Studio',
+    href: '/studio',
   },
   {
-    label: 'Analyze',
-    href: '/analyze',
-    children: [
-      { label: 'Plan Check', href: '/analyze/plan-check', featured: true },
-      { label: 'Simulation', href: '/analyze/simulation' },
-      { label: 'Deal Payout', href: '/analyze/deal-payout' },
-      { label: 'Split Manager', href: '/analyze/splits' },
-    ],
+    label: 'Library',
+    href: '/studio/library',
   },
   {
-    label: 'Benchmarks',
-    href: '/benchmarks',
+    label: 'Content',
+    href: '/studio/content',
     children: [
-      { label: 'Payout Curves', href: '/benchmarks/payout-curves' },
-      { label: 'Quota Patterns', href: '/benchmarks/quota-patterns' },
-      { label: 'Governance Maturity', href: '/benchmarks/governance-maturity' },
-    ],
-  },
-  {
-    label: 'Vendors',
-    href: '/vendors',
-    children: [
-      { label: 'Scorecards', href: '/vendors/scorecards' },
-      { label: 'Implementation Reality', href: '/vendors/implementation-reality' },
-    ],
-  },
-  {
-    label: 'Community',
-    href: '/syndicate',
-  },
-  {
-    label: 'Services',
-    href: '/services',
-    children: [
-      { label: 'Assessment', href: '/services/assessment' },
-      { label: 'Redesign', href: '/services/redesign' },
-      { label: 'Governance', href: '/services/governance' },
-      { label: 'Ongoing Ops', href: '/services/ongoing-ops' },
+      { label: 'Glossary', href: '/studio/content/glossary' },
+      { label: 'Components', href: '/studio/content/components' },
+      { label: 'Vendors', href: '/studio/content/vendors' },
+      { label: 'Benchmarks', href: '/studio/content/benchmarks' },
     ],
   },
 ];
 
-/**
- * SPMNavigation - Primary navigation for Intelligent SPM
- *
- * Features:
- * - Fixed top bar with noir aesthetic
- * - Purple underline on active pages
- * - Dropdown menus on desktop
- * - Mobile hamburger menu
- * - Search, Subscribe, Sign in utilities
- */
 export function SPMNavigation() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'luxury-noir' | 'industrial-ops'>('luxury-noir');
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.tier === 'ENTERPRISE';
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const stored = window.localStorage.getItem('studio-theme');
+    const initial = stored === 'industrial-ops' ? 'industrial-ops' : 'luxury-noir';
+    setTheme(initial);
+    document.documentElement.dataset.theme = initial;
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'luxury-noir' ? 'industrial-ops' : 'luxury-noir';
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('studio-theme', next);
+    }
+  };
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -90,7 +68,7 @@ export function SPMNavigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-spm-black border-b border-spm-purple-dark/30 shadow-noir">
+    <nav className="fixed top-0 left-0 right-0 z-50 studio-nav">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -99,14 +77,13 @@ export function SPMNavigation() {
             className="flex items-center space-x-3 group transition-all"
           >
             <div className="flex flex-col">
-              <div className="text-2xl font-headline tracking-wider group-hover:opacity-80 transition-all">
-                <span className="text-white">INTELLIGENT </span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-spm-purple via-spm-orange to-spm-copper">
-                  SPM
+              <div className="text-2xl font-bold tracking-tight group-hover:opacity-80 transition-all">
+                <span className="text-[color:var(--studio-accent)]">
+                  The Syndicate Studio
                 </span>
               </div>
-              <div className="text-xs text-gray-400 group-hover:text-spm-purple-light transition-colors font-body italic -mt-1">
-                Home of The Toddfather
+              <div className="text-xs text-[color:var(--studio-text-muted)] group-hover:text-[color:var(--studio-accent)] transition-colors italic -mt-0.5">
+                Toddfather production room
               </div>
             </div>
           </Link>
@@ -123,40 +100,33 @@ export function SPMNavigation() {
                 <Link
                   href={item.href}
                   className={cn(
-                    'text-sm font-medium transition-colors relative py-2',
+                    'text-sm font-medium transition-colors relative py-2 studio-nav-link',
                     isActive(item.href)
-                      ? 'text-spm-purple'
-                      : 'text-gray-300 hover:text-white'
+                      ? 'text-[color:var(--studio-accent)]'
+                      : 'text-[color:var(--studio-text-muted)] hover:text-[color:var(--studio-text)]'
                   )}
                 >
                   {item.label}
-                  {/* Active underline */}
                   {isActive(item.href) && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-spm-purple" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[color:var(--studio-accent)]" />
                   )}
                 </Link>
 
-                {/* Dropdown menu */}
                 {item.children && activeDropdown === item.label && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-spm-black-soft border border-spm-purple-dark/30 rounded-lg shadow-noir-lg py-2">
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-[color:var(--studio-surface-2)] border border-[color:var(--studio-border)] rounded-lg shadow-cosmic-lg py-2">
                     {item.children.map((child) => (
                       <Link
                         key={child.href}
                         href={child.href}
                         className={cn(
                           'block px-4 py-2 text-sm transition-colors',
-                          child.featured && 'bg-spm-purple/10 border-l-2 border-spm-purple',
+                          child.featured && 'bg-[color:var(--studio-accent-soft)] border-l-2 border-[color:var(--studio-accent)]',
                           isActive(child.href)
-                            ? 'text-spm-purple bg-spm-purple/10'
-                            : 'text-gray-300 hover:text-white hover:bg-spm-black'
+                            ? 'text-[color:var(--studio-accent)] bg-[color:var(--studio-accent-soft)]'
+                            : 'text-[color:var(--studio-text-muted)] hover:text-[color:var(--studio-text)] hover:bg-[color:var(--studio-surface)]'
                         )}
                       >
                         {child.label}
-                        {child.featured && (
-                          <span className="ml-2 text-xs text-spm-purple-light">
-                            ★
-                          </span>
-                        )}
                       </Link>
                     ))}
                   </div>
@@ -167,43 +137,41 @@ export function SPMNavigation() {
 
           {/* Utility Nav */}
           <div className="hidden lg:flex items-center space-x-4">
-            {/* Search */}
-            <Link
-              href="/search"
-              className="p-2 text-gray-300 hover:text-white transition-colors"
-              aria-label="Search"
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="px-3 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--studio-text-muted)] border border-[color:var(--studio-border)] rounded-lg hover:text-[color:var(--studio-text)] transition-colors"
             >
-              <SearchIcon />
+              Theme: {theme === 'luxury-noir' ? 'Noir' : 'Ops'}
+            </button>
+
+            {isAdmin && (
+              <Link
+                href="/studio/admin"
+                className="px-4 py-2 text-sm font-medium text-[color:var(--studio-accent)] hover:text-[color:var(--studio-text)] transition-colors"
+              >
+                Admin
+              </Link>
+            )}
+
+            <Link
+              href="/studio/library"
+              className="px-4 py-2 text-sm font-medium text-[color:var(--studio-text-muted)] hover:text-[color:var(--studio-text)] transition-colors"
+            >
+              Library
             </Link>
 
-            {/* Subscribe */}
             <Link
-              href="/subscribe"
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              href="/studio/episodes/new"
+              className="px-6 py-2 rounded-lg font-semibold transition-all studio-cta"
             >
-              Subscribe
-            </Link>
-
-            {/* Sign In */}
-            <Link
-              href="/auth/signin"
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
-            >
-              Sign in
-            </Link>
-
-            {/* Primary CTA */}
-            <Link
-              href="/analyze/plan-check"
-              className="px-6 py-2 bg-spm-purple hover:bg-spm-purple-light text-white rounded-lg font-semibold transition-all hover:shadow-purple-glow"
-            >
-              Run a Plan Check
+              Start an Episode
             </Link>
           </div>
 
           {/* Mobile menu button */}
           <button
-            className="lg:hidden p-2 text-gray-300 hover:text-white transition-colors"
+            className="lg:hidden p-2 text-[color:var(--studio-text-muted)] hover:text-[color:var(--studio-text)] transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -214,7 +182,7 @@ export function SPMNavigation() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-spm-black-soft border-t border-spm-purple-dark/30">
+        <div className="lg:hidden bg-[color:var(--studio-surface-2)] border-t border-[color:var(--studio-border)]">
           <div className="px-6 py-4 space-y-4">
             {primaryNav.map((item) => (
               <div key={item.href}>
@@ -223,8 +191,8 @@ export function SPMNavigation() {
                   className={cn(
                     'block text-base font-medium py-2',
                     isActive(item.href)
-                      ? 'text-spm-purple'
-                      : 'text-gray-300'
+                      ? 'text-[color:var(--studio-accent)]'
+                      : 'text-[color:var(--studio-text)]'
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -239,8 +207,8 @@ export function SPMNavigation() {
                         className={cn(
                           'block text-sm py-1',
                           isActive(child.href)
-                            ? 'text-spm-purple'
-                            : 'text-gray-400'
+                            ? 'text-[color:var(--studio-accent)]'
+                            : 'text-[color:var(--studio-text-muted)]'
                         )}
                         onClick={() => setMobileMenuOpen(false)}
                       >
@@ -252,28 +220,43 @@ export function SPMNavigation() {
               </div>
             ))}
 
-            {/* Mobile Utility Links */}
-            <div className="pt-4 border-t border-spm-purple-dark/30 space-y-2">
+            <div className="pt-4 border-t border-[color:var(--studio-border)] space-y-2">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="block w-full text-left text-sm uppercase tracking-[0.2em] text-[color:var(--studio-text-muted)] py-2"
+              >
+                Theme: {theme === 'luxury-noir' ? 'Noir' : 'Ops'}
+              </button>
+              {isAdmin && (
+                <Link
+                  href="/studio/admin"
+                  className="block text-base text-[color:var(--studio-accent)] py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              )}
               <Link
-                href="/subscribe"
-                className="block text-base text-gray-300 py-2"
+                href="/studio/library"
+                className="block text-base text-[color:var(--studio-text)] py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Subscribe
+                Library
               </Link>
               <Link
-                href="/auth/signin"
-                className="block text-base text-gray-300 py-2"
+                href="/studio/content"
+                className="block text-base text-[color:var(--studio-text)] py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Sign in
+                Content
               </Link>
               <Link
-                href="/analyze/plan-check"
-                className="block px-6 py-3 bg-spm-purple text-white text-center rounded-lg font-semibold"
+                href="/studio/episodes/new"
+                className="block text-base text-[color:var(--studio-text)] py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Run a Plan Check
+                Start an Episode
               </Link>
             </div>
           </div>
@@ -283,7 +266,6 @@ export function SPMNavigation() {
   );
 }
 
-// Simple SVG icons
 function MenuIcon() {
   return (
     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,14 +278,6 @@ function XIcon() {
   return (
     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
   );
 }

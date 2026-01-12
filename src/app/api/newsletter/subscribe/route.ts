@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     // Add to Resend audience (you'll need to create audience in Resend dashboard)
     // For now, just send welcome email
     await resend.emails.send({
-      from: 'The Toddfather <noreply@thetoddfather.com>',
+      from: 'The Syndicate Studio <noreply@thesyndicatestudio.com>',
       to: email,
       subject: 'Welcome to The SPM Syndicate',
       html: `
@@ -52,8 +52,7 @@ export async function POST(request: Request) {
           </a>
 
           <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #888; font-size: 14px;">
-            The Toddfather<br>
-            Intelligent SPM
+            The Syndicate Studio
           </p>
         </div>
       `,

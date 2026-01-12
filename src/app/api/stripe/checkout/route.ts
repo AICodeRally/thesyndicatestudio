@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '../../../../../auth'
-import { prisma } from '@/lib/db'
+import Stripe from 'stripe'
 
 export async function POST(request: Request) {
   try {
@@ -13,34 +13,30 @@ export async function POST(request: Request) {
       )
     }
 
-    // TODO: Replace with your Stripe checkout code
-    // ============================================
-    // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-    //
-    // const checkoutSession = await stripe.checkout.sessions.create({
-    //   customer_email: session.user.email,
-    //   line_items: [{
-    //     price: process.env.STRIPE_PRICE_ID_SPARCC, // $29/month
-    //     quantity: 1,
-    //   }],
-    //   mode: 'subscription',
-    //   success_url: `${process.env.NEXTAUTH_URL}/settings/billing?success=true`,
-    //   cancel_url: `${process.env.NEXTAUTH_URL}/settings/billing?canceled=true`,
-    //   metadata: {
-    //     userId: session.user.id,
-    //   },
-    // })
-    //
-    // return NextResponse.json({ url: checkoutSession.url })
-    // ============================================
+    if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_PRICE_ID_SPARCC) {
+      return NextResponse.json(
+        { error: 'Stripe not configured' },
+        { status: 500 }
+      )
+    }
 
-    // STUB: Return fake checkout URL for now
-    console.log('STUB: Stripe checkout requested for user:', session.user.id)
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-    return NextResponse.json({
-      url: '/settings/billing?stub=true',
-      message: 'STUB: Replace with real Stripe checkout',
+    const checkoutSession = await stripe.checkout.sessions.create({
+      customer_email: session.user.email!,
+      line_items: [{
+        price: process.env.STRIPE_PRICE_ID_SPARCC,
+        quantity: 1,
+      }],
+      mode: 'subscription',
+      success_url: `${process.env.NEXTAUTH_URL}/settings/billing?success=true`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/settings/billing?canceled=true`,
+      metadata: {
+        userId: session.user.id,
+      },
     })
+
+    return NextResponse.json({ url: checkoutSession.url })
 
   } catch (error) {
     console.error('Stripe checkout error:', error)

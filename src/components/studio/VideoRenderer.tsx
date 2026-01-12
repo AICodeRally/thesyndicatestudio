@@ -16,6 +16,10 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
   const [selectedAvatar, setSelectedAvatar] = useState('')
   const [selectedVoice, setSelectedVoice] = useState('1bd001e7e50f421d891986aad5158bc8')
   const [aspectRatio, setAspectRatio] = useState<'9:16' | '1:1' | '16:9'>('9:16')
+  const [provider, setProvider] = useState<'heygen' | 'sora'>('heygen')
+  const [soraSeconds, setSoraSeconds] = useState(8)
+  const [soraModel, setSoraModel] = useState<'sora-2' | 'sora-2-pro'>('sora-2')
+  const [soraPrompt, setSoraPrompt] = useState('')
   const [generating, setGenerating] = useState(false)
   const [videoId, setVideoId] = useState<string | null>(null)
   const [status, setStatus] = useState<string>('idle')
@@ -73,7 +77,10 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
     if (!videoId) return
 
     try {
-      const res = await fetch(`/api/studio/videos/${videoId}/status`)
+      const statusUrl = provider === 'sora'
+        ? `/api/studio/videos/sora/${videoId}/status`
+        : `/api/studio/videos/${videoId}/status`
+      const res = await fetch(statusUrl)
       const data = await res.json()
 
       setStatus(data.status)
@@ -98,16 +105,22 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
     setStatus('waiting')
 
     try {
-      const res = await fetch(`/api/studio/episodes/${episodeId}/render`, {
+      const endpoint = provider === 'sora'
+        ? `/api/studio/episodes/${episodeId}/render-sora`
+        : `/api/studio/episodes/${episodeId}/render`
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cutId,
-          avatarId: selectedAvatar,
-          voiceId: selectedVoice,
-          aspectRatio,
-        }),
-      })
+          body: JSON.stringify({
+            cutId,
+            avatarId: provider === 'heygen' ? selectedAvatar : undefined,
+            voiceId: provider === 'heygen' ? selectedVoice : undefined,
+            aspectRatio,
+            seconds: provider === 'sora' ? soraSeconds : undefined,
+            model: provider === 'sora' ? soraModel : undefined,
+            promptOverride: provider === 'sora' ? soraPrompt : undefined,
+          }),
+        })
 
       if (res.ok) {
         const data = await res.json()
@@ -116,7 +129,7 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
           videoId: data.videoId,
           status: 'initiated',
           timestamp: new Date().toISOString(),
-          request: { cutId, avatarId: selectedAvatar, voiceId: selectedVoice, aspectRatio },
+          request: { cutId, avatarId: selectedAvatar, voiceId: selectedVoice, aspectRatio, provider, soraModel },
           response: data,
         })
         setShowOptions(false)
@@ -129,6 +142,8 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
         })
         if (error.stub) {
           alert('HeyGen not configured. Add HEYGEN_API_KEY to .env to generate videos.')
+        } else if (error.error === 'OPENAI_API_KEY not configured') {
+          alert('OpenAI API key not configured. Add OPENAI_API_KEY to .env to generate Sora videos.')
         } else {
           alert(error.message || 'Failed to generate video')
         }
@@ -163,11 +178,13 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
             ✗ Video generation failed
           </p>
           <p className="text-xs text-red-700 dark:text-red-300">
-            {telemetry?.heygenResponse?.error?.message || 'Unknown error occurred'}
+            {telemetry?.heygenResponse?.error?.message ||
+              telemetry?.soraResponse?.error?.message ||
+              'Unknown error occurred'}
           </p>
-          {telemetry?.heygenResponse?.error?.code && (
+          {(telemetry?.heygenResponse?.error?.code || telemetry?.soraResponse?.error?.code) && (
             <p className="text-xs text-red-600 dark:text-red-400 mt-2 font-mono">
-              Error Code: {telemetry.heygenResponse.error.code}
+              Error Code: {telemetry?.heygenResponse?.error?.code || telemetry?.soraResponse?.error?.code}
             </p>
           )}
         </div>
@@ -272,10 +289,16 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
           <p className="text-sm text-blue-900 dark:text-blue-100 mb-2 font-medium">
-            {status === 'waiting' ? 'In HeyGen Queue...' : 'Generating video...'}
+            {status === 'waiting'
+              ? provider === 'sora'
+                ? 'Queued for Sora...'
+                : 'In HeyGen Queue...'
+              : 'Generating video...'}
           </p>
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            This takes 5-10 minutes. HeyGen is creating your talking head video.
+            {provider === 'sora'
+              ? 'Sora is rendering a cinematic clip. This can take a few minutes.'
+              : 'This takes 5-10 minutes. HeyGen is creating your talking head video.'}
           </p>
           <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
             Status: <span className="font-semibold">{status}</span>
@@ -327,61 +350,127 @@ export function VideoRenderer({ episodeId, cutId, cutFormat, onComplete }: Video
         Video Generation Options
       </h4>
 
-      {avatars.length === 0 ? (
-        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-          <p className="text-sm text-amber-900 dark:text-amber-100 mb-2">
-            No avatars uploaded yet
-          </p>
-          <Link
-            href="/studio/library"
-            className="text-xs text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-700 dark:hover:text-purple-300"
-          >
-            Upload Toddfather avatar in Library →
-          </Link>
-        </div>
-      ) : (
-        <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-            Avatar
-          </label>
-          <select
-            value={selectedAvatar}
-            onChange={(e) => setSelectedAvatar(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none"
-          >
-            {avatars.map((avatar) => (
-              <option key={avatar.id} value={avatar.providerId}>
-                {avatar.name} {avatar.provider === 'heygen' ? '(HeyGen)' : '(Local)'}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
       <div>
         <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-          Voice
+          Provider
         </label>
         <select
-          value={selectedVoice}
-          onChange={(e) => setSelectedVoice(e.target.value)}
+          value={provider}
+          onChange={(e) => setProvider(e.target.value as 'heygen' | 'sora')}
           className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none"
         >
-          <option value="1bd001e7e50f421d891986aad5158bc8">Default Voice (Professional Male)</option>
-          <option value="f38a635bee7a4d1f9b0a654a31d050d2">Chill Brian (Male)</option>
-          <option value="acff30ce1e944de8ac429d26fa9367ad">Mark (Male)</option>
-          {voices.filter(v => v.provider === 'heygen').map((voice) => (
-            <option key={voice.id} value={voice.providerId}>
-              {voice.name} (HeyGen)
-            </option>
-          ))}
-          {voices.filter(v => v.provider === 'custom').map((voice) => (
-            <option key={voice.id} value={voice.providerId}>
-              {voice.name} (Custom)
-            </option>
-          ))}
+          <option value="heygen">HeyGen (Talking head)</option>
+          <option value="sora">Sora (Cinematic)</option>
         </select>
       </div>
+
+      {provider === 'heygen' && (
+        <>
+          {avatars.length === 0 ? (
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-sm text-amber-900 dark:text-amber-100 mb-2">
+                No avatars uploaded yet
+              </p>
+              <Link
+                href="/studio/library"
+                className="text-xs text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-700 dark:hover:text-purple-300"
+              >
+                Upload Toddfather avatar in Library →
+              </Link>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                Avatar
+              </label>
+              <select
+                value={selectedAvatar}
+                onChange={(e) => setSelectedAvatar(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none"
+              >
+                {avatars.map((avatar) => (
+                  <option key={avatar.id} value={avatar.providerId}>
+                    {avatar.name} {avatar.provider === 'heygen' ? '(HeyGen)' : '(Local)'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Voice
+            </label>
+            <select
+              value={selectedVoice}
+              onChange={(e) => setSelectedVoice(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none"
+            >
+              <option value="1bd001e7e50f421d891986aad5158bc8">Default Voice (Professional Male)</option>
+              <option value="f38a635bee7a4d1f9b0a654a31d050d2">Chill Brian (Male)</option>
+              <option value="acff30ce1e944de8ac429d26fa9367ad">Mark (Male)</option>
+              {voices.filter(v => v.provider === 'heygen').map((voice) => (
+                <option key={voice.id} value={voice.providerId}>
+                  {voice.name} (HeyGen)
+                </option>
+              ))}
+              {voices.filter(v => v.provider === 'custom').map((voice) => (
+                <option key={voice.id} value={voice.providerId}>
+                  {voice.name} (Custom)
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
+
+      {provider === 'sora' && (
+        <>
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Sora Model
+            </label>
+            <select
+              value={soraModel}
+              onChange={(e) => setSoraModel(e.target.value as 'sora-2' | 'sora-2-pro')}
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none"
+            >
+              <option value="sora-2">sora-2 (standard)</option>
+              <option value="sora-2-pro">sora-2-pro (higher fidelity)</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Clip Duration (seconds)
+            </label>
+            <input
+              type="number"
+              min={4}
+              max={20}
+              value={soraSeconds}
+              onChange={(e) => setSoraSeconds(parseInt(e.target.value || '8', 10))}
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Prompt Override (optional)
+            </label>
+            <textarea
+              rows={4}
+              value={soraPrompt}
+              onChange={(e) => setSoraPrompt(e.target.value)}
+              placeholder="Describe the exact cinematic shot you want."
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-purple-500 outline-none resize-none"
+            />
+            <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-500">
+              Leave empty to use the script-derived prompt.
+            </p>
+          </div>
+        </>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">

@@ -3,6 +3,7 @@ import { auth } from '../../../../../../../auth'
 import { prisma } from '@/lib/db'
 import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { isAdminUser } from '@/lib/authz'
 
 const CUT_FORMATS = {
   YT_LONG: { duration: 600, name: 'YouTube Long-Form', specs: '7-10 minutes, educational deep dive' },
@@ -23,6 +24,12 @@ export async function POST(
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+    if (!(await isAdminUser(session.user.id))) {
+      return NextResponse.json(
+        { error: 'Admin only' },
+        { status: 403 }
       )
     }
 

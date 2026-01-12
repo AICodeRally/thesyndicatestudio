@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/db'
+import { isAdminUser } from '@/lib/authz'
 
 export async function POST(
   request: Request,
@@ -13,6 +14,12 @@ export async function POST(
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+    if (!(await isAdminUser(session.user.id))) {
+      return NextResponse.json(
+        { error: 'Admin only' },
+        { status: 403 }
       )
     }
 

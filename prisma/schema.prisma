@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["thetoddfather"]
+  schemas  = ["thesyndicatestudio"]
 }
 
 // ============================================================================
@@ -33,11 +33,11 @@ model User {
   modelRuns     ModelRun[]
 
   @@map("users")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 enum UserTier {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   FREE
   SPARCC
   ENTERPRISE
@@ -62,7 +62,7 @@ model Account {
   @@unique([provider, providerAccountId])
   @@index([userId])
   @@map("accounts")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model Session {
@@ -75,7 +75,7 @@ model Session {
 
   @@index([userId])
   @@map("sessions")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model VerificationToken {
@@ -85,7 +85,7 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -121,11 +121,11 @@ model Counsel {
   @@index([channelPrimary])
   @@index([difficulty])
   @@map("counsel")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 enum CounselType {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   NOTE
   CHECKLIST
   TEMPLATE
@@ -135,7 +135,7 @@ enum CounselType {
 }
 
 enum CounselChannel {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   PLAN_DESIGN
   MEASURES
   PAYOUT_CURVES
@@ -148,7 +148,7 @@ enum CounselChannel {
 }
 
 enum CounselDifficulty {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   INTRO
   OPERATOR
   ARCHITECT
@@ -167,7 +167,7 @@ model CounselSave {
   @@index([userId])
   @@index([counselId])
   @@map("counsel_saves")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -188,7 +188,7 @@ model VaultCollection {
 
   @@index([userId])
   @@map("vault_collections")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model VaultCollectionSection {
@@ -202,7 +202,7 @@ model VaultCollectionSection {
 
   @@index([collectionId])
   @@map("vault_collection_sections")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model VaultCollectionItem {
@@ -221,7 +221,7 @@ model VaultCollectionItem {
   @@index([counselId])
   @@index([episodeId])
   @@map("vault_collection_items")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -251,11 +251,11 @@ model Episode {
   @@index([status])
   @@index([youtubeVideoId])
   @@map("episodes")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 enum EpisodeStatus {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   DRAFT
   GENERATING
   PENDING_REVIEW
@@ -276,7 +276,7 @@ model Script {
 
   @@index([episodeId])
   @@map("scripts")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model Cut {
@@ -295,11 +295,11 @@ model Cut {
   @@index([episodeId])
   @@index([format])
   @@map("cuts")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 enum CutFormat {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   YT_LONG
   YT_SHORT
   TIKTOK
@@ -323,16 +323,17 @@ model Asset {
   @@index([episodeId])
   @@index([type])
   @@map("assets")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 enum AssetType {
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
   BROLL
   MUSIC
   SFX
   THUMBNAIL
   CAPTIONS
+  SORA
 }
 
 // ============================================================================
@@ -354,7 +355,7 @@ model EpisodeManifest {
 
   @@index([status])
   @@map("episode_manifests")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model WorkerJob {
@@ -375,7 +376,7 @@ model WorkerJob {
   @@index([manifestId])
   @@index([status])
   @@map("worker_jobs")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model QCCheck {
@@ -391,7 +392,7 @@ model QCCheck {
 
   @@index([manifestId])
   @@map("qc_checks")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model ToddStudioAsset {
@@ -405,7 +406,7 @@ model ToddStudioAsset {
 
   @@index([type])
   @@map("todd_studio_assets")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -424,7 +425,7 @@ model ChatMessage {
 
   @@index([userId, createdAt])
   @@map("chat_messages")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -448,7 +449,7 @@ model Subscription {
   @@index([userId])
   @@index([status])
   @@map("subscriptions")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -467,7 +468,7 @@ model WorkingModel {
   runs ModelRun[]
 
   @@map("working_models")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model ModelRun {
@@ -484,7 +485,7 @@ model ModelRun {
   @@index([userId])
   @@index([modelId])
   @@map("model_runs")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 // ============================================================================
@@ -504,7 +505,7 @@ model GlossaryTerm {
 
   @@index([category])
   @@map("glossary_terms")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model VendorScorecard {
@@ -522,7 +523,7 @@ model VendorScorecard {
 
   @@index([slug])
   @@map("vendor_scorecards")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model Benchmark {
@@ -539,7 +540,7 @@ model Benchmark {
   @@index([type])
   @@index([category])
   @@map("benchmarks")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }
 
 model ComponentCard {
@@ -558,5 +559,5 @@ model ComponentCard {
   @@index([category])
   @@index([slug])
   @@map("component_cards")
-  @@schema("thetoddfather")
+  @@schema("thesyndicatestudio")
 }

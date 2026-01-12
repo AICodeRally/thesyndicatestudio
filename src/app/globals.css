@@ -1,30 +1,80 @@
 @import "tailwindcss";
 
-/* Noir SPM Color Palette - Extracted from Toddfather brand images */
+/* Cosmic Noir Theme - Deep space palette */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0A0A0F;
+  --foreground: #F0F0F5;
 
-  /* Noir blacks */
-  --spm-black: #0A0A0A;
-  --spm-black-soft: #1A1A1A;
+  /* Cosmic blacks/navy */
+  --cosmic-black: #0A0A0F;
+  --cosmic-navy: #0F1628;
+  --cosmic-navy-soft: #1A2744;
 
-  /* Purple accents (from brand images) */
-  --spm-purple: #8B5CF6;
-  --spm-purple-light: #A78BFA;
-  --spm-purple-dark: #6B46C1;
-  --spm-purple-glow: #C4B5FD;
-  --spm-purple-text: #C4B5FD;
+  /* Blues */
+  --cosmic-blue: #2563EB;
+  --cosmic-blue-light: #3B82F6;
+  --cosmic-blue-glow: #60A5FA;
 
-  /* Vintage paper (aged cream) */
-  --spm-paper: #F4E9D7;
-  --spm-paper-light: #FAF5ED;
-  --spm-paper-dark: #E8DCC4;
+  /* Purples */
+  --cosmic-purple: #7C3AED;
+  --cosmic-purple-light: #A855F7;
+  --cosmic-violet: #C084FC;
 
-  /* Accent colors */
-  --spm-copper: #B87333;
-  --spm-gold: #D4AF37;
-  --spm-orange: #EA7317;
+  /* Pinks */
+  --cosmic-pink: #EC4899;
+  --cosmic-pink-light: #F472B6;
+
+  /* Reds/Crimson */
+  --cosmic-red: #DC2626;
+  --cosmic-crimson: #991B1B;
+
+  /* Neutrals */
+  --cosmic-gray-900: #111118;
+  --cosmic-gray-800: #1A1A24;
+  --cosmic-gray-700: #2A2A3A;
+  --cosmic-gray-600: #3A3A4A;
+  --cosmic-gray-500: #6B6B7B;
+  --cosmic-gray-400: #9CA3AF;
+  --cosmic-gray-300: #D1D5DB;
+  --cosmic-gray-100: #F3F4F6;
+
+  /* Studio theme tokens (Luxury Noir default) */
+  --studio-bg: #0B0B10;
+  --studio-surface: #14141B;
+  --studio-surface-2: #1B1B24;
+  --studio-border: #2B2B36;
+  --studio-text: #EEE9DF;
+  --studio-text-muted: #B2A99A;
+  --studio-accent: #C7A36B;
+  --studio-accent-2: #9B6B4B;
+  --studio-accent-3: #7B1E2B;
+  --studio-accent-soft: rgba(199, 163, 107, 0.12);
+  --studio-glow: rgba(199, 163, 107, 0.35);
+  --studio-hero: radial-gradient(1200px 600px at 50% 20%, rgba(199, 163, 107, 0.12), transparent 60%),
+    radial-gradient(900px 500px at 20% 80%, rgba(123, 30, 43, 0.18), transparent 60%),
+    linear-gradient(180deg, #0B0B10 0%, #121217 100%);
+  --studio-card: linear-gradient(135deg, #15151D 0%, #101017 100%);
+  --studio-line: linear-gradient(90deg, transparent, rgba(199, 163, 107, 0.6), transparent);
+}
+
+/* Alternate Studio theme: Industrial Back-Room Ops */
+[data-theme="industrial-ops"] {
+  --studio-bg: #0D0F10;
+  --studio-surface: #15191C;
+  --studio-surface-2: #1C2227;
+  --studio-border: #2A2F35;
+  --studio-text: #E7E3DA;
+  --studio-text-muted: #A5A9A6;
+  --studio-accent: #D4B064;
+  --studio-accent-2: #7E8C8F;
+  --studio-accent-3: #B1452C;
+  --studio-accent-soft: rgba(212, 176, 100, 0.12);
+  --studio-glow: rgba(212, 176, 100, 0.25);
+  --studio-hero: radial-gradient(1200px 600px at 60% 10%, rgba(212, 176, 100, 0.1), transparent 60%),
+    radial-gradient(900px 500px at 10% 85%, rgba(126, 140, 143, 0.2), transparent 60%),
+    linear-gradient(180deg, #0D0F10 0%, #14191D 100%);
+  --studio-card: linear-gradient(135deg, #171C20 0%, #101418 100%);
+  --studio-line: linear-gradient(90deg, transparent, rgba(212, 176, 100, 0.5), transparent);
 }
 
 @theme inline {
@@ -32,208 +82,334 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* SPM Noir Palette */
-  --color-spm-black: var(--spm-black);
-  --color-spm-black-soft: var(--spm-black-soft);
+  /* Cosmic Noir Palette */
+  --color-cosmic-black: var(--cosmic-black);
+  --color-cosmic-navy: var(--cosmic-navy);
+  --color-cosmic-navy-soft: var(--cosmic-navy-soft);
 
-  --color-spm-purple: var(--spm-purple);
-  --color-spm-purple-light: var(--spm-purple-light);
-  --color-spm-purple-dark: var(--spm-purple-dark);
-  --color-spm-purple-glow: var(--spm-purple-glow);
-  --color-spm-purple-text: var(--spm-purple-text);
+  --color-cosmic-blue: var(--cosmic-blue);
+  --color-cosmic-blue-light: var(--cosmic-blue-light);
+  --color-cosmic-blue-glow: var(--cosmic-blue-glow);
 
-  --color-spm-paper: var(--spm-paper);
-  --color-spm-paper-light: var(--spm-paper-light);
-  --color-spm-paper-dark: var(--spm-paper-dark);
+  --color-cosmic-purple: var(--cosmic-purple);
+  --color-cosmic-purple-light: var(--cosmic-purple-light);
+  --color-cosmic-violet: var(--cosmic-violet);
 
-  --color-spm-copper: var(--spm-copper);
-  --color-spm-gold: var(--spm-gold);
-  --color-spm-orange: var(--spm-orange);
+  --color-cosmic-pink: var(--cosmic-pink);
+  --color-cosmic-pink-light: var(--cosmic-pink-light);
 
-  /* Typography - Godfather Style */
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: "Playfair Display", "Cormorant Garamond", Georgia, serif;
-  --font-headline: "Cinzel", "Libre Baskerville", Georgia, serif;
-  --font-body: "Lora", Georgia, serif;
+  --color-cosmic-red: var(--cosmic-red);
+  --color-cosmic-crimson: var(--cosmic-crimson);
 
-  /* Font sizes for noir aesthetic */
-  --font-size-display: 5rem;
-  --line-height-display: 1;
-  --letter-spacing-display: -0.02em;
+  /* Typography */
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-serif: var(--font-libre-baskerville), Georgia, serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-display: var(--font-libre-baskerville), Georgia, serif;
 
-  --font-size-headline-lg: 3rem;
-  --line-height-headline-lg: 1.1;
-  --letter-spacing-headline-lg: -0.01em;
+  /* Font sizes */
+  --font-size-display: 3.5rem;
+  --line-height-display: 1.1;
+  --letter-spacing-display: -0.01em;
 
-  --font-size-headline: 2rem;
-  --line-height-headline: 1.2;
+  --font-size-headline-lg: 2rem;
+  --line-height-headline-lg: 1.2;
 
-  /* Shadows - Noir style */
-  --shadow-noir-sm: 0 2px 8px rgb(0 0 0 / 0.8);
-  --shadow-noir: 0 4px 16px rgb(0 0 0 / 0.9);
-  --shadow-noir-lg: 0 8px 32px rgb(0 0 0 / 0.95);
-  --shadow-purple-glow: 0 0 20px rgb(124 58 237 / 0.5);
-}
+  --font-size-headline: 1.25rem;
+  --line-height-headline: 1.3;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Shadows - Cosmic glow effects */
+  --shadow-cosmic-sm: 0 2px 8px rgba(10, 10, 15, 0.8);
+  --shadow-cosmic: 0 4px 16px rgba(10, 10, 15, 0.9);
+  --shadow-cosmic-lg: 0 8px 32px rgba(10, 10, 15, 0.95);
+  --shadow-purple-glow: 0 0 30px rgba(124, 58, 237, 0.4);
+  --shadow-blue-glow: 0 0 30px rgba(37, 99, 235, 0.4);
+  --shadow-pink-glow: 0 0 30px rgba(236, 72, 153, 0.4);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
 }
 
-/* Utility classes for noir aesthetic */
+/* Utility classes for Cosmic Noir */
 @layer utilities {
   .text-display {
-    font-family: var(--font-display);
+    font-family: var(--font-serif);
     font-size: var(--font-size-display);
     line-height: var(--line-height-display);
     letter-spacing: var(--letter-spacing-display);
     font-weight: 700;
-    text-transform: uppercase;
   }
 
-  /* Responsive typography */
   @media (max-width: 768px) {
     .text-display {
-      font-size: 3rem;
+      font-size: 2.25rem;
     }
 
     .text-headline-lg {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
 
     .text-headline {
-      font-size: 1.5rem;
+      font-size: 1.125rem;
     }
   }
 
   .text-headline-lg {
-    font-family: var(--font-headline);
+    font-family: var(--font-serif);
     font-size: var(--font-size-headline-lg);
     line-height: var(--line-height-headline-lg);
-    letter-spacing: var(--letter-spacing-headline-lg);
-    font-weight: 600;
+    font-weight: 400;
   }
 
   .text-headline {
-    font-family: var(--font-headline);
+    font-family: var(--font-sans);
     font-size: var(--font-size-headline);
     line-height: var(--line-height-headline);
     font-weight: 600;
   }
 
-  .shadow-noir-sm {
-    box-shadow: var(--shadow-noir-sm);
+  /* Cosmic glow shadows */
+  .shadow-cosmic-sm {
+    box-shadow: var(--shadow-cosmic-sm);
   }
 
-  .shadow-noir {
-    box-shadow: var(--shadow-noir);
+  .shadow-cosmic {
+    box-shadow: var(--shadow-cosmic);
   }
 
-  .shadow-noir-lg {
-    box-shadow: var(--shadow-noir-lg);
+  .shadow-cosmic-lg {
+    box-shadow: var(--shadow-cosmic-lg);
   }
 
   .shadow-purple-glow {
     box-shadow: var(--shadow-purple-glow);
   }
 
-  /* Noir texture overlay effect */
-  .noir-texture {
-    position: relative;
+  .shadow-blue-glow {
+    box-shadow: var(--shadow-blue-glow);
   }
 
-  .noir-texture::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .shadow-pink-glow {
+    box-shadow: var(--shadow-pink-glow);
+  }
+
+  /* Cosmic card */
+  .cosmic-card {
+    background: linear-gradient(135deg, var(--cosmic-gray-800) 0%, var(--cosmic-navy) 100%);
+    border: 1px solid var(--cosmic-gray-700);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .cosmic-card:hover {
+    border-color: var(--cosmic-purple);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+  }
+
+  /* Nebula gradient background */
+  .nebula-bg {
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 40%),
+      linear-gradient(180deg, var(--cosmic-black) 0%, var(--cosmic-navy) 100%);
+  }
+
+  /* Starfield effect */
+  .starfield {
     background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.03) 2px,
-        rgba(0, 0, 0, 0.03) 4px
-      );
-    pointer-events: none;
-    opacity: 0.5;
+      radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.2), transparent);
+    background-size: 200px 200px;
   }
 
-  /* Halftone dot pattern effect */
-  .halftone {
-    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-    background-size: 4px 4px;
+  /* Gradient text */
+  .text-cosmic-gradient {
+    background: linear-gradient(135deg, var(--cosmic-blue-glow) 0%, var(--cosmic-purple-light) 50%, var(--cosmic-pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  /* Woodcut crosshatch shading (like Toddfather images) */
-  .crosshatch {
-    background-image:
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 2px,
-        rgba(124, 58, 237, 0.03) 2px,
-        rgba(124, 58, 237, 0.03) 4px
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        transparent,
-        transparent 2px,
-        rgba(124, 58, 237, 0.03) 2px,
-        rgba(124, 58, 237, 0.03) 4px
-      );
+  /* Buttons */
+  .btn-cosmic-primary {
+    background: linear-gradient(135deg, var(--cosmic-purple) 0%, var(--cosmic-pink) 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
 
-  /* Noir vignette effect */
-  .vignette {
-    position: relative;
+  .btn-cosmic-primary:hover {
+    box-shadow: var(--shadow-purple-glow);
+    transform: translateY(-1px);
   }
 
-  .vignette::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle at center,
-      transparent 30%,
-      rgba(10, 10, 10, 0.4) 100%
-    );
-    pointer-events: none;
+  .btn-cosmic-outline {
+    border: 2px solid var(--cosmic-purple);
+    color: var(--cosmic-purple-light);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s ease;
   }
 
-  /* Aged paper texture */
-  .aged-paper {
-    background-color: var(--spm-paper);
-    background-image:
-      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  .btn-cosmic-outline:hover {
+    background: var(--cosmic-purple);
+    color: white;
+    box-shadow: var(--shadow-purple-glow);
   }
 
-  /* Ink splatter accent */
-  .ink-splatter {
-    position: relative;
+  /* Studio landing utilities */
+  .studio-shell {
+    background: var(--studio-bg);
+    color: var(--studio-text);
   }
 
-  .ink-splatter::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 100px;
-    height: 100px;
-    background: radial-gradient(
-      circle,
-      rgba(124, 58, 237, 0.1) 0%,
-      transparent 70%
-    );
-    filter: blur(20px);
-    pointer-events: none;
+  .studio-hero {
+    background: var(--studio-hero);
+  }
+
+  .studio-card {
+    background: var(--studio-card);
+    border: 1px solid var(--studio-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .studio-card:hover {
+    border-color: var(--studio-accent);
+    box-shadow: 0 0 24px var(--studio-glow);
+    transform: translateY(-2px);
+  }
+
+  .studio-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--studio-border);
+    background: rgba(0, 0, 0, 0.25);
+    color: var(--studio-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .studio-divider {
+    height: 1px;
+    background: var(--studio-line);
+  }
+
+  .studio-nav {
+    background: color-mix(in srgb, var(--studio-surface) 92%, transparent);
+    border-bottom: 1px solid var(--studio-border);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+  }
+
+  .studio-nav-link {
+    color: var(--studio-text-muted);
+    transition: color 0.2s ease;
+  }
+
+  .studio-nav-link:hover {
+    color: var(--studio-text);
+  }
+
+  .studio-cta {
+    background: linear-gradient(135deg, var(--studio-accent) 0%, var(--studio-accent-2) 100%);
+    color: #0B0B10;
+    padding: 0.9rem 1.8rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .studio-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 26px var(--studio-glow);
+  }
+
+  .studio-cta-ghost {
+    border: 1px solid var(--studio-accent);
+    color: var(--studio-accent);
+    padding: 0.9rem 1.8rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .studio-cta-ghost:hover {
+    background: var(--studio-accent-soft);
+    box-shadow: 0 0 18px var(--studio-glow);
+  }
+
+  .studio-panel {
+    background: var(--studio-card);
+    border: 1px solid var(--studio-border);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  .studio-label {
+    display: block;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--studio-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .studio-input,
+  .studio-select,
+  .studio-textarea {
+    width: 100%;
+    background: var(--studio-surface);
+    border: 1px solid var(--studio-border);
+    border-radius: 0.6rem;
+    padding: 0.75rem 1rem;
+    color: var(--studio-text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .studio-input:focus,
+  .studio-select:focus,
+  .studio-textarea:focus {
+    outline: none;
+    border-color: var(--studio-accent);
+    box-shadow: 0 0 0 2px var(--studio-accent-soft);
+  }
+
+  .studio-textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .studio-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border: 1px solid var(--studio-border);
+    color: var(--studio-text-muted);
   }
 }

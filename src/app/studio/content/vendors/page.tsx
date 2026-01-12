@@ -1,45 +1,77 @@
-'use client';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { NoirCard, NoirCardContent, NoirCardTitle } from '@/components/spm/cards/NoirCard';
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 export default function VendorsAdminPage() {
-  const [vendors, setVendors] = useState<any[]>([]);
+  const [vendors, setVendors] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.tier === 'ENTERPRISE'
 
   useEffect(() => {
-    fetch('/api/content/vendors').then(r => r.json()).then(d => setVendors(d.vendors || []));
-  }, []);
+    fetch('/api/content/vendors')
+      .then((res) => res.json())
+      .then((data) => setVendors(data.vendors || []))
+      .finally(() => setLoading(false))
+  }, [])
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this vendor?')) return;
-    await fetch(`/api/content/vendors/${id}`, { method: 'DELETE' });
-    setVendors(vendors.filter(v => v.id !== id));
-  };
+    if (!confirm('Delete this vendor?')) return
+    await fetch(`/api/content/vendors/${id}`, { method: 'DELETE' })
+    setVendors(vendors.filter((v) => v.id !== id))
+  }
+
+  if (loading) {
+    return (
+      <div className="studio-shell min-h-screen flex items-center justify-center">
+        <div className="text-[color:var(--studio-text-muted)]">Loading...</div>
+      </div>
+    )
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="flex justify-between mb-12">
-        <h1 className="text-4xl font-headline text-white">Vendor Scorecards</h1>
-        <Link href="/studio/content/vendors/new" className="px-6 py-3 bg-spm-purple hover:bg-spm-purple-light text-white rounded-lg font-semibold">
-          + Add Vendor
-        </Link>
-      </div>
-      <div className="space-y-4">
-        {vendors.map(v => (
-          <NoirCard key={v.id} variant="elevated">
-            <NoirCardContent className="p-6 flex justify-between items-start">
+    <div className="studio-shell min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
+          <div>
+            <span className="studio-tag">Vendors</span>
+            <h1 className="mt-4 text-4xl font-serif">Vendor Scorecards</h1>
+          </div>
+          <Link href="/studio/content/vendors/new" className="studio-cta">
+            Add Vendor
+          </Link>
+        </div>
+
+        <div className="space-y-4">
+          {vendors.map((vendor) => (
+            <div key={vendor.id} className="studio-card p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <NoirCardTitle>{v.vendorName}</NoirCardTitle>
-                <p className="text-sm text-gray-400">Rating: {v.overallRating}/5</p>
+                <h2 className="text-lg font-semibold text-[color:var(--studio-text)]">
+                  {vendor.vendorName}
+                </h2>
+                <p className="text-sm text-[color:var(--studio-text-muted)]">
+                  Rating: {vendor.overallRating}/5
+                </p>
               </div>
-              <div className="flex gap-2">
-                <Link href={`/studio/content/vendors/${v.id}`} className="px-4 py-2 bg-spm-black-soft border border-spm-purple-dark/30 text-gray-300 rounded text-sm">Edit</Link>
-                <button onClick={() => handleDelete(v.id)} className="px-4 py-2 bg-red-950/20 border border-red-800/30 text-red-400 rounded text-sm">Delete</button>
-              </div>
-            </NoirCardContent>
-          </NoirCard>
-        ))}
+              {isAdmin && (
+                <div className="flex gap-2">
+                  <Link href={`/studio/content/vendors/${vendor.id}`} className="studio-cta-ghost">
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(vendor.id)}
+                    className="studio-cta-ghost text-[color:var(--studio-accent-3)] border-[color:var(--studio-accent-3)]"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-  );
+  )
 }

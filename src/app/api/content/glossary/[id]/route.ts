@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/db'
+import { isAdminUser } from '@/lib/authz'
 
 // GET single term
 export async function GET(
@@ -45,6 +46,12 @@ export async function PUT(
         { status: 401 }
       )
     }
+    if (!(await isAdminUser(session.user.id))) {
+      return NextResponse.json(
+        { error: 'Admin only' },
+        { status: 403 }
+      )
+    }
 
     const { id } = await params
     const body = await request.json()
@@ -84,6 +91,12 @@ export async function DELETE(
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+    if (!(await isAdminUser(session.user.id))) {
+      return NextResponse.json(
+        { error: 'Admin only' },
+        { status: 403 }
       )
     }
 

@@ -1,92 +1,57 @@
-import Link from 'next/link';
-import { NoirCard, NoirCardContent, NoirCardTitle, NoirCardDescription } from '@/components/spm/cards/NoirCard';
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Content Management | Studio',
   description: 'Manage SPM content: glossary, vendors, benchmarks, component cards.',
-};
+}
 
 export default function ContentManagementPage() {
+  const cards = [
+    {
+      title: 'SPM Glossary',
+      copy: 'Define the syndicate vocabulary and keep terms clean.',
+      href: '/studio/content/glossary',
+    },
+    {
+      title: 'Vendor Scorecards',
+      copy: 'Track vendor ratings, fit, and implementation reality.',
+      href: '/studio/content/vendors',
+    },
+    {
+      title: 'Benchmarks',
+      copy: 'Manage curves, quota patterns, and governance maturity data.',
+      href: '/studio/content/benchmarks',
+    },
+    {
+      title: 'Component Cards',
+      copy: 'Library of plan components, rules, and admin objects.',
+      href: '/studio/content/components',
+    },
+  ]
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-12">
-        <h1 className="text-4xl font-headline text-white mb-3">
-          Content Management
-        </h1>
-        <p className="text-gray-400">
-          Manage all SPM clearing house content from one place
+    <div className="studio-shell min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <span className="studio-tag">Content control</span>
+        <h1 className="mt-4 text-4xl font-serif">Syndicate Content Desk</h1>
+        <p className="mt-3 text-[color:var(--studio-text-muted)] max-w-2xl">
+          Keep the clearing house organized with tightly managed content modules.
         </p>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Glossary */}
-        <Link href="/studio/content/glossary">
-          <NoirCard variant="interactive" hover>
-            <NoirCardContent className="p-8">
-              <NoirCardTitle className="text-2xl mb-4">
-                SPM Glossary
-              </NoirCardTitle>
-              <NoirCardDescription className="mb-6">
-                Manage SPM terminology. Add, edit, and organize term definitions, aliases, and examples.
-              </NoirCardDescription>
-              <div className="text-spm-purple font-semibold">
-                Manage Glossary →
-              </div>
-            </NoirCardContent>
-          </NoirCard>
-        </Link>
-
-        {/* Vendor Scorecards */}
-        <Link href="/studio/content/vendors">
-          <NoirCard variant="interactive" hover>
-            <NoirCardContent className="p-8">
-              <NoirCardTitle className="text-2xl mb-4">
-                Vendor Scorecards
-              </NoirCardTitle>
-              <NoirCardDescription className="mb-6">
-                Manage vendor analysis. Add ratings, best/worst for, implementation reality, and gotchas.
-              </NoirCardDescription>
-              <div className="text-spm-purple font-semibold">
-                Manage Vendors →
-              </div>
-            </NoirCardContent>
-          </NoirCard>
-        </Link>
-
-        {/* Benchmarks */}
-        <Link href="/studio/content/benchmarks">
-          <NoirCard variant="interactive" hover>
-            <NoirCardContent className="p-8">
-              <NoirCardTitle className="text-2xl mb-4">
-                Benchmarks
-              </NoirCardTitle>
-              <NoirCardDescription className="mb-6">
-                Manage benchmark data. Payout curves, quota patterns, governance maturity models.
-              </NoirCardDescription>
-              <div className="text-spm-purple font-semibold">
-                Manage Benchmarks →
-              </div>
-            </NoirCardContent>
-          </NoirCard>
-        </Link>
-
-        {/* Component Cards */}
-        <Link href="/studio/content/components">
-          <NoirCard variant="interactive" hover>
-            <NoirCardContent className="p-8">
-              <NoirCardTitle className="text-2xl mb-4">
-                SPM Component Cards
-              </NoirCardTitle>
-              <NoirCardDescription className="mb-6">
-                Manage component card library. Plan elements, rule types, admin objects explained.
-              </NoirCardDescription>
-              <div className="text-spm-purple font-semibold">
-                Manage Components →
-              </div>
-            </NoirCardContent>
-          </NoirCard>
-        </Link>
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {cards.map((card) => (
+            <Link key={card.href} href={card.href} className="studio-card p-8">
+              <h2 className="text-2xl font-semibold text-[color:var(--studio-text)]">
+                {card.title}
+              </h2>
+              <p className="mt-3 text-sm text-[color:var(--studio-text-muted)]">
+                {card.copy}
+              </p>
+              <span className="mt-6 inline-flex studio-pill">Manage →</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
-  );
+  )
 }

@@ -22,15 +22,15 @@ export default async function CounselPage() {
   })
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-[#0A0A0F]">
       <PublicHeader currentPage="counsel" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
+          <h1 className="text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">
             Counsel Library
           </h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400">
+          <p className="text-lg text-gray-400">
             Intelligent SPM guidance from The Toddfather
           </p>
         </div>
@@ -40,33 +40,33 @@ export default async function CounselPage() {
             <Link
               key={item.id}
               href={`/counsel/${item.slug}`}
-              className="block p-6 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+              className="cosmic-card block p-6"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex gap-2">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-400">
                     {item.type}
                   </span>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
                     {item.difficulty}
                   </span>
                 </div>
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                <span className="text-xs text-gray-600">
                   {item.timeToApplyMin}min
                 </span>
               </div>
 
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
+              <h3 className="text-xl font-semibold text-gray-100 mb-2">
                 {item.title}
               </h3>
 
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+              <p className="text-sm text-gray-400 mb-3">
                 {item.oneLiner}
               </p>
 
-              <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+              <div className="flex items-center justify-between text-xs text-gray-600">
                 <span className="uppercase tracking-wide">{item.channelPrimary.replace('_', ' ')}</span>
-                <span>→</span>
+                <span className="text-purple-400">→</span>
               </div>
             </Link>
           ))}
@@ -74,7 +74,7 @@ export default async function CounselPage() {
 
         {counsel.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <p className="text-gray-500">
               No Counsel items found. Run the seed script to populate the database.
             </p>
           </div>

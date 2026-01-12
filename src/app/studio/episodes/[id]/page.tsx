@@ -1,9 +1,10 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import Link from "next/link"
-import { VideoRenderer } from "@/components/studio/VideoRenderer"
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { VideoRenderer } from '@/components/studio/VideoRenderer'
 
 interface Episode {
   id: string
@@ -24,6 +25,8 @@ interface Episode {
 export default function EpisodeDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.tier === 'ENTERPRISE'
   const [episode, setEpisode] = useState<Episode | null>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState<string | null>(null)
@@ -126,255 +129,236 @@ export default function EpisodeDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-600 dark:text-zinc-400">Loading episode...</div>
+      <div className="studio-shell min-h-screen flex items-center justify-center">
+        <div className="text-[color:var(--studio-text-muted)]">Loading episode...</div>
       </div>
     )
   }
 
   if (!episode) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-600 dark:text-zinc-400">Episode not found</div>
+      <div className="studio-shell min-h-screen flex items-center justify-center">
+        <div className="text-[color:var(--studio-text-muted)]">Episode not found</div>
       </div>
     )
   }
 
-  const statusColors = {
-    DRAFT: 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200',
-    GENERATING: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    PENDING_REVIEW: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-    PUBLISHED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  const statusLabels: Record<string, string> = {
+    DRAFT: 'Draft',
+    GENERATING: 'Generating',
+    PENDING_REVIEW: 'Pending Review',
+    PUBLISHED: 'Published',
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link
-          href="/studio"
-          className="inline-flex items-center text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 mb-8"
-        >
-          ← Back to Studio
+    <div className="studio-shell min-h-screen">
+      <div className="max-w-5xl mx-auto px-6 py-16">
+        <Link href="/studio" className="studio-tag">
+          Back to Studio
         </Link>
 
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between gap-4 mb-3">
+        <div className="mt-6">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
-                {episode.title}
-              </h1>
-              <p className="text-zinc-600 dark:text-zinc-400 mb-2">
+              <h1 className="text-4xl font-serif">{episode.title}</h1>
+              <p className="mt-3 text-[color:var(--studio-text-muted)]">
                 {episode.premise}
               </p>
-              <div className="flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-500">
-                <span className="uppercase tracking-wide">{episode.series}</span>
+              <div className="mt-3 flex items-center gap-2 text-xs text-[color:var(--studio-text-muted)]">
+                <span className="uppercase tracking-[0.2em]">{episode.series}</span>
                 {episode.publishDateTarget && (
                   <>
-                    <span>·</span>
+                    <span>•</span>
                     <span>Target: {new Date(episode.publishDateTarget).toLocaleDateString()}</span>
                   </>
                 )}
               </div>
             </div>
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusColors[episode.status as keyof typeof statusColors]}`}>
-              {episode.status.replace('_', ' ')}
-            </span>
+            <span className="studio-pill">{statusLabels[episode.status] || episode.status}</span>
           </div>
         </div>
 
-        {/* 4-Step Pipeline */}
-        <div className="space-y-6">
-          {/* Step 1: Script */}
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
-            <div className="flex items-center justify-between mb-4">
+        <div className="mt-10 space-y-6">
+          <div className="studio-card p-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.canonicalScript ? 'bg-green-500 text-white' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.canonicalScript ? 'bg-[color:var(--studio-accent)] text-black' : 'bg-[color:var(--studio-surface-2)] text-[color:var(--studio-text-muted)]'}`}>
                   {episode.canonicalScript ? '✓' : '1'}
                 </div>
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                <h3 className="text-lg font-semibold text-[color:var(--studio-text)]">
                   Generate Script
                 </h3>
               </div>
               {!episode.canonicalScript && (
-                <button
-                  onClick={generateScript}
-                  disabled={generating === 'script'}
-                  className="px-4 py-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-lg text-sm font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
-                >
-                  {generating === 'script' ? 'Generating...' : 'Generate Script'}
-                </button>
+                isAdmin ? (
+                  <button
+                    onClick={generateScript}
+                    disabled={generating === 'script'}
+                    className="studio-cta"
+                  >
+                    {generating === 'script' ? 'Generating...' : 'Generate Script'}
+                  </button>
+                ) : (
+                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
+                    Admin access required to generate scripts.
+                  </div>
+                )
               )}
             </div>
 
             {episode.canonicalScript && (
-              <div className="mt-4 p-4 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Canonical Script (v{episode.canonicalScript.version})
-                  </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-500">
-                    {new Date(episode.canonicalScript.createdAt).toLocaleString()}
-                  </span>
+              <div className="mt-6 studio-card p-4">
+                <div className="flex items-center justify-between mb-2 text-xs text-[color:var(--studio-text-muted)]">
+                  <span>Canonical Script (v{episode.canonicalScript.version})</span>
+                  <span>{new Date(episode.canonicalScript.createdAt).toLocaleString()}</span>
                 </div>
-                <pre className="text-xs text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
-                  {episode.canonicalScript.content.substring(0, 500)}...
+                <pre className="text-xs text-[color:var(--studio-text-muted)] whitespace-pre-wrap max-h-72 overflow-y-auto">
+                  {episode.canonicalScript.content}
                 </pre>
               </div>
             )}
           </div>
 
-          {/* Step 2: Cuts */}
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="studio-card p-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.cuts.length > 0 ? 'bg-green-500 text-white' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.cuts.length > 0 ? 'bg-[color:var(--studio-accent)] text-black' : 'bg-[color:var(--studio-surface-2)] text-[color:var(--studio-text-muted)]'}`}>
                   {episode.cuts.length > 0 ? '✓' : '2'}
                 </div>
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                  Generate Platform Cuts
+                <h3 className="text-lg font-semibold text-[color:var(--studio-text)]">
+                  Generate Cuts
                 </h3>
               </div>
-              {episode.canonicalScript && episode.cuts.length === 0 && (
-                <button
-                  onClick={generateCuts}
-                  disabled={generating === 'cuts'}
-                  className="px-4 py-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-lg text-sm font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
-                >
-                  {generating === 'cuts' ? 'Generating...' : 'Generate Cuts'}
-                </button>
+              {episode.canonicalScript && (
+                isAdmin ? (
+                  <button
+                    onClick={generateCuts}
+                    disabled={generating === 'cuts'}
+                    className="studio-cta"
+                  >
+                    {generating === 'cuts' ? 'Generating...' : 'Generate Cuts'}
+                  </button>
+                ) : (
+                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
+                    Admin access required to generate cuts.
+                  </div>
+                )
               )}
             </div>
 
             {episode.cuts.length > 0 && (
-              <div className="mt-4 space-y-4">
-                {episode.cuts.map((cut: any) => (
-                  <div
-                    key={cut.id}
-                    className="p-4 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800"
-                  >
-                    <div className="flex items-center justify-between mb-3">
+              <div className="mt-6 space-y-4">
+                {episode.cuts.map((cut) => (
+                  <div key={cut.id} className="studio-card p-4">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                          {cut.format.replace('_', ' ')}
-                        </span>
-                        <span className="text-xs text-zinc-500 dark:text-zinc-500 ml-3">
-                          Target: {cut.durationTarget}s
-                        </span>
+                        <p className="text-sm font-semibold text-[color:var(--studio-text)]">
+                          {cut.format}
+                        </p>
+                        <p className="text-xs text-[color:var(--studio-text-muted)]">
+                          {cut.status}
+                        </p>
                       </div>
-                      <span className="text-xs text-zinc-500 dark:text-zinc-500">
-                        {cut.status}
-                      </span>
+                      {cut.videoUrl && (
+                        <VideoRenderer url={cut.videoUrl} />
+                      )}
                     </div>
-
-                    {/* Video Generation for this cut */}
-                    <VideoRenderer
-                      episodeId={episode.id}
-                      cutId={cut.id}
-                      cutFormat={cut.format}
-                      onComplete={() => loadEpisode()}
-                    />
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Step 3: Extract Counsel */}
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="studio-card p-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.counselRefs && episode.counselRefs.length > 0 ? 'bg-green-500 text-white' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.counselRefs && episode.counselRefs.length > 0 ? 'bg-[color:var(--studio-accent)] text-black' : 'bg-[color:var(--studio-surface-2)] text-[color:var(--studio-text-muted)]'}`}>
                   {episode.counselRefs && episode.counselRefs.length > 0 ? '✓' : '3'}
                 </div>
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                <h3 className="text-lg font-semibold text-[color:var(--studio-text)]">
                   Extract Counsel Items
                 </h3>
               </div>
               {episode.canonicalScript && (
-                <button
-                  onClick={extractCounsel}
-                  disabled={generating === 'counsel'}
-                  className="px-4 py-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-lg text-sm font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
-                >
-                  {generating === 'counsel' ? 'Extracting...' : 'Extract Counsel'}
-                </button>
+                isAdmin ? (
+                  <button
+                    onClick={extractCounsel}
+                    disabled={generating === 'counsel'}
+                    className="studio-cta"
+                  >
+                    {generating === 'counsel' ? 'Extracting...' : 'Extract Counsel'}
+                  </button>
+                ) : (
+                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
+                    Admin access required to extract counsel.
+                  </div>
+                )
               )}
             </div>
 
             {extractedCounsel.length > 0 && (
-              <div className="mt-4 space-y-3">
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-                  AI extracted {extractedCounsel.length} Counsel items from this script:
+              <div className="mt-6 space-y-3">
+                <p className="text-sm text-[color:var(--studio-text-muted)]">
+                  AI extracted {extractedCounsel.length} Counsel items:
                 </p>
                 {extractedCounsel.map((counsel: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="p-4 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800"
-                  >
+                  <div key={idx} className="studio-card p-4">
                     <div className="flex gap-2 mb-2">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                        {counsel.type}
-                      </span>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                        {counsel.difficulty}
-                      </span>
+                      <span className="studio-pill">{counsel.type}</span>
+                      <span className="studio-pill">{counsel.difficulty}</span>
                     </div>
-                    <h4 className="font-semibold text-zinc-900 dark:text-zinc-50 mb-1">
+                    <h4 className="font-semibold text-[color:var(--studio-text)] mb-1">
                       {counsel.title}
                     </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+                    <p className="text-sm text-[color:var(--studio-text-muted)] mb-2">
                       {counsel.oneLiner}
                     </p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                    <p className="text-xs text-[color:var(--studio-text-muted)]">
                       {counsel.problemStatement}
                     </p>
                   </div>
                 ))}
-                <p className="text-xs text-zinc-500 dark:text-zinc-500 italic mt-4">
-                  Note: These are AI-generated drafts. Review, edit, and manually publish to Counsel library.
+                <p className="text-xs text-[color:var(--studio-text-muted)] italic">
+                  Review and publish these drafts into the Counsel library.
                 </p>
               </div>
             )}
 
             {episode.counselRefs && episode.counselRefs.length > 0 && extractedCounsel.length === 0 && (
-              <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
-                <p className="text-sm text-green-800 dark:text-green-200">
+              <div className="mt-4 studio-card p-3">
+                <p className="text-sm text-[color:var(--studio-accent)]">
                   ✓ {episode.counselRefs.length} Counsel items extracted and linked
                 </p>
               </div>
             )}
           </div>
 
-          {/* Step 4: Publish */}
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.status === 'PUBLISHED' ? 'bg-green-500 text-white' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
-                  {episode.status === 'PUBLISHED' ? '✓' : '4'}
-                </div>
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                  Publish Episode
-                </h3>
+          <div className="studio-card p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.status === 'PUBLISHED' ? 'bg-[color:var(--studio-accent)] text-black' : 'bg-[color:var(--studio-surface-2)] text-[color:var(--studio-text-muted)]'}`}>
+                {episode.status === 'PUBLISHED' ? '✓' : '4'}
               </div>
+              <h3 className="text-lg font-semibold text-[color:var(--studio-text)]">
+                Publish Episode
+              </h3>
             </div>
 
             {episode.status === 'PUBLISHED' ? (
               <div className="space-y-3">
-                <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
-                  <p className="text-sm text-green-800 dark:text-green-200 mb-2">
+                <div className="studio-card p-3">
+                  <p className="text-sm text-[color:var(--studio-accent)] mb-2">
                     ✓ Episode published and live in public library
                   </p>
                   <Link
                     href={`/episodes/${episode.id}`}
-                    className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold"
+                    className="text-xs text-[color:var(--studio-accent)] hover:underline font-semibold"
                   >
                     View public page →
                   </Link>
                 </div>
                 {episode.youtubeVideoId && (
-                  <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <p className="text-xs text-blue-800 dark:text-blue-200">
+                  <div className="studio-card p-3">
+                    <p className="text-xs text-[color:var(--studio-text-muted)]">
                       YouTube: {episode.youtubeVideoId}
                     </p>
                   </div>
@@ -382,38 +366,41 @@ export default function EpisodeDetailPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Ready to publish? Your episode will appear in the public library at <span className="font-mono">/episodes</span>
+                <p className="text-sm text-[color:var(--studio-text-muted)]">
+                  Ready to publish? This episode will appear in the public library.
                 </p>
 
-                {/* Optional YouTube Video ID */}
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                    YouTube Video URL (optional)
-                  </label>
+                  <label className="studio-label">YouTube Video URL (optional)</label>
                   <input
                     type="text"
                     value={youtubeUrl}
                     onChange={(e) => setYoutubeUrl(e.target.value)}
                     placeholder="https://www.youtube.com/watch?v=..."
-                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                    className="studio-input"
                   />
-                  <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-1">
-                    If you've uploaded to YouTube, paste the URL here to embed on the public page
+                  <p className="mt-1 text-xs text-[color:var(--studio-text-muted)]">
+                    Paste the URL to embed the public page.
                   </p>
                 </div>
 
-                <button
-                  onClick={publishEpisode}
-                  disabled={publishing || !episode.canonicalScript}
-                  className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {publishing ? 'Publishing...' : 'Publish Episode'}
-                </button>
+                {isAdmin ? (
+                  <button
+                    onClick={publishEpisode}
+                    disabled={publishing || !episode.canonicalScript}
+                    className="studio-cta w-full"
+                  >
+                    {publishing ? 'Publishing...' : 'Publish Episode'}
+                  </button>
+                ) : (
+                  <div className="studio-card p-4 text-sm text-[color:var(--studio-text-muted)]">
+                    Admin access required to publish this episode.
+                  </div>
+                )}
 
                 {!episode.canonicalScript && (
-                  <p className="text-xs text-amber-600 dark:text-amber-400">
-                    Generate a script first before publishing
+                  <p className="text-xs text-[color:var(--studio-accent-3)]">
+                    Generate a script first before publishing.
                   </p>
                 )}
               </div>
@@ -421,14 +408,13 @@ export default function EpisodeDetailPage() {
           </div>
         </div>
 
-        {/* Script Preview */}
         {episode.canonicalScript && (
           <div className="mt-12">
-            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-4">
-              Script
+            <h2 className="text-2xl font-semibold text-[color:var(--studio-text)] mb-4">
+              Script Preview
             </h2>
-            <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
-              <pre className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap font-mono">
+            <div className="studio-card p-6">
+              <pre className="text-sm text-[color:var(--studio-text-muted)] whitespace-pre-wrap font-mono">
                 {episode.canonicalScript.content}
               </pre>
             </div>
