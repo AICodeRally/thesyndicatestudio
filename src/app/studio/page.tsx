@@ -1,15 +1,7 @@
-import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 
 export default async function StudioPage() {
-  const { userId } = await auth()
-
-  if (!userId) {
-    redirect('/sign-in')
-  }
-
   const episodes = await prisma.episode.findMany({
     orderBy: { createdAt: 'desc' },
     include: {

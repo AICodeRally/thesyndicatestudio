@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 import { VideoRenderer } from '@/components/studio/VideoRenderer'
 
 interface Episode {
@@ -25,8 +24,6 @@ interface Episode {
 export default function EpisodeDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { user } = useAuth()
-  const isAdmin = user?.tier === 'ENTERPRISE'
   const [episode, setEpisode] = useState<Episode | null>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState<string | null>(null)
@@ -347,7 +344,7 @@ export default function EpisodeDetailPage() {
             </div>
             <div className="flex items-center gap-3">
               <span className="studio-pill">{statusLabels[episode.status] || episode.status}</span>
-              {isAdmin && episode.status !== 'PUBLISHED' && (
+              { episode.status !== 'PUBLISHED' && (
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   className="px-3 py-1.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded transition-colors"
@@ -371,19 +368,13 @@ export default function EpisodeDetailPage() {
                 </h3>
               </div>
               {!episode.canonicalScript && (
-                isAdmin ? (
-                  <button
-                    onClick={generateScript}
-                    disabled={generating === 'script'}
-                    className="studio-cta"
-                  >
-                    {generating === 'script' ? 'Generating...' : 'Generate Script'}
-                  </button>
-                ) : (
-                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
-                    Admin access required to generate scripts.
-                  </div>
-                )
+                <button
+                  onClick={generateScript}
+                  disabled={generating === 'script'}
+                  className="studio-cta"
+                >
+                  {generating === 'script' ? 'Generating...' : 'Generate Script'}
+                </button>
               )}
             </div>
 
@@ -411,19 +402,13 @@ export default function EpisodeDetailPage() {
                 </h3>
               </div>
               {episode.canonicalScript && (
-                isAdmin ? (
-                  <button
-                    onClick={generateCuts}
-                    disabled={generating === 'cuts'}
-                    className="studio-cta"
-                  >
-                    {generating === 'cuts' ? 'Generating...' : 'Generate Cuts'}
-                  </button>
-                ) : (
-                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
-                    Admin access required to generate cuts.
-                  </div>
-                )
+                <button
+                  onClick={generateCuts}
+                  disabled={generating === 'cuts'}
+                  className="studio-cta"
+                >
+                  {generating === 'cuts' ? 'Generating...' : 'Generate Cuts'}
+                </button>
               )}
             </div>
 
@@ -524,19 +509,13 @@ export default function EpisodeDetailPage() {
                   </div>
                 )}
 
-                {isAdmin ? (
-                  <button
-                    onClick={generateSoraVideo}
-                    disabled={soraGenerating}
-                    className="studio-cta"
-                  >
-                    {soraGenerating ? 'Generating...' : 'Generate Sora Video'}
-                  </button>
-                ) : (
-                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
-                    Admin access required to generate videos.
-                  </div>
-                )}
+                <button
+                  onClick={generateSoraVideo}
+                  disabled={soraGenerating}
+                  className="studio-cta"
+                >
+                  {soraGenerating ? 'Generating...' : 'Generate Sora Video'}
+                </button>
 
                 {/* Show existing Sora assets */}
                 {episode.assets?.filter(a => a.type === 'SORA').length > 0 && (
@@ -580,19 +559,13 @@ export default function EpisodeDetailPage() {
                 </h3>
               </div>
               {episode.canonicalScript && (
-                isAdmin ? (
-                  <button
-                    onClick={extractCounsel}
-                    disabled={generating === 'counsel'}
-                    className="studio-cta"
-                  >
-                    {generating === 'counsel' ? 'Extracting...' : 'Extract Counsel'}
-                  </button>
-                ) : (
-                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
-                    Admin access required to extract counsel.
-                  </div>
-                )
+                <button
+                  onClick={extractCounsel}
+                  disabled={generating === 'counsel'}
+                  className="studio-cta"
+                >
+                  {generating === 'counsel' ? 'Extracting...' : 'Extract Counsel'}
+                </button>
               )}
             </div>
 
@@ -602,7 +575,7 @@ export default function EpisodeDetailPage() {
                   <p className="text-sm text-[color:var(--studio-text-muted)]">
                     AI extracted {extractedCounsel.length} Counsel items:
                   </p>
-                  {isAdmin && extractedCounsel.some((_, i) => !savedCounselIds.has(i)) && (
+                  { extractedCounsel.some((_, i) => !savedCounselIds.has(i)) && (
                     <button
                       onClick={saveAllCounsel}
                       className="studio-cta text-sm"
@@ -632,7 +605,7 @@ export default function EpisodeDetailPage() {
                           {counsel.problemStatement}
                         </p>
                       </div>
-                      {isAdmin && !savedCounselIds.has(idx) && (
+                      { !savedCounselIds.has(idx) && (
                         <button
                           onClick={() => saveCounselItem(counsel, idx)}
                           disabled={savingCounsel === idx}
@@ -716,19 +689,13 @@ export default function EpisodeDetailPage() {
                   </p>
                 </div>
 
-                {isAdmin ? (
-                  <button
-                    onClick={publishEpisode}
-                    disabled={publishing || !episode.canonicalScript}
-                    className="studio-cta w-full"
-                  >
-                    {publishing ? 'Publishing...' : 'Publish Episode'}
-                  </button>
-                ) : (
-                  <div className="studio-card p-4 text-sm text-[color:var(--studio-text-muted)]">
-                    Admin access required to publish this episode.
-                  </div>
-                )}
+                <button
+                  onClick={publishEpisode}
+                  disabled={publishing || !episode.canonicalScript}
+                  className="studio-cta w-full"
+                >
+                  {publishing ? 'Publishing...' : 'Publish Episode'}
+                </button>
 
                 {!episode.canonicalScript && (
                   <p className="text-xs text-[color:var(--studio-accent-3)]">

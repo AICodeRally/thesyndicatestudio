@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 
 interface CounselItem {
   id: string
@@ -31,8 +30,6 @@ const difficultyColors: Record<string, string> = {
 }
 
 export default function CounselPage() {
-  const { user } = useAuth()
-  const isAdmin = user?.tier === 'ENTERPRISE'
   const [counsel, setCounsel] = useState<CounselItem[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -257,34 +254,32 @@ export default function CounselPage() {
                   </div>
 
                   {/* Actions */}
-                  {isAdmin && (
-                    <div className="flex items-center gap-2">
-                      {item.status === 'DRAFT' && (
-                        <button
-                          onClick={() => handlePublish(item.id)}
-                          disabled={publishing === item.id}
-                          className="studio-cta text-sm"
-                        >
-                          {publishing === item.id ? 'Publishing...' : 'Publish'}
-                        </button>
-                      )}
-                      {item.status === 'PUBLISHED' && (
-                        <Link
-                          href={`/counsel/${item.slug}`}
-                          className="studio-cta-ghost text-sm"
-                          target="_blank"
-                        >
-                          View
-                        </Link>
-                      )}
+                  <div className="flex items-center gap-2">
+                    {item.status === 'DRAFT' && (
                       <button
-                        onClick={() => setDeleteConfirm(item.id)}
-                        className="px-3 py-1.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded transition-colors"
+                        onClick={() => handlePublish(item.id)}
+                        disabled={publishing === item.id}
+                        className="studio-cta text-sm"
                       >
-                        Delete
+                        {publishing === item.id ? 'Publishing...' : 'Publish'}
                       </button>
-                    </div>
-                  )}
+                    )}
+                    {item.status === 'PUBLISHED' && (
+                      <Link
+                        href={`/counsel/${item.slug}`}
+                        className="studio-cta-ghost text-sm"
+                        target="_blank"
+                      >
+                        View
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => setDeleteConfirm(item.id)}
+                      className="px-3 py-1.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

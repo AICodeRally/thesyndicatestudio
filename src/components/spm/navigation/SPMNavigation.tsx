@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -50,8 +49,6 @@ export function SPMNavigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [theme, setTheme] = useState<'luxury-noir' | 'industrial-ops'>('luxury-noir');
-  const { user } = useAuth();
-  const isAdmin = user?.tier === 'ENTERPRISE';
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -153,14 +150,12 @@ export function SPMNavigation() {
               Theme: {theme === 'luxury-noir' ? 'Noir' : 'Ops'}
             </button>
 
-            {isAdmin && (
-              <Link
-                href="/studio/admin"
-                className="px-4 py-2 text-sm font-medium text-[color:var(--studio-accent)] hover:text-[color:var(--studio-text)] transition-colors"
-              >
-                Admin
-              </Link>
-            )}
+            <Link
+              href="/studio/admin"
+              className="px-4 py-2 text-sm font-medium text-[color:var(--studio-accent)] hover:text-[color:var(--studio-text)] transition-colors"
+            >
+              Admin
+            </Link>
 
             <Link
               href="/studio/library"
@@ -236,15 +231,13 @@ export function SPMNavigation() {
               >
                 Theme: {theme === 'luxury-noir' ? 'Noir' : 'Ops'}
               </button>
-              {isAdmin && (
-                <Link
-                  href="/studio/admin"
-                  className="block text-base text-[color:var(--studio-accent)] py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin
-                </Link>
-              )}
+              <Link
+                href="/studio/admin"
+                className="block text-base text-[color:var(--studio-accent)] py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Admin
+              </Link>
               <Link
                 href="/studio/library"
                 className="block text-base text-[color:var(--studio-text)] py-2"

@@ -1,22 +1,7 @@
-import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
-import { isAdminUser } from '@/lib/authz'
 
 export default async function AdminConsolePage() {
-  const { userId } = await auth()
-
-  if (!userId) {
-    redirect('/sign-in')
-  }
-
-  const isAdmin = await isAdminUser(userId)
-
-  if (!isAdmin) {
-    redirect('/studio')
-  }
-
   const [episodeQueue, glossaryCount, vendorCount, benchmarkCount, componentCount] = await Promise.all([
     prisma.episode.findMany({
       where: { status: { not: 'PUBLISHED' } },

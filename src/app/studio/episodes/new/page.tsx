@@ -32,11 +32,6 @@ export default function NewEpisodePage() {
         }),
       })
 
-      if (response.status === 401) {
-        router.push('/sign-in')
-        return
-      }
-
       if (response.ok) {
         const { episode } = await response.json()
         router.push(`/studio/episodes/${episode.id}`)

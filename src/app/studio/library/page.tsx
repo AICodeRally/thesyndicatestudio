@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 
 interface Avatar {
   id: string
@@ -23,8 +22,6 @@ interface Voice {
 }
 
 export default function StudioLibraryPage() {
-  const { user } = useAuth()
-  const isAdmin = user?.tier === 'ENTERPRISE'
   const [avatars, setAvatars] = useState<Avatar[]>([])
   const [voices, setVoices] = useState<Voice[]>([])
   const [uploading, setUploading] = useState(false)
@@ -269,14 +266,12 @@ export default function StudioLibraryPage() {
                             <span className="studio-pill">Ready</span>
                           )}
                         </div>
-                        {isAdmin && (
-                          <button
-                            onClick={() => setDeleteConfirm(avatar.id)}
-                            className="text-xs text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            Delete
-                          </button>
-                        )}
+                        <button
+                          onClick={() => setDeleteConfirm(avatar.id)}
+                          className="text-xs text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -382,14 +377,12 @@ export default function StudioLibraryPage() {
                             )}
                           </div>
                         </div>
-                        {isAdmin && (
-                          <button
-                            onClick={() => setDeleteConfirm(voice.id)}
-                            className="text-xs text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity ml-4"
-                          >
-                            Delete
-                          </button>
-                        )}
+                        <button
+                          onClick={() => setDeleteConfirm(voice.id)}
+                          className="text-xs text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity ml-4"
+                        >
+                          Delete
+                        </button>
                       </div>
                     ))}
                   </div>

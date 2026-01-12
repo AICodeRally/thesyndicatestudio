@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 interface Episode {
   id: string
@@ -29,7 +28,6 @@ const statusColors: Record<string, string> = {
 }
 
 export default function EpisodesPage() {
-  const router = useRouter()
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
