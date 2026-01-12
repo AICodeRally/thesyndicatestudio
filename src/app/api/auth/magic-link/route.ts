@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const token = await createMagicLinkToken(email.toLowerCase())
 
     // Build magic link URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://intelligentspm.com'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://studio.intelligentspm.com'
     const magicLink = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(email.toLowerCase())}`
 
     console.log('Sending magic link to:', email)
