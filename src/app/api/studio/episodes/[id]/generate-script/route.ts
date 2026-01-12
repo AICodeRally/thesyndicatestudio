@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '../../../../../../../auth'
 import { prisma } from '@/lib/db'
 import { generateText } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { gateway, getProviderOptions } from '@/lib/ai/gateway'
 import { isAdminUser } from '@/lib/authz'
 
 export async function POST(
@@ -64,8 +64,9 @@ Voice: "The Toddfather" - experienced SPM practitioner who's seen it all.
 Write ONLY the script content. No meta-commentary. Use clear section headers.`
 
     const { text } = await generateText({
-      model: openai('gpt-4o'),
+      model: gateway('openai/gpt-4o'),
       prompt,
+      providerOptions: getProviderOptions('content'),
     })
 
     // Save script to database

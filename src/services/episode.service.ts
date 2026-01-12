@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import { generateText } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { gateway, getProviderOptions } from '@/lib/ai/gateway'
 import type { Episode, Script, EpisodeStatus } from '@/generated/prisma'
 
 export class NotFoundError extends Error {
@@ -127,8 +127,9 @@ Voice: "The Syndicate" - experienced SPM practitioners who've seen it all.
 Write ONLY the script content. No meta-commentary. Use clear section headers.`
 
       const { text } = await generateText({
-        model: openai('gpt-4o'),
+        model: gateway('openai/gpt-4o'),
         prompt,
+        providerOptions: getProviderOptions('content'),
       })
 
       // Save script to database

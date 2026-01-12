@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '../../../../../../../auth'
 import { prisma } from '@/lib/db'
 import { generateText } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { gateway, getProviderOptions } from '@/lib/ai/gateway'
 import { isAdminUser } from '@/lib/authz'
 
 export async function POST(
@@ -85,8 +85,9 @@ Example:
 Return ONLY the JSON array.`
 
       const { text } = await generateText({
-        model: openai('gpt-4o'),
+        model: gateway('openai/gpt-4o'),
         prompt,
+        providerOptions: getProviderOptions('content'),
       })
 
       // Parse B-roll prompts
@@ -135,8 +136,9 @@ Return a single JSON object:
 Return ONLY the JSON object.`
 
       const { text } = await generateText({
-        model: openai('gpt-4o'),
+        model: gateway('openai/gpt-4o'),
         prompt,
+        providerOptions: getProviderOptions('content'),
       })
 
       try {

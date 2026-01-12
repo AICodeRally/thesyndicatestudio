@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { generateText } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { gateway, getProviderOptions } from '@/lib/ai/gateway'
 
 export async function POST(request: Request) {
   try {
@@ -45,9 +45,10 @@ Return JSON:
 }`
 
     const { text: analysisText } = await generateText({
-      model: openai('gpt-4o'),
+      model: gateway('openai/gpt-4o'),
       prompt: `Analyze this compensation plan:\n\n${text.substring(0, 8000)}`,
       system: systemPrompt,
+      providerOptions: getProviderOptions('analysis'),
     })
 
     // Parse AI response

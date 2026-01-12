@@ -1,5 +1,5 @@
 import { streamText } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { gateway, getProviderOptions } from '@/lib/ai/gateway'
 import { auth } from '../../../../auth'
 import { prisma } from '@/lib/db'
 import { isLocalLLMAvailable, callLocalLLM } from '@/lib/ai/local'
@@ -124,14 +124,15 @@ ${context?.collectionTitle ? `\n\nCurrent Context:\nThe user is viewing Collecti
       }
     }
 
-    // Fallback to OpenAI with streaming
-    console.log('Using OpenAI GPT-4o for SPM query')
+    // Fallback to AI Gateway with streaming (uses BYOK from Vercel dashboard)
+    console.log('Using AI Gateway for SPM query')
 
     const result = streamText({
-      model: openai('gpt-4o'),
+      model: gateway('openai/gpt-4o'),
       messages,
       system: enhancedSystemPrompt,
       temperature: 0.7,
+      providerOptions: getProviderOptions('chat'),
       onFinish: async ({ text }) => {
         // Save assistant message to database
         await prisma.chatMessage.create({
