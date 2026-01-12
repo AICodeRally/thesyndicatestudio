@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createMagicLinkToken } from '@/lib/auth'
 
-const resend = new Resend(process.env.AUTH_RESEND_KEY)
-
 export async function POST(request: Request) {
   try {
     const { email } = await request.json()
@@ -18,16 +16,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
     }
 
+    // Check for API key
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not set')
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
+
     // Create magic link token
     const token = await createMagicLinkToken(email.toLowerCase())
 
     // Build magic link URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://studio.intelligentspm.com'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://intelligentspm.com'
     const magicLink = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(email.toLowerCase())}`
 
+    console.log('Sending magic link to:', email)
+    console.log('Magic link URL:', magicLink)
+
     // Send email via Resend
-    await resend.emails.send({
-      from: 'The Syndicate Studio <studio@intelligentspm.com>',
+    const { data, error } = await resend.emails.send({
+      from: 'The Syndicate Studio <onboarding@resend.dev>',
       to: email,
       subject: 'Sign in to The Syndicate Studio',
       html: `
@@ -45,9 +54,17 @@ export async function POST(request: Request) {
       `,
     })
 
+    if (error) {
+      console.error('Resend error:', error)
+      return NextResponse.json({ error: 'Failed to send email: ' + error.message }, { status: 500 })
+    }
+
+    console.log('Email sent successfully:', data)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Magic link error:', error)
-    return NextResponse.json({ error: 'Failed to send magic link' }, { status: 500 })
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Failed to send magic link'
+    }, { status: 500 })
   }
 }
