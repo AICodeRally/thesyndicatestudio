@@ -1,6 +1,11 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import { PublicHeader } from '@/components/PublicHeader'
+import Image from 'next/image'
+
+export const metadata = {
+  title: 'Episodes | IntelligentSPM',
+  description: 'Intelligent SPM video episodes from The Toddfather. Watch and learn.',
+}
 
 export default async function EpisodesPage() {
   const episodes = await prisma.episode.findMany({
@@ -21,72 +26,198 @@ export default async function EpisodesPage() {
   })
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <PublicHeader currentPage="episodes" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
-            Video Library
-          </h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400">
-            Intelligent Sales videos from The Toddfather
-          </p>
-        </div>
-
-        {episodes.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
-            <p className="text-zinc-600 dark:text-zinc-400">
-              No published episodes yet. Check back soon for new content.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {episodes.map((episode) => (
-              <Link
-                key={episode.id}
-                href={`/episodes/${episode.id}`}
-                className="block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
-              >
-                {/* Thumbnail placeholder */}
-                <div className="aspect-video bg-gradient-to-br from-purple-500 to-zinc-900 flex items-center justify-center">
-                  {episode.youtubeVideoId ? (
-                    <img
-                      src={`https://img.youtube.com/vi/${episode.youtubeVideoId}/maxresdefault.jpg`}
-                      alt={episode.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-white/50 text-sm">Video coming soon</div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-4">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-500 mb-2">
-                    {episode.series}
-                  </div>
-                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
-                    {episode.title}
-                  </h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2 mb-3">
-                    {episode.premise}
-                  </p>
-
-                  {episode.counselRefs && episode.counselRefs.length > 0 && (
-                    <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span>{episode.counselRefs.length} Counsel items</span>
-                    </div>
-                  )}
-                </div>
+    <>
+      {/* Header */}
+      <header className="header sticky-bar bg-gray-900">
+        <div className="container">
+          <div className="main-header">
+            <div className="header-logo">
+              <Link className="d-flex" href="/">
+                <span className="text-2xl font-bold text-white">Intelligent<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SPM</span></span>
               </Link>
-            ))}
+            </div>
+            <div className="header-nav">
+              <nav className="nav-main-menu d-none d-xl-block">
+                <ul className="main-menu">
+                  <li><Link className="color-gray-500" href="/services">Services</Link></li>
+                  <li><Link className="color-gray-500" href="/toddfather">The Toddfather</Link></li>
+                  <li><Link className="color-gray-500" href="/counsel">Counsel</Link></li>
+                  <li><Link className="color-gray-500 active" href="/episodes">Episodes</Link></li>
+                  <li><Link className="color-gray-500" href="/contact">Contact</Link></li>
+                </ul>
+              </nav>
+              <div className="burger-icon burger-icon-white">
+                <span className="burger-icon-top"></span>
+                <span className="burger-icon-mid"></span>
+                <span className="burger-icon-bottom"></span>
+              </div>
+            </div>
+            <div className="header-right text-end">
+              <Link className="btn btn-linear d-none d-sm-inline-block hover-up hover-shadow" href="/sign-in">
+                Sign In
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </header>
+
+      <main className="main">
+        <div className="cover-home1">
+          <div className="container">
+            <div className="row">
+              <div className="col-xl-1"></div>
+              <div className="col-xl-10 col-lg-12">
+                {/* Hero */}
+                <div className="pt-100 pb-50">
+                  <span className="text-sm-bold color-gray-600 wow animate__animated animate__fadeInUp">
+                    Episodes
+                  </span>
+                  <h1 className="color-gray-50 mt-20 mb-20 wow animate__animated animate__fadeInUp">
+                    Video <span className="color-linear">Library</span>
+                  </h1>
+                  <p className="text-lg color-gray-500 wow animate__animated animate__fadeInUp" style={{ maxWidth: '600px' }}>
+                    Intelligent SPM videos from The Toddfather. Watch, learn, and level up your comp knowledge.
+                  </p>
+                </div>
+
+                {/* Episodes Grid */}
+                {episodes.length === 0 ? (
+                  <div className="text-center py-12 mb-50">
+                    <div className="bg-gray-850 border-gray-800 p-8 rounded-lg">
+                      <p className="color-gray-500">
+                        No published episodes yet. Check back soon for new content from The Toddfather.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row mb-50">
+                    {episodes.map((episode) => (
+                      <div key={episode.id} className="col-lg-4 col-md-6 mb-30">
+                        <Link href={`/episodes/${episode.id}`} className="d-block h-100">
+                          <div className="bg-gray-850 border-gray-800 rounded-lg overflow-hidden h-100 hover-up">
+                            {/* Thumbnail */}
+                            <div className="position-relative" style={{ aspectRatio: '16/9' }}>
+                              {episode.youtubeVideoId ? (
+                                <Image
+                                  src={`https://img.youtube.com/vi/${episode.youtubeVideoId}/maxresdefault.jpg`}
+                                  alt={episode.title}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <div className="w-100 h-100 bg-gradient-to-br from-purple-600 to-gray-900 d-flex align-items-center justify-content-center">
+                                  <span className="color-gray-500 text-sm">Video coming soon</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-4">
+                              <div className="text-xs text-uppercase color-gray-600 mb-2" style={{ letterSpacing: '0.1em' }}>
+                                {episode.series}
+                              </div>
+                              <h3 className="font-semibold color-white mb-2">
+                                {episode.title}
+                              </h3>
+                              <p className="text-sm color-gray-500 mb-3" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                {episode.premise}
+                              </p>
+
+                              {episode.counselRefs && episode.counselRefs.length > 0 && (
+                                <div className="d-flex align-items-center gap-2 text-xs color-linear">
+                                  <span>📄</span>
+                                  <span>{episode.counselRefs.length} Counsel items</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* CTA */}
+                <div className="text-center mb-50 p-10 bg-gray-850 border-gray-800 rounded-lg">
+                  <h3 className="color-white mb-4">
+                    Want to create your own <span className="color-linear">SPM episodes</span>?
+                  </h3>
+                  <p className="color-gray-500 mb-6">
+                    Access the studio to create videos with AI-powered script generation and production tools.
+                  </p>
+                  <Link href="/studio" className="btn btn-linear hover-up">
+                    Enter The Studio
+                  </Link>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-1 bg-gray-850 border-gray-800">
+            <div className="row">
+              <div className="col-lg-4 mb-30">
+                <Link className="wow animate__animated animate__fadeInUp" href="/">
+                  <span className="text-2xl font-bold text-white">Intelligent<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SPM</span></span>
+                </Link>
+                <p className="mb-20 mt-20 text-sm color-gray-500 wow animate__animated animate__fadeInUp">
+                  30 years of sales compensation expertise. AI-powered insights. Real-world results.
+                </p>
+              </div>
+              <div className="col-lg-4 mb-30">
+                <h6 className="text-lg mb-30 color-white wow animate__animated animate__fadeInUp">Quick Links</h6>
+                <div className="row">
+                  <div className="col-6">
+                    <ul className="menu-footer">
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/services">Services</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/toddfather">The Toddfather</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/counsel">Counsel</Link></li>
+                    </ul>
+                  </div>
+                  <div className="col-6">
+                    <ul className="menu-footer">
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/episodes">Episodes</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/contact">Contact</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/studio">Studio</Link></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 mb-30">
+                <h4 className="text-lg mb-30 color-white wow animate__animated animate__fadeInUp">Get Started</h4>
+                <p className="text-base color-gray-500 wow animate__animated animate__fadeInUp">
+                  Sign in to access the studio, episodes, and exclusive content.
+                </p>
+                <div className="mt-20 wow animate__animated animate__fadeInUp">
+                  <Link href="/sign-in" className="btn btn-linear hover-up">
+                    Sign In <i className="fi-rr-arrow-small-right"></i>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="footer-bottom border-gray-800">
+              <div className="row">
+                <div className="col-lg-6 text-center text-lg-start">
+                  <p className="text-base color-white wow animate__animated animate__fadeIn">
+                    © {new Date().getFullYear()} IntelligentSPM. All rights reserved.
+                  </p>
+                </div>
+                <div className="col-lg-6 text-center text-lg-end">
+                  <div className="d-flex justify-content-center justify-content-lg-end gap-4">
+                    <Link className="color-gray-500 hover:color-white" href="/legal/privacy">Privacy</Link>
+                    <Link className="color-gray-500 hover:color-white" href="/legal/terms">Terms</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
   )
 }

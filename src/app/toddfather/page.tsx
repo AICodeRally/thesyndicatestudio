@@ -1,233 +1,278 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import {
-  NoirCard,
-  NoirCardContent,
-  NoirCardTitle,
-  NoirCardDescription,
-} from '@/components/spm/cards/NoirCard';
+import Link from 'next/link'
+import Image from 'next/image'
 
 export const metadata = {
-  title: 'The Toddfather | SPM Authority',
+  title: 'The Toddfather | IntelligentSPM',
   description: 'Meet The Toddfather - the voice behind Intelligent SPM. Podcast, speaking, and the reality of sales compensation.',
-};
+}
+
+const contentTypes = [
+  {
+    icon: '📹',
+    title: 'Todd Takes',
+    description: 'Weekly short-form video insights. Avatar + your voice. Surgical SPM takes: why accelerators break forecasting, what governance actually prevents, how AI exposes bad comp design.',
+    href: '/toddfather/todd-takes',
+    cta: 'Watch Todd Takes',
+  },
+  {
+    icon: '🎙️',
+    title: 'Ask Todd Live',
+    description: 'Monthly live Q&A with The Toddfather. Ask about comp design, governance, AI applications, or how to fix a broken plan. Unfiltered. Real answers. 45–60 minutes.',
+    href: '/toddfather/ask-todd-live',
+    cta: 'Register for Ask Todd',
+  },
+  {
+    icon: '⚡',
+    title: 'Shorts',
+    description: '30–45 second clips from Todd Takes and Ask Todd Live. Punchline first. One sharp idea. Built for social, built for learning.',
+    href: '/toddfather/shorts',
+    cta: 'Browse Shorts',
+  },
+  {
+    icon: '🎧',
+    title: 'The Podcast',
+    description: 'Weekly episodes breaking down SPM reality: vendor scorecards, implementation gotchas, comp design patterns that work (and the ones that fail).',
+    href: '/toddfather/podcast',
+    cta: 'Listen Now',
+  },
+  {
+    icon: '🎤',
+    title: 'Speaking',
+    description: 'Keynotes, workshops, and executive sessions on SPM governance, comp strategy, and implementation reality. No slides. No buzzwords. Just truth.',
+    href: '/toddfather/speaking',
+    cta: 'Book Speaking',
+  },
+  {
+    icon: '🎬',
+    title: 'The Studio',
+    description: 'Where The Toddfather creates: video production, script generation, and the SPM content engine powered by AI + two decades of domain expertise.',
+    href: '/studio',
+    cta: 'Enter Studio',
+  },
+]
 
 export default function ToddFatherPage() {
   return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          {/* The Toddfather Noir Panel - Pointing */}
-          <Image
-            src="/images/noir/toddfather_noir_panel_3_right.png"
-            alt="The Toddfather"
-            fill
-            className="object-cover opacity-25"
-            priority
-            quality={90}
-          />
-
-          {/* Noir overlays */}
-          <div className="absolute inset-0 bg-gradient-to-br from-spm-black/80 via-spm-purple-dark/40 to-spm-black/80" />
-          <div className="absolute inset-0 crosshatch opacity-25" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(10,10,10,0.7)_100%)]" />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-display text-white mb-8">
-              THE TODDFATHER
-            </h1>
-            <p className="text-headline text-gray-200 mb-6">
-              The Voice Behind Intelligent SPM
-            </p>
-            <p className="text-xl text-gray-300 leading-relaxed">
-              Twenty years of SPM reality. No fluff, no vendor spin, no consultant theater.
-              Just the truth about comp design, governance, and what actually works.
-            </p>
+    <>
+      {/* Header */}
+      <header className="header sticky-bar bg-gray-900">
+        <div className="container">
+          <div className="main-header">
+            <div className="header-logo">
+              <Link className="d-flex" href="/">
+                <span className="text-2xl font-bold text-white">Intelligent<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SPM</span></span>
+              </Link>
+            </div>
+            <div className="header-nav">
+              <nav className="nav-main-menu d-none d-xl-block">
+                <ul className="main-menu">
+                  <li><Link className="color-gray-500" href="/services">Services</Link></li>
+                  <li><Link className="color-gray-500 active" href="/toddfather">The Toddfather</Link></li>
+                  <li><Link className="color-gray-500" href="/counsel">Counsel</Link></li>
+                  <li><Link className="color-gray-500" href="/episodes">Episodes</Link></li>
+                  <li><Link className="color-gray-500" href="/contact">Contact</Link></li>
+                </ul>
+              </nav>
+              <div className="burger-icon burger-icon-white">
+                <span className="burger-icon-top"></span>
+                <span className="burger-icon-mid"></span>
+                <span className="burger-icon-bottom"></span>
+              </div>
+            </div>
+            <div className="header-right text-end">
+              <Link className="btn btn-linear d-none d-sm-inline-block hover-up hover-shadow" href="/sign-in">
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* About Section */}
-      <section className="py-20 container mx-auto px-6">
-        <div className="max-w-4xl mx-auto">
-          <NoirCard variant="elevated">
-            <NoirCardContent className="p-12">
-              <h2 className="text-headline-lg text-spm-purple mb-8">
-                Who Is The Toddfather?
-              </h2>
-              <div className="space-y-6 text-lg text-gray-300 leading-relaxed">
-                <p>
-                  The Toddfather is the authoritative voice on Sales Performance Management (SPM) -
-                  cutting through vendor marketing, consultant frameworks, and implementation theater
-                  to deliver the reality of what works and what breaks.
-                </p>
-                <p>
-                  With two decades of experience across every SPM platform, comp structure, and
-                  governance model, The Toddfather has seen it all: the rollout disasters, the
-                  "best practice" failures, the vendor promises that vaporize post-contract.
-                </p>
-                <p>
-                  This isn't another thought leadership brand. It's a clearing house for SPM truth -
-                  where comp professionals, revenue leaders, and governance teams get the real story
-                  before they make million-dollar mistakes.
-                </p>
+      <main className="main">
+        {/* Hero Section */}
+        <section className="relative py-32 overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/noir/toddfather_noir_panel_3_right.png"
+              alt="The Toddfather"
+              fill
+              className="object-cover opacity-20"
+              priority
+              quality={90}
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-purple-900/30 to-gray-900/90" />
+          </div>
+
+          <div className="relative z-10 container">
+            <div className="row">
+              <div className="col-xl-1"></div>
+              <div className="col-xl-10 col-lg-12">
+                <div className="text-center">
+                  <span className="text-sm-bold color-gray-600 wow animate__animated animate__fadeInUp">
+                    The Voice Behind Intelligent SPM
+                  </span>
+                  <h1 className="color-gray-50 mt-20 mb-20 wow animate__animated animate__fadeInUp">
+                    THE <span className="color-linear">TODDFATHER</span>
+                  </h1>
+                  <p className="text-xl color-gray-500 max-w-3xl mx-auto wow animate__animated animate__fadeInUp">
+                    Twenty years of SPM reality. No fluff, no vendor spin, no consultant theater.
+                    Just the truth about comp design, governance, and what actually works.
+                  </p>
+                </div>
               </div>
-            </NoirCardContent>
-          </NoirCard>
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
 
-      {/* What The Toddfather Does */}
-      <section className="py-20 bg-spm-black-soft">
-        <div className="container mx-auto px-6">
-          <h2 className="text-headline-lg text-center text-white mb-16">
-            What The Toddfather Delivers
-          </h2>
+        <div className="cover-home1">
+          <div className="container">
+            <div className="row">
+              <div className="col-xl-1"></div>
+              <div className="col-xl-10 col-lg-12">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <NoirCard variant="interactive" hover>
-              <NoirCardContent className="p-8">
-                <NoirCardTitle>Todd Takes</NoirCardTitle>
-                <NoirCardDescription className="mb-6">
-                  Weekly short-form video insights. Avatar + your voice. Surgical SPM takes:
-                  why accelerators break forecasting, what governance actually prevents, how AI
-                  exposes bad comp design.
-                </NoirCardDescription>
-                <Link
-                  href="/toddfather/todd-takes"
-                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
-                >
-                  Watch Todd Takes →
-                </Link>
-              </NoirCardContent>
-            </NoirCard>
+                {/* About Section */}
+                <div className="mb-50">
+                  <div className="bg-gray-850 border-gray-800 p-8 md:p-12 rounded-lg">
+                    <h2 className="color-linear mb-6">Who Is The Toddfather?</h2>
+                    <div className="space-y-4 text-lg color-gray-500">
+                      <p>
+                        The Toddfather is the authoritative voice on Sales Performance Management (SPM) -
+                        cutting through vendor marketing, consultant frameworks, and implementation theater
+                        to deliver the reality of what works and what breaks.
+                      </p>
+                      <p>
+                        With two decades of experience across every SPM platform, comp structure, and
+                        governance model, The Toddfather has seen it all: the rollout disasters, the
+                        "best practice" failures, the vendor promises that vaporize post-contract.
+                      </p>
+                      <p>
+                        This isn't another thought leadership brand. It's a clearing house for SPM truth -
+                        where comp professionals, revenue leaders, and governance teams get the real story
+                        before they make million-dollar mistakes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            <NoirCard variant="interactive" hover>
-              <NoirCardContent className="p-8">
-                <NoirCardTitle>Ask Todd Live</NoirCardTitle>
-                <NoirCardDescription className="mb-6">
-                  Monthly live Q&A with The Toddfather. Ask about comp design, governance,
-                  AI applications, or how to fix a broken plan. Unfiltered. Real answers.
-                  45–60 minutes.
-                </NoirCardDescription>
-                <Link
-                  href="/toddfather/ask-todd-live"
-                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
-                >
-                  Register for Ask Todd →
-                </Link>
-              </NoirCardContent>
-            </NoirCard>
+                {/* Content Types Grid */}
+                <div className="mb-50">
+                  <h2 className="color-linear d-inline-block mb-10 text-center w-100 wow animate__animated animate__fadeInUp">
+                    What The Toddfather Delivers
+                  </h2>
 
-            <NoirCard variant="interactive" hover>
-              <NoirCardContent className="p-8">
-                <NoirCardTitle>Shorts</NoirCardTitle>
-                <NoirCardDescription className="mb-6">
-                  30–45 second clips from Todd Takes and Ask Todd Live. Punchline first.
-                  One sharp idea. Built for social, built for learning.
-                </NoirCardDescription>
-                <Link
-                  href="/toddfather/shorts"
-                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
-                >
-                  Browse Shorts →
-                </Link>
-              </NoirCardContent>
-            </NoirCard>
+                  <div className="row mt-30">
+                    {contentTypes.map((item) => (
+                      <div key={item.title} className="col-lg-4 col-md-6 mb-30">
+                        <div className="bg-gray-850 border-gray-800 p-6 rounded-lg h-100 hover-up">
+                          <div className="text-4xl mb-4">{item.icon}</div>
+                          <h3 className="color-white mb-3">{item.title}</h3>
+                          <p className="color-gray-500 text-sm mb-4">{item.description}</p>
+                          <Link href={item.href} className="color-linear hover:underline font-semibold">
+                            {item.cta} →
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-            <NoirCard variant="interactive" hover>
-              <NoirCardContent className="p-8">
-                <NoirCardTitle>The Podcast</NoirCardTitle>
-                <NoirCardDescription className="mb-6">
-                  Weekly episodes breaking down SPM reality: vendor scorecards, implementation
-                  gotchas, comp design patterns that work (and the ones that fail).
-                </NoirCardDescription>
-                <Link
-                  href="/toddfather/podcast"
-                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
-                >
-                  Listen Now →
-                </Link>
-              </NoirCardContent>
-            </NoirCard>
+                {/* The Toddfather Promise */}
+                <div className="mb-50">
+                  <div className="bg-gray-850 border-gray-800 p-8 md:p-12 rounded-lg text-center">
+                    <h2 className="color-linear mb-6">The Toddfather Promise</h2>
+                    <div className="space-y-4 text-lg color-gray-500">
+                      <p className="font-semibold color-white">No vendor spin.</p>
+                      <p className="font-semibold color-white">No consultant theater.</p>
+                      <p className="font-semibold color-white">No "best practice" bullshit.</p>
+                      <p className="mt-8 text-xl color-linear">
+                        Just the truth about what works, what breaks, and why.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            <NoirCard variant="interactive" hover>
-              <NoirCardContent className="p-8">
-                <NoirCardTitle>Speaking</NoirCardTitle>
-                <NoirCardDescription className="mb-6">
-                  Keynotes, workshops, and executive sessions on SPM governance, comp strategy,
-                  and implementation reality. No slides. No buzzwords. Just truth.
-                </NoirCardDescription>
-                <Link
-                  href="/toddfather/speaking"
-                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
-                >
-                  Book Speaking →
-                </Link>
-              </NoirCardContent>
-            </NoirCard>
+                {/* CTA */}
+                <div className="text-center mb-50 p-10 bg-gray-850 border-gray-800 rounded-lg">
+                  <h3 className="color-white mb-4 wow animate__animated animate__fadeInUp">
+                    Join <span className="color-linear">The Syndicate</span>
+                  </h3>
+                  <p className="color-gray-500 mb-6 wow animate__animated animate__fadeInUp">
+                    Get weekly SPM reality delivered: vendor scorecards, implementation gotchas,
+                    and the comp patterns that actually work.
+                  </p>
+                  <Link href="/contact" className="btn btn-linear hover-up">
+                    Subscribe to The Syndicate
+                  </Link>
+                </div>
 
-            <NoirCard variant="interactive" hover>
-              <NoirCardContent className="p-8">
-                <NoirCardTitle>The Studio</NoirCardTitle>
-                <NoirCardDescription className="mb-6">
-                  Where The Toddfather creates: video production, script generation, and the
-                  SPM content engine powered by AI + two decades of domain expertise.
-                </NoirCardDescription>
-                <Link
-                  href="/studio"
-                  className="text-spm-purple hover:text-spm-purple-light font-semibold transition-colors"
-                >
-                  Enter Studio →
-                </Link>
-              </NoirCardContent>
-            </NoirCard>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </main>
 
-      {/* The Toddfather Promise */}
-      <section className="py-20 container mx-auto px-6">
-        <div className="max-w-4xl mx-auto">
-          <NoirCard variant="elevated">
-            <NoirCardContent className="p-12 text-center">
-              <h2 className="text-headline-lg text-spm-purple mb-6">
-                The Toddfather Promise
-              </h2>
-              <div className="space-y-4 text-lg text-gray-300">
-                <p className="font-semibold">No vendor spin.</p>
-                <p className="font-semibold">No consultant theater.</p>
-                <p className="font-semibold">No "best practice" bullshit.</p>
-                <p className="mt-8 text-xl text-white">
-                  Just the truth about what works, what breaks, and why.
+      {/* Footer */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-1 bg-gray-850 border-gray-800">
+            <div className="row">
+              <div className="col-lg-4 mb-30">
+                <Link className="wow animate__animated animate__fadeInUp" href="/">
+                  <span className="text-2xl font-bold text-white">Intelligent<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SPM</span></span>
+                </Link>
+                <p className="mb-20 mt-20 text-sm color-gray-500 wow animate__animated animate__fadeInUp">
+                  30 years of sales compensation expertise. AI-powered insights. Real-world results.
                 </p>
               </div>
-            </NoirCardContent>
-          </NoirCard>
+              <div className="col-lg-4 mb-30">
+                <h6 className="text-lg mb-30 color-white wow animate__animated animate__fadeInUp">Quick Links</h6>
+                <div className="row">
+                  <div className="col-6">
+                    <ul className="menu-footer">
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/services">Services</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/toddfather">The Toddfather</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/counsel">Counsel</Link></li>
+                    </ul>
+                  </div>
+                  <div className="col-6">
+                    <ul className="menu-footer">
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/episodes">Episodes</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/contact">Contact</Link></li>
+                      <li className="wow animate__animated animate__fadeInUp"><Link className="color-gray-500" href="/studio">Studio</Link></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 mb-30">
+                <h4 className="text-lg mb-30 color-white wow animate__animated animate__fadeInUp">Get Started</h4>
+                <p className="text-base color-gray-500 wow animate__animated animate__fadeInUp">
+                  Sign in to access the studio, episodes, and exclusive content.
+                </p>
+                <div className="mt-20 wow animate__animated animate__fadeInUp">
+                  <Link href="/sign-in" className="btn btn-linear hover-up">
+                    Sign In <i className="fi-rr-arrow-small-right"></i>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="footer-bottom border-gray-800">
+              <div className="row">
+                <div className="col-lg-6 text-center text-lg-start">
+                  <p className="text-base color-white wow animate__animated animate__fadeIn">
+                    © {new Date().getFullYear()} IntelligentSPM. All rights reserved.
+                  </p>
+                </div>
+                <div className="col-lg-6 text-center text-lg-end">
+                  <div className="d-flex justify-content-center justify-content-lg-end gap-4">
+                    <Link className="color-gray-500 hover:color-white" href="/legal/privacy">Privacy</Link>
+                    <Link className="color-gray-500 hover:color-white" href="/legal/terms">Terms</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-spm-purple-dark/20 via-spm-black to-spm-black border-t border-spm-purple-dark/30">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-headline-lg text-white mb-6">
-            Join The Syndicate
-          </h2>
-          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Get weekly SPM reality delivered: vendor scorecards, implementation gotchas,
-            and the comp patterns that actually work.
-          </p>
-          <Link
-            href="/syndicate"
-            className="inline-block px-12 py-4 bg-spm-purple hover:bg-spm-purple-light text-white text-lg font-semibold rounded-lg transition-all hover:shadow-purple-glow hover:scale-105"
-          >
-            Subscribe to The Syndicate
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
+      </footer>
+    </>
+  )
 }

@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 function SignInForm() {
   const [email, setEmail] = useState('')
@@ -47,54 +48,56 @@ function SignInForm() {
       )}
 
       {sent ? (
-        <div className="bg-[#1A1A2F] border border-[#2A2A3A] rounded-lg p-8 text-center">
+        <div className="bg-gray-850 border-gray-800 rounded-lg p-8 text-center">
           <div className="text-4xl mb-4">📬</div>
-          <h2 className="text-xl font-semibold text-white mb-2">Check your inbox</h2>
-          <p className="text-gray-400 mb-4">
-            We sent a magic link to <span className="text-purple-400">{email}</span>
+          <h2 className="text-xl font-semibold color-white mb-2">Check your inbox</h2>
+          <p className="color-gray-500 mb-4">
+            We sent a magic link to <span className="color-linear">{email}</span>
           </p>
-          <p className="text-gray-500 text-sm">
+          <p className="color-gray-600 text-sm">
             Click the link in the email to sign in. It expires in 15 minutes.
           </p>
           <button
             onClick={() => setSent(false)}
-            className="mt-6 text-purple-400 hover:text-purple-300 text-sm"
+            className="mt-6 color-linear hover:underline text-sm"
           >
             Use a different email
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-[#1A1A2F] border border-[#2A2A3A] rounded-lg p-8">
+        <div className="bg-gray-850 border-gray-800 rounded-lg p-8">
           {error && (
             <div className="mb-4 p-3 bg-red-900/20 border border-red-500/30 rounded text-red-400 text-sm">
               {error}
             </div>
           )}
 
-          <label className="block text-gray-300 text-sm mb-2">
-            Email address
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
-            required
-            className="w-full px-4 py-3 bg-[#2A2A3A] border border-[#3A3A4A] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
-          />
+          <form onSubmit={handleSubmit}>
+            <label className="block color-gray-500 text-sm mb-2">
+              Email address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@company.com"
+              required
+              className="w-full px-4 py-3 bg-gray-900 border-2 border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors"
+            />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? 'Sending...' : 'Send Magic Link'}
-          </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-linear hover-up w-full mt-4 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Sending...' : 'Send Magic Link'}
+            </button>
 
-          <p className="mt-4 text-center text-gray-500 text-sm">
-            No password needed. We'll email you a link to sign in.
-          </p>
-        </form>
+            <p className="mt-4 text-center color-gray-600 text-sm">
+              No password needed. We'll email you a link to sign in.
+            </p>
+          </form>
+        </div>
       )}
     </>
   )
@@ -102,25 +105,70 @@ function SignInForm() {
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-            The Syndicate Studio
-          </h1>
-          <p className="mt-2 text-gray-400">
-            Sign in with your email
-          </p>
-        </div>
-
-        <Suspense fallback={
-          <div className="bg-[#1A1A2F] border border-[#2A2A3A] rounded-lg p-8 text-center">
-            <div className="text-gray-400">Loading...</div>
+    <>
+      {/* Header */}
+      <header className="header sticky-bar bg-gray-900">
+        <div className="container">
+          <div className="main-header">
+            <div className="header-logo">
+              <Link className="d-flex" href="/">
+                <span className="text-2xl font-bold text-white">Intelligent<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SPM</span></span>
+              </Link>
+            </div>
+            <div className="header-nav">
+              <nav className="nav-main-menu d-none d-xl-block">
+                <ul className="main-menu">
+                  <li><Link className="color-gray-500" href="/services">Services</Link></li>
+                  <li><Link className="color-gray-500" href="/toddfather">The Toddfather</Link></li>
+                  <li><Link className="color-gray-500" href="/counsel">Counsel</Link></li>
+                  <li><Link className="color-gray-500" href="/episodes">Episodes</Link></li>
+                  <li><Link className="color-gray-500" href="/contact">Contact</Link></li>
+                </ul>
+              </nav>
+              <div className="burger-icon burger-icon-white">
+                <span className="burger-icon-top"></span>
+                <span className="burger-icon-mid"></span>
+                <span className="burger-icon-bottom"></span>
+              </div>
+            </div>
           </div>
-        }>
-          <SignInForm />
-        </Suspense>
-      </div>
-    </div>
+        </div>
+      </header>
+
+      <main className="main">
+        <div className="cover-home1">
+          <div className="container">
+            <div className="row justify-content-center">
+              <div className="col-xl-5 col-lg-6 col-md-8">
+                <div className="pt-100 pb-100">
+                  <div className="text-center mb-8">
+                    <h1 className="color-gray-50 mb-3">
+                      Sign <span className="color-linear">In</span>
+                    </h1>
+                    <p className="color-gray-500">
+                      Enter your email to get a magic link
+                    </p>
+                  </div>
+
+                  <Suspense fallback={
+                    <div className="bg-gray-850 border-gray-800 rounded-lg p-8 text-center">
+                      <div className="color-gray-500">Loading...</div>
+                    </div>
+                  }>
+                    <SignInForm />
+                  </Suspense>
+
+                  <div className="text-center mt-8">
+                    <Link href="/" className="color-gray-500 hover:color-linear text-sm">
+                      ← Back to home
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </>
   )
 }
