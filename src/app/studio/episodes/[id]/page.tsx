@@ -33,6 +33,14 @@ export default function EpisodeDetailPage() {
   const [extractedCounsel, setExtractedCounsel] = useState<any[]>([])
   const [publishing, setPublishing] = useState(false)
   const [youtubeUrl, setYoutubeUrl] = useState('')
+  const [soraGenerating, setSoraGenerating] = useState(false)
+  const [soraStatus, setSoraStatus] = useState<string | null>(null)
+  const [soraVideoId, setSoraVideoId] = useState<string | null>(null)
+  const [soraSettings, setSoraSettings] = useState({
+    cutId: '',
+    aspectRatio: '9:16' as '16:9' | '9:16' | '1:1',
+    seconds: '8' as '4' | '8' | '12',
+  })
 
   useEffect(() => {
     loadEpisode()
@@ -125,6 +133,76 @@ export default function EpisodeDetailPage() {
     } finally {
       setPublishing(false)
     }
+  }
+
+  const generateSoraVideo = async () => {
+    setSoraGenerating(true)
+    setSoraStatus('Starting Sora generation...')
+    try {
+      const res = await fetch(`/api/studio/episodes/${params.id}/render-sora`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cutId: soraSettings.cutId || undefined,
+          aspectRatio: soraSettings.aspectRatio,
+          seconds: soraSettings.seconds,
+        }),
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        setSoraStatus(`Error: ${error.error}`)
+        setSoraGenerating(false)
+        return
+      }
+
+      const data = await res.json()
+      setSoraVideoId(data.videoId)
+      setSoraStatus('Processing... This may take a few minutes.')
+
+      // Start polling for status
+      pollSoraStatus(data.videoId)
+    } catch (error) {
+      console.error('Failed to start Sora generation:', error)
+      setSoraStatus('Failed to start generation')
+      setSoraGenerating(false)
+    }
+  }
+
+  const pollSoraStatus = async (videoId: string) => {
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/studio/videos/sora/${videoId}/status`)
+        if (!res.ok) {
+          setSoraStatus('Error checking status')
+          setSoraGenerating(false)
+          return
+        }
+
+        const data = await res.json()
+
+        if (data.status === 'completed') {
+          setSoraStatus('Video complete!')
+          setSoraGenerating(false)
+          await loadEpisode() // Reload to get new asset
+          return
+        } else if (data.status === 'failed') {
+          setSoraStatus('Video generation failed')
+          setSoraGenerating(false)
+          return
+        } else {
+          setSoraStatus(`Status: ${data.status}... Still processing`)
+          // Continue polling
+          setTimeout(poll, 5000)
+        }
+      } catch (error) {
+        console.error('Error polling Sora status:', error)
+        setSoraStatus('Error checking status')
+        setSoraGenerating(false)
+      }
+    }
+
+    poll()
   }
 
   if (loading) {
@@ -265,6 +343,125 @@ export default function EpisodeDetailPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sora Video Generation */}
+          <div className="studio-card p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${episode.assets?.some(a => a.type === 'SORA' && a.status === 'COMPLETED') ? 'bg-[color:var(--studio-accent)] text-black' : 'bg-[color:var(--studio-surface-2)] text-[color:var(--studio-text-muted)]'}`}>
+                {episode.assets?.some(a => a.type === 'SORA' && a.status === 'COMPLETED') ? '✓' : '🎬'}
+              </div>
+              <h3 className="text-lg font-semibold text-[color:var(--studio-text)]">
+                Generate Sora Video
+              </h3>
+            </div>
+
+            {!episode.canonicalScript ? (
+              <p className="text-sm text-[color:var(--studio-text-muted)]">
+                Generate a script first to create Sora videos.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm text-[color:var(--studio-text-muted)]">
+                  Generate AI video from your script using OpenAI Sora.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="studio-label">Source</label>
+                    <select
+                      value={soraSettings.cutId}
+                      onChange={(e) => setSoraSettings({ ...soraSettings, cutId: e.target.value })}
+                      className="studio-input"
+                    >
+                      <option value="">Canonical Script</option>
+                      {episode.cuts.map((cut) => (
+                        <option key={cut.id} value={cut.id}>
+                          {cut.format} Cut
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="studio-label">Aspect Ratio</label>
+                    <select
+                      value={soraSettings.aspectRatio}
+                      onChange={(e) => setSoraSettings({ ...soraSettings, aspectRatio: e.target.value as any })}
+                      className="studio-input"
+                    >
+                      <option value="9:16">9:16 (Vertical/TikTok)</option>
+                      <option value="16:9">16:9 (Horizontal/YouTube)</option>
+                      <option value="1:1">1:1 (Square)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="studio-label">Duration</label>
+                    <select
+                      value={soraSettings.seconds}
+                      onChange={(e) => setSoraSettings({ ...soraSettings, seconds: e.target.value as any })}
+                      className="studio-input"
+                    >
+                      <option value="4">4 seconds</option>
+                      <option value="8">8 seconds</option>
+                      <option value="12">12 seconds</option>
+                    </select>
+                  </div>
+                </div>
+
+                {soraStatus && (
+                  <div className="studio-card p-3">
+                    <p className={`text-sm ${soraStatus.includes('Error') || soraStatus.includes('failed') ? 'text-red-400' : 'text-[color:var(--studio-accent)]'}`}>
+                      {soraGenerating && <span className="inline-block w-2 h-2 bg-[color:var(--studio-accent)] rounded-full animate-pulse mr-2"></span>}
+                      {soraStatus}
+                    </p>
+                  </div>
+                )}
+
+                {isAdmin ? (
+                  <button
+                    onClick={generateSoraVideo}
+                    disabled={soraGenerating}
+                    className="studio-cta"
+                  >
+                    {soraGenerating ? 'Generating...' : 'Generate Sora Video'}
+                  </button>
+                ) : (
+                  <div className="studio-card p-3 text-sm text-[color:var(--studio-text-muted)]">
+                    Admin access required to generate videos.
+                  </div>
+                )}
+
+                {/* Show existing Sora assets */}
+                {episode.assets?.filter(a => a.type === 'SORA').length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-sm font-semibold text-[color:var(--studio-text)]">Generated Videos:</p>
+                    {episode.assets.filter(a => a.type === 'SORA').map((asset) => (
+                      <div key={asset.id} className="studio-card p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="studio-pill">{asset.status}</span>
+                          <span className="text-xs text-[color:var(--studio-text-muted)]">
+                            {new Date(asset.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                        {asset.url ? (
+                          <video
+                            src={asset.url}
+                            controls
+                            className="w-full max-w-md rounded-lg"
+                          />
+                        ) : (
+                          <p className="text-xs text-[color:var(--studio-text-muted)]">
+                            {asset.status === 'PROCESSING' ? 'Video is being generated...' : 'No video URL yet'}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
