@@ -7,6 +7,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const token = searchParams.get('token')
     const email = searchParams.get('email')
+    const redirect = searchParams.get('redirect') || '/studio'
 
     if (!token || !email) {
       return NextResponse.redirect(new URL('/sign-in?error=invalid', request.url))
@@ -29,8 +30,9 @@ export async function GET(request: Request) {
       maxAge: 30 * 24 * 60 * 60, // 30 days
     })
 
-    // Redirect to studio
-    return NextResponse.redirect(new URL('/studio', request.url))
+    // Redirect to requested page (validated to start with /)
+    const safeRedirect = redirect.startsWith('/') ? redirect : '/studio'
+    return NextResponse.redirect(new URL(safeRedirect, request.url))
   } catch (error) {
     console.error('Verify error:', error)
     return NextResponse.redirect(new URL('/sign-in?error=failed', request.url))

@@ -4,11 +4,14 @@ import { createMagicLinkToken } from '@/lib/auth'
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json()
+    const { email, redirect } = await request.json()
 
     if (!email || typeof email !== 'string') {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 })
     }
+
+    // Default redirect to /studio if not provided
+    const redirectPath = redirect || '/studio'
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -28,8 +31,8 @@ export async function POST(request: Request) {
     const token = await createMagicLinkToken(email.toLowerCase())
 
     // Build magic link URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://studio.intelligentspm.com'
-    const magicLink = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(email.toLowerCase())}`
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://intelligentspm.com'
+    const magicLink = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(email.toLowerCase())}&redirect=${encodeURIComponent(redirectPath)}`
 
     console.log('Sending magic link to:', email)
     console.log('Magic link URL:', magicLink)

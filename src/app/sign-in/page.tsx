@@ -11,6 +11,7 @@ function SignInForm() {
   const [error, setError] = useState('')
   const searchParams = useSearchParams()
   const urlError = searchParams.get('error')
+  const redirectTo = searchParams.get('redirect') || '/studio'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +22,7 @@ function SignInForm() {
       const res = await fetch('/api/auth/magic-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, redirect: redirectTo }),
       })
 
       if (res.ok) {
