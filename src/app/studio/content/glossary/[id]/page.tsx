@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { useUser } from '@clerk/nextjs'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function EditGlossaryTermPage() {
   const router = useRouter()
   const params = useParams()
-  const { user, isLoaded } = useUser()
-  const isAdmin = user?.publicMetadata?.tier === 'ENTERPRISE'
+  const { user, isLoading: isLoaded } = useAuth()
+  const isAdmin = user?.tier === 'ENTERPRISE'
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')

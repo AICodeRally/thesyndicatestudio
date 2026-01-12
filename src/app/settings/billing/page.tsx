@@ -2,7 +2,7 @@ import { auth, getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import { SignOutButton } from '@clerk/nextjs'
+import { SignOutButton } from '@/components/SignOutButton'
 
 export default async function BillingPage() {
   const { userId } = await auth()

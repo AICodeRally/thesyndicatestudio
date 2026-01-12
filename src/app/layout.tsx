@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Libre_Baskerville, DM_Sans, JetBrains_Mono } from "next/font/google"
 import { Toaster } from "sonner"
-import { ClerkProvider } from "@clerk/nextjs"
 import { SPMNavigation } from "@/components/spm/navigation/SPMNavigation"
 import { Analytics } from "@/components/Analytics"
 import { Suspense } from "react"
@@ -103,12 +102,11 @@ export default function RootLayout({
       <body
         className={`${libreBaskerville.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen bg-[#0A0A0F]`}
       >
-        <ClerkProvider>
-          <SPMNavigation />
-          <main className="relative pt-16">
-            <div className="relative z-10">{children}</div>
-          </main>
-          <footer className="relative z-10 mt-20 border-t border-[color:var(--studio-border)] bg-[color:var(--studio-surface)]">
+        <SPMNavigation />
+        <main className="relative pt-16">
+          <div className="relative z-10">{children}</div>
+        </main>
+        <footer className="relative z-10 mt-20 border-t border-[color:var(--studio-border)] bg-[color:var(--studio-surface)]">
             <div className="container mx-auto px-6 py-12">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
@@ -166,7 +164,6 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <Analytics />
           </Suspense>
-        </ClerkProvider>
       </body>
     </html>
   )

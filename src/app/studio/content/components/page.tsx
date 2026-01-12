@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useUser } from '@clerk/nextjs'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function ComponentsAdminPage() {
   const [cards, setCards] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const { user } = useUser()
-  const isAdmin = user?.publicMetadata?.tier === 'ENTERPRISE'
+  const { user } = useAuth()
+  const isAdmin = user?.tier === 'ENTERPRISE'
 
   useEffect(() => {
     fetch('/api/content/components')

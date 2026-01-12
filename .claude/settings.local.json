@@ -55,7 +55,8 @@
       "WebFetch(domain:vercel.com)",
       "Bash(pnpm remove:*)",
       "Bash(dig:*)",
-      "WebFetch(domain:dashboard.clerk.com)"
+      "WebFetch(domain:dashboard.clerk.com)",
+      "Bash(pnpm install:*)"
     ]
   }
 }

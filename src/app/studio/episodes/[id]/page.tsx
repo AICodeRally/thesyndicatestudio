@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useUser } from '@clerk/nextjs'
+import { useAuth } from '@/hooks/useAuth'
 import { VideoRenderer } from '@/components/studio/VideoRenderer'
 
 interface Episode {
@@ -25,8 +25,8 @@ interface Episode {
 export default function EpisodeDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { user } = useUser()
-  const isAdmin = user?.publicMetadata?.tier === 'ENTERPRISE'
+  const { user } = useAuth()
+  const isAdmin = user?.tier === 'ENTERPRISE'
   const [episode, setEpisode] = useState<Episode | null>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState<string | null>(null)

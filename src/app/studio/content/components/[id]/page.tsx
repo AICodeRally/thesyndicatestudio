@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useUser } from '@clerk/nextjs'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function EditComponentCardPage() {
   const params = useParams()
   const router = useRouter()
-  const { user, isLoaded } = useUser()
-  const isAdmin = user?.publicMetadata?.tier === 'ENTERPRISE'
+  const { user, isLoading: isLoaded } = useAuth()
+  const isAdmin = user?.tier === 'ENTERPRISE'
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')

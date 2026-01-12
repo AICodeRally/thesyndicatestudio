@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { auth, getCurrentUser } from '@/lib/auth'
-import { SignOutButton } from '@clerk/nextjs'
+import { SignOutButton } from '@/components/SignOutButton'
 
 interface PublicHeaderProps {
   currentPage?: 'counsel' | 'episodes' | 'models'
