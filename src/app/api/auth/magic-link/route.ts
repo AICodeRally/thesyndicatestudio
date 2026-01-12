@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
     // Send email via Resend
     const { data, error } = await resend.emails.send({
-      from: 'The Syndicate Studio <onboarding@resend.dev>',
+      from: 'The Syndicate Studio <noreply@intelligentspm.com>',
       to: email,
       subject: 'Sign in to The Syndicate Studio',
       html: `
