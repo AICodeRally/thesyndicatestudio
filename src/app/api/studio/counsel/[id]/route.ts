@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { isAdminUser } from '@/lib/authz'
 
 export async function GET(
   request: Request,
@@ -18,34 +19,22 @@ export async function GET(
 
     const { id } = await params
 
-    const episode = await prisma.episode.findUnique({
+    const counsel = await prisma.counsel.findUnique({
       where: { id },
-      include: {
-        canonicalScript: true,
-        scripts: {
-          orderBy: { createdAt: 'desc' },
-        },
-        cuts: {
-          orderBy: { createdAt: 'desc' },
-        },
-        assets: {
-          orderBy: { createdAt: 'desc' },
-        },
-      },
     })
 
-    if (!episode) {
+    if (!counsel) {
       return NextResponse.json(
-        { error: 'Episode not found' },
+        { error: 'Counsel not found' },
         { status: 404 }
       )
     }
 
-    return NextResponse.json({ episode })
+    return NextResponse.json({ counsel })
   } catch (error) {
-    console.error('Error fetching episode:', error)
+    console.error('Error fetching counsel:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch episode' },
+      { error: 'Failed to fetch counsel' },
       { status: 500 }
     )
   }
@@ -65,19 +54,31 @@ export async function PATCH(
       )
     }
 
+    const isAdmin = await isAdminUser(userId)
+    if (!isAdmin) {
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      )
+    }
+
     const { id } = await params
     const updates = await request.json()
 
-    const episode = await prisma.episode.update({
+    // Remove fields that shouldn't be updated directly
+    delete updates.id
+    delete updates.createdAt
+
+    const counsel = await prisma.counsel.update({
       where: { id },
       data: updates,
     })
 
-    return NextResponse.json({ episode })
+    return NextResponse.json({ counsel })
   } catch (error) {
-    console.error('Error updating episode:', error)
+    console.error('Error updating counsel:', error)
     return NextResponse.json(
-      { error: 'Failed to update episode' },
+      { error: 'Failed to update counsel' },
       { status: 500 }
     )
   }
@@ -97,30 +98,25 @@ export async function DELETE(
       )
     }
 
-    const { id } = await params
-
-    // Check if episode exists
-    const episode = await prisma.episode.findUnique({
-      where: { id },
-    })
-
-    if (!episode) {
+    const isAdmin = await isAdminUser(userId)
+    if (!isAdmin) {
       return NextResponse.json(
-        { error: 'Episode not found' },
-        { status: 404 }
+        { error: 'Admin access required' },
+        { status: 403 }
       )
     }
 
-    // Delete episode (cascades to scripts, cuts, assets via Prisma schema)
-    await prisma.episode.delete({
+    const { id } = await params
+
+    await prisma.counsel.delete({
       where: { id },
     })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting episode:', error)
+    console.error('Error deleting counsel:', error)
     return NextResponse.json(
-      { error: 'Failed to delete episode' },
+      { error: 'Failed to delete counsel' },
       { status: 500 }
     )
   }

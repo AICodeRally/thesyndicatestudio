@@ -22,6 +22,10 @@ const primaryNav: NavItem[] = [
     href: '/studio',
   },
   {
+    label: 'Episodes',
+    href: '/studio/episodes',
+  },
+  {
     label: 'Library',
     href: '/studio/library',
   },
@@ -34,6 +38,10 @@ const primaryNav: NavItem[] = [
       { label: 'Vendors', href: '/studio/content/vendors' },
       { label: 'Benchmarks', href: '/studio/content/benchmarks' },
     ],
+  },
+  {
+    label: 'Counsel',
+    href: '/studio/counsel',
   },
 ];
 

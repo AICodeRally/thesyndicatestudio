@@ -31,6 +31,8 @@ export default function EpisodeDetailPage() {
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState<string | null>(null)
   const [extractedCounsel, setExtractedCounsel] = useState<any[]>([])
+  const [savedCounselIds, setSavedCounselIds] = useState<Set<number>>(new Set())
+  const [savingCounsel, setSavingCounsel] = useState<number | null>(null)
   const [publishing, setPublishing] = useState(false)
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [soraGenerating, setSoraGenerating] = useState(false)
@@ -41,6 +43,8 @@ export default function EpisodeDetailPage() {
     aspectRatio: '9:16' as '16:9' | '9:16' | '1:1',
     seconds: '8' as '4' | '8' | '12',
   })
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     loadEpisode()
@@ -205,6 +209,57 @@ export default function EpisodeDetailPage() {
     poll()
   }
 
+  const deleteEpisode = async () => {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/studio/episodes/${params.id}`, {
+        method: 'DELETE',
+      })
+      if (res.ok) {
+        router.push('/studio/episodes')
+      } else {
+        alert('Failed to delete episode')
+      }
+    } catch (error) {
+      console.error('Failed to delete episode:', error)
+      alert('Failed to delete episode')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const saveCounselItem = async (counsel: any, index: number) => {
+    setSavingCounsel(index)
+    try {
+      const res = await fetch('/api/studio/counsel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...counsel,
+          episodeId: episode?.id,
+        }),
+      })
+      if (res.ok) {
+        setSavedCounselIds(prev => new Set([...prev, index]))
+      } else {
+        alert('Failed to save counsel item')
+      }
+    } catch (error) {
+      console.error('Failed to save counsel:', error)
+      alert('Failed to save counsel item')
+    } finally {
+      setSavingCounsel(null)
+    }
+  }
+
+  const saveAllCounsel = async () => {
+    for (let i = 0; i < extractedCounsel.length; i++) {
+      if (!savedCounselIds.has(i)) {
+        await saveCounselItem(extractedCounsel[i], i)
+      }
+    }
+  }
+
   if (loading) {
     return (
       <div className="studio-shell min-h-screen flex items-center justify-center">
@@ -230,14 +285,52 @@ export default function EpisodeDetailPage() {
 
   return (
     <div className="studio-shell min-h-screen">
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="studio-card p-8 max-w-md mx-4">
+            <h3 className="text-xl font-semibold text-[color:var(--studio-text)] mb-3">
+              Delete Episode?
+            </h3>
+            <p className="text-sm text-[color:var(--studio-text-muted)] mb-6">
+              This will permanently delete "{episode.title}" and all its scripts, cuts, and assets. This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="studio-cta-ghost flex-1"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteEpisode}
+                disabled={deleting}
+                className="flex-1 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+              >
+                {deleting ? 'Deleting...' : 'Delete Episode'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto px-6 py-16">
-        <Link href="/studio" className="studio-tag">
-          Back to Studio
-        </Link>
+        <div className="flex items-center gap-2 text-sm">
+          <Link href="/studio" className="text-[color:var(--studio-text-muted)] hover:text-[color:var(--studio-accent)]">
+            Studio
+          </Link>
+          <span className="text-[color:var(--studio-text-muted)]">/</span>
+          <Link href="/studio/episodes" className="text-[color:var(--studio-text-muted)] hover:text-[color:var(--studio-accent)]">
+            Episodes
+          </Link>
+          <span className="text-[color:var(--studio-text-muted)]">/</span>
+          <span className="text-[color:var(--studio-text)]">{episode.title}</span>
+        </div>
 
         <div className="mt-6">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div>
+            <div className="flex-1">
               <h1 className="text-4xl font-serif">{episode.title}</h1>
               <p className="mt-3 text-[color:var(--studio-text-muted)]">
                 {episode.premise}
@@ -252,7 +345,17 @@ export default function EpisodeDetailPage() {
                 )}
               </div>
             </div>
-            <span className="studio-pill">{statusLabels[episode.status] || episode.status}</span>
+            <div className="flex items-center gap-3">
+              <span className="studio-pill">{statusLabels[episode.status] || episode.status}</span>
+              {isAdmin && episode.status !== 'PUBLISHED' && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="px-3 py-1.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded transition-colors"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -495,29 +598,61 @@ export default function EpisodeDetailPage() {
 
             {extractedCounsel.length > 0 && (
               <div className="mt-6 space-y-3">
-                <p className="text-sm text-[color:var(--studio-text-muted)]">
-                  AI extracted {extractedCounsel.length} Counsel items:
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[color:var(--studio-text-muted)]">
+                    AI extracted {extractedCounsel.length} Counsel items:
+                  </p>
+                  {isAdmin && extractedCounsel.some((_, i) => !savedCounselIds.has(i)) && (
+                    <button
+                      onClick={saveAllCounsel}
+                      className="studio-cta text-sm"
+                    >
+                      Save All to Library
+                    </button>
+                  )}
+                </div>
                 {extractedCounsel.map((counsel: any, idx: number) => (
                   <div key={idx} className="studio-card p-4">
-                    <div className="flex gap-2 mb-2">
-                      <span className="studio-pill">{counsel.type}</span>
-                      <span className="studio-pill">{counsel.difficulty}</span>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex gap-2 mb-2">
+                          <span className="studio-pill">{counsel.type}</span>
+                          <span className="studio-pill">{counsel.difficulty}</span>
+                          {savedCounselIds.has(idx) && (
+                            <span className="studio-pill bg-emerald-900/30 text-emerald-400">Saved</span>
+                          )}
+                        </div>
+                        <h4 className="font-semibold text-[color:var(--studio-text)] mb-1">
+                          {counsel.title}
+                        </h4>
+                        <p className="text-sm text-[color:var(--studio-text-muted)] mb-2">
+                          {counsel.oneLiner}
+                        </p>
+                        <p className="text-xs text-[color:var(--studio-text-muted)]">
+                          {counsel.problemStatement}
+                        </p>
+                      </div>
+                      {isAdmin && !savedCounselIds.has(idx) && (
+                        <button
+                          onClick={() => saveCounselItem(counsel, idx)}
+                          disabled={savingCounsel === idx}
+                          className="studio-cta-ghost text-sm whitespace-nowrap"
+                        >
+                          {savingCounsel === idx ? 'Saving...' : 'Save'}
+                        </button>
+                      )}
                     </div>
-                    <h4 className="font-semibold text-[color:var(--studio-text)] mb-1">
-                      {counsel.title}
-                    </h4>
-                    <p className="text-sm text-[color:var(--studio-text-muted)] mb-2">
-                      {counsel.oneLiner}
-                    </p>
-                    <p className="text-xs text-[color:var(--studio-text-muted)]">
-                      {counsel.problemStatement}
-                    </p>
                   </div>
                 ))}
-                <p className="text-xs text-[color:var(--studio-text-muted)] italic">
-                  Review and publish these drafts into the Counsel library.
-                </p>
+                {savedCounselIds.size === extractedCounsel.length ? (
+                  <p className="text-xs text-[color:var(--studio-accent)] italic">
+                    All items saved to Counsel library.
+                  </p>
+                ) : (
+                  <p className="text-xs text-[color:var(--studio-text-muted)] italic">
+                    Review and save these drafts to the Counsel library.
+                  </p>
+                )}
               </div>
             )}
 

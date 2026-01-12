@@ -33,7 +33,7 @@ export default function NewEpisodePage() {
       })
 
       if (response.status === 401) {
-        router.push('/auth/signin')
+        router.push('/sign-in')
         return
       }
 
