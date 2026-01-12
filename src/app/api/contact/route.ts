@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-// Force dynamic to prevent build-time evaluation (AUTH_RESEND_KEY not available at build)
-export const dynamic = 'force-dynamic'
-
-const resend = new Resend(process.env.AUTH_RESEND_KEY)
+// Lazy initialization to avoid build-time errors (AUTH_RESEND_KEY not available at build)
+let resend: Resend | null = null
+function getResend() {
+  if (!resend) {
+    resend = new Resend(process.env.AUTH_RESEND_KEY)
+  }
+  return resend
+}
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +30,7 @@ export async function POST(request: Request) {
     }
 
     // Send notification to Todd
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'The Syndicate Studio <noreply@thesyndicatestudio.com>',
       to: 'todd@intelligentspm.com',
       replyTo: email,
@@ -54,7 +58,7 @@ export async function POST(request: Request) {
     })
 
     // Send confirmation to the user
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'The Syndicate Studio <noreply@thesyndicatestudio.com>',
       to: email,
       subject: 'Message Received - Intelligent SPM',

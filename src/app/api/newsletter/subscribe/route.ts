@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-// Force dynamic to prevent build-time evaluation (AUTH_RESEND_KEY not available at build)
-export const dynamic = 'force-dynamic'
-
-const resend = new Resend(process.env.AUTH_RESEND_KEY)
+// Lazy initialization to avoid build-time errors (AUTH_RESEND_KEY not available at build)
+let resend: Resend | null = null
+function getResend() {
+  if (!resend) {
+    resend = new Resend(process.env.AUTH_RESEND_KEY)
+  }
+  return resend
+}
 
 export async function POST(request: Request) {
   try {
@@ -19,7 +23,7 @@ export async function POST(request: Request) {
 
     // Add to Resend audience (you'll need to create audience in Resend dashboard)
     // For now, just send welcome email
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'The Syndicate Studio <noreply@thesyndicatestudio.com>',
       to: email,
       subject: 'Welcome to The SPM Syndicate',
